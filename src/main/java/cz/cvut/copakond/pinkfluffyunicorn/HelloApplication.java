@@ -14,7 +14,6 @@ import java.io.IOException;
 /* JAVA FX TIPS AND TRICKS
  create one big canvas and draw everything on it using bitmap
  refresh it 60 fps
-
  */
 
 public class HelloApplication extends Application {
