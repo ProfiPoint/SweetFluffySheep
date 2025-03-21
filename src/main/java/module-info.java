@@ -5,4 +5,5 @@ module cz.cvut.copakond.pfu.pinkfluffyunicorn {
 
     opens cz.cvut.copakond.pinkfluffyunicorn to javafx.fxml;
     exports cz.cvut.copakond.pinkfluffyunicorn;
+    //opens cz.cvut.copakond.pinkfluffyunicorn to javafx.fxml;
 }
