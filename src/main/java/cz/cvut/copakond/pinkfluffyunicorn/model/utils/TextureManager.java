@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.world;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
 
 import javafx.scene.image.Image;
 
@@ -23,5 +23,13 @@ public class TextureManager {
             }});
         }
         return null;
+    }
+
+    public List<int[]> getTextureSizes(List<Image> textures) {
+        List<int[]> sizes = new ArrayList<int[]>();
+        for (Image texture : textures) {
+            sizes.add(new int[] { (int) texture.getWidth(), (int) texture.getHeight() });
+        }
+        return sizes;
     }
 }

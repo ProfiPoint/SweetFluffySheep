@@ -1,6 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.enums.DirectionEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 
 public interface ICharacter  {
     // moves the character by one step in the current direction

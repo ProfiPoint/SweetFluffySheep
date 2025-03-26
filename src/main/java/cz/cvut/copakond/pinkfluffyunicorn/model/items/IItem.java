@@ -1,8 +1,9 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.IGameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.IGameObject;
 
 public interface IItem extends IGameObject {
-    boolean isAlive();
-    boolean isActive();
+    boolean use();
+    ItemEnum getItemEffect();
 }

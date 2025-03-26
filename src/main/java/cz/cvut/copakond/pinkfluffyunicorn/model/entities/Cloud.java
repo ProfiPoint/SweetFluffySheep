@@ -1,15 +1,21 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.enums.DirectionEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.TextureManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.TextureManager;
 import javafx.scene.image.Image;
 import java.util.List;
 
 public class Cloud extends Character {
-    public Cloud(int[] position, int renderPriority, List<Image> textures, List<int[]> textureSizes,
-                 DirectionEnum direction) {
-        super(position, renderPriority, textures, textureSizes, direction);
+    static int counter = 0;
+
+    public Cloud(int[] position, DirectionEnum direction) {
+        super("cloud", position, direction);
         this.setEnemy(true);
-        List<Image> cloudTextures = new TextureManager().getTexture("cloud");
+        counter++;
+    }
+
+    public void kill() {
+        super.kill();
+        counter--;
     }
 }

@@ -1,8 +1,7 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.world;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
 
 import javafx.scene.image.Image;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameObject implements IGameObject {
@@ -14,13 +13,15 @@ public class GameObject implements IGameObject {
     protected List<int[]> textureSizes;
     protected int textureIdNow;
 
-    public GameObject(int[] position, int renderPriority, List<Image> textures, List<int[]> textureSizes) {
+    // static to share the same texture manager (avoid loading the same textures multiple times)
+    static TextureManager textureManager = new TextureManager();
+
+    public GameObject(String textureName, int[] position, int renderPriority) {
         this.position = position;
         this.renderPriority = renderPriority;
-        this.textures = textures;
-        this.textureSizes = textureSizes;
         this.textureIdNow = 0;
         this.visible = true;
+        this.loadTextures(textureName);
     }
 
     public boolean isVisible() {
@@ -29,6 +30,10 @@ public class GameObject implements IGameObject {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public void tick() {
+        // updates the game object
     }
 
     public int getRenderPriority() {
@@ -61,5 +66,12 @@ public class GameObject implements IGameObject {
 
     public void nextTexture() {
         this.textureIdNow = (this.textureIdNow + 1) % this.textures.size();
+    }
+
+    void loadTextures(String textureName) {
+        List<Image> textures = textureManager.getTexture(textureName);
+        List<int[]> textureSizes = textureManager.getTextureSizes(textures);
+        this.textures = textures;
+        this.textureSizes = textureSizes;
     }
 }

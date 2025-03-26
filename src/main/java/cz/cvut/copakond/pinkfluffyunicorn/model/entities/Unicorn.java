@@ -1,15 +1,24 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.enums.DirectionEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.TextureManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.TextureManager;
 import javafx.scene.image.Image;
 import java.util.List;
 
 public class Unicorn extends Character {
-    public Unicorn(int[] position, int renderPriority, List<Image> textures, List<int[]> textureSizes,
-                 DirectionEnum direction) {
-        super(position, renderPriority, textures, textureSizes, direction);
+    static int counter = 0;
+
+    public Unicorn(int[] position, DirectionEnum direction) {
+        super("unicorn", position, direction);
         this.setEnemy(false);
-        List<Image> cloudTextures = new TextureManager().getTexture("unicorn");
+        counter++;
+    }
+
+    public void kill() {
+        super.kill();
+        counter--;
+        if (counter <= 0) {
+            throw new IllegalStateException("All unicorns are dead :(");
+        }
     }
 }

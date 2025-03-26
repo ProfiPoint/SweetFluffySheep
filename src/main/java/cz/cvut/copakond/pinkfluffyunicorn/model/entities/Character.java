@@ -1,19 +1,19 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.enums.DirectionEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.GameObject;
-import javafx.scene.image.Image;
-
-import java.util.List;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 
 public class Character extends GameObject implements ICharacter {
     DirectionEnum direction;
     boolean alive = true;
     boolean isEnemy;
+    String name;
 
-    public Character(int[] position, int renderPriority, List<Image> textures, List<int[]> textureSizes, DirectionEnum direction) {
-        super(position, renderPriority, textures, textureSizes);
+    public Character(String textureName, int[] position, DirectionEnum direction) {
+        super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
         this.direction = direction;
+        this.name = textureName;
     }
 
     public void move(int pixels) {
