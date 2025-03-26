@@ -1,11 +1,10 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.enums.DirectionEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.IObject;
 
-public interface ICharacter extends IObject {
+public interface ICharacter  {
     // moves the character by one step in the current direction
-    void move();
+    void move(int pixels);
 
     // changes the direction of the character
     void changeDirection(DirectionEnum direction);

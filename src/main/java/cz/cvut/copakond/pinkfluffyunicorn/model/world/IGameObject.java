@@ -2,7 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
 import javafx.scene.image.Image;
 
-public interface IObject {
+public interface IGameObject {
     // Visibility {get, set}
     boolean isVisible();
     void setVisible(boolean visible);
@@ -18,4 +18,5 @@ public interface IObject {
     // Textures {get, set}
     Image getTexture();
     int[] getTextureSize();
+    void nextTexture();
 }
