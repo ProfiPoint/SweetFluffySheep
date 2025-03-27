@@ -1,6 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.data;
 
 import java.io.IOException;
+
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import org.json.JSONObject;
 import org.json.JSONException;
 import java.nio.file.Files;
@@ -12,9 +14,9 @@ public class SaveManager {
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
             return new JSONObject(content);
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.err.println(ErrorMsgsEnum.LOAD_JSON_FILE.getValue(filePath));
         } catch (JSONException e) {
-            System.err.println("Error parsing JSON: " + e.getMessage());
+            System.err.println(ErrorMsgsEnum.LOAD_JSON_PARSE.getValue(filePath));
         }
         return null;
     }
@@ -24,7 +26,7 @@ public class SaveManager {
             Files.write(Paths.get(filePath), json.getBytes());
             return true;
         } catch (IOException e) {
-            System.err.println("Error writing file: " + e.getMessage());
+            System.err.println(ErrorMsgsEnum.SAVE_JSON_FILE.getValue(filePath));
         }
         return false;
     }

@@ -1,7 +1,12 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
 
 public enum DirectionEnum {
-    UP(90), DOWN(270), LEFT(180), RIGHT(0);
+    RIGHT(0),
+    DOWN(90),
+    LEFT(180),
+    UP(270);
+
+    // general formula for [x,y] is sin(-angle), cos(-angle)
 
     public DirectionEnum next() {
         DirectionEnum[] values = DirectionEnum.values();
@@ -16,6 +21,14 @@ public enum DirectionEnum {
 
     public int getValue() {
         return value;
+    }
+    public static DirectionEnum fromValue(int value) {
+        for (DirectionEnum direction : DirectionEnum.values()) {
+            if (direction.getValue() == value) {
+                return direction;
+            }
+        }
+        return null;
     }
 }
 

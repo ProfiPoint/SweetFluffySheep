@@ -1,0 +1,30 @@
+{
+  "start": [10,8,0],
+  "goal": [11,12,0],
+  "timeLimit":180,
+  "unicorns": 10,
+  "goalUnicorns": 1,
+  "maxArrows": 20,
+  "creator": "ProfiPoint",
+  "creatorUpdated": "ProfiPoint",
+  "creationTime": 0,
+  "updatedTime": 0,
+  "tiles": {
+    "10-9": 2,
+    "11-9": 1,
+    "10-10": 1,
+    "10-11": 2,
+    "11-10": 2,
+    "11-11": 1
+  },
+  "enemies": {
+    "10-10": 0
+  },
+  "coins":[
+    [10,11]
+  ],
+  "items":[
+    [11,11,0]
+  ],
+  "decorations":[]
+}
