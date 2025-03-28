@@ -1,6 +1,7 @@
 {
   "start": [10,8,0],
-  "goal": [11,12,0],
+  "goal": [12,8,0],
+  "mapSize": [24,12],
   "timeLimit":180,
   "unicorns": 10,
   "goalUnicorns": 1,
