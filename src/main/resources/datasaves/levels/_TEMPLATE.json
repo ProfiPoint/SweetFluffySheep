@@ -1,4 +1,5 @@
 {
+  "defaultLevel": false,
   "start": [10,8,0],
   "goal": [12,8,0],
   "mapSize": [24,12],
@@ -27,6 +28,5 @@
   "items":[
     [11,11,0,15],
     [11,10,1,15]
-  ],
-  "decorations":[]
+  ]
 }

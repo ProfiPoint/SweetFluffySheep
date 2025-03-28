@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.data;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
+import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
@@ -32,10 +33,12 @@ public class Level {
 
     // game objects itselfs
     int[] mapSize;
+    boolean defaultLevel = false; // false = custom level, true = non deleteable default level
     Start start;
     Goal goal;
     List<Tile> tiles = new ArrayList<Tile>();
     List<Cloud> enemies = new ArrayList<Cloud>();
+    List<Unicorn> unicorns = new ArrayList<Unicorn>();
     List<Coin> coins = new ArrayList<Coin>();
     List<IItem> items = new ArrayList<IItem>();
     // creator, creatorUpdated
@@ -80,13 +83,16 @@ public class Level {
         if (levelData == null) {return false;}
         LoadManager lm = new LoadManager(levelData);
         mapSize = lm.getList2NoLimit("mapSize");
+        defaultLevel = lm.getBoolean("defaultLevel");
         if (mapSize == null) {return false;}
+
+
 
         int[] startCoords = lm.getList3("start", mapSize);
         int[] endCoords = lm.getList3("goal", mapSize);
         if (startCoords == null || endCoords == null) {return false;}
-        start = new Start(new int[]{startCoords[0], startCoords[1]}, DirectionEnum.fromValue(startCoords[2]));
-        goal = new Goal(new int[]{endCoords[0], endCoords[1]}, DirectionEnum.fromValue(endCoords[2]));
+        start = new Start(new double[]{startCoords[0], startCoords[1]}, DirectionEnum.fromValue(startCoords[2]));
+        goal = new Goal(new double[]{endCoords[0], endCoords[1]}, DirectionEnum.fromValue(endCoords[2]));
 
         playerInfo.put("creator", lm.getString("creator"));
         playerInfo.put("creatorUpdated", lm.getString("creatorUpdated"));
@@ -106,26 +112,26 @@ public class Level {
         List<int[]> tilesCoords = lm.getListOfListsWithLimitFromDict("tiles", mapSize, TextureListEnum.TILE.getCount());
         if (tilesCoords == null) {return false;}
         for (int[] tileCoords : tilesCoords) {
-            tiles.add(new Tile(new int[]{tileCoords[0], tileCoords[1]}, tileCoords[2]));
+            tiles.add(new Tile(new double[]{tileCoords[0], tileCoords[1]}, tileCoords[2]));
         }
 
         List<int[]> enemiesCoords = lm.getListOfListsWithDirFromDict("enemies", mapSize);
         if (enemiesCoords == null) {return false;}
         for (int[] enemiesCoord : enemiesCoords) {
-            enemies.add(new Cloud(new int[]{enemiesCoord[0], enemiesCoord[1]}, DirectionEnum.fromValue(enemiesCoord[2])));
+            enemies.add(new Cloud(new double[]{enemiesCoord[0], enemiesCoord[1]}, DirectionEnum.fromValue(enemiesCoord[2])));
         }
 
         List<int[]> coinsCoords = lm.getListOfLists("coins", mapSize);
         if (coinsCoords == null) {return false;}
         for (int[] coinCoord : coinsCoords) {
-            coins.add(new Coin(new int[]{coinCoord[0], coinCoord[1]}));
+            coins.add(new Coin(new double[]{coinCoord[0], coinCoord[1]}));
         }
 
         List<int[]> itemsCoords = lm.getListOfListsWithLimit("items", mapSize, ItemEnum.getNumberOfItems());
         if (itemsCoords == null) {return false;}
         for (int[] itemCoord : itemsCoords) {
             ItemEnum itemEnum = ItemEnum.values()[itemCoord[2]]; // Get the ItemEnum from the coordinate
-            IItem item = ItemFactory.createItem(itemEnum, new int[]{itemCoord[0], itemCoord[1]}, 5);
+            IItem item = ItemFactory.createItem(itemEnum, new double[]{itemCoord[0], itemCoord[1]}, 5);
             items.add(item);
         }
 
@@ -133,13 +139,10 @@ public class Level {
     }
 
     public boolean saveLevel(String levelName) {
-        // Create a JSONObject to store the level data
         JSONObject levelData = new JSONObject();
-
-        // Instantiate SaveManager with the JSONObject
         SaveManager sm = new SaveManager(levelData);
 
-        // Use SaveManager to populate the JSONObject with the level data
+        sm.addDefaultLevelData(defaultLevel);
         sm.addStartGoalData(start, goal);
         sm.addMapSizeData(mapSize);
         sm.addLevelInfo(levelInfo);
@@ -149,17 +152,56 @@ public class Level {
         sm.addCoinsData(coins);
         sm.addItemsData(items);
 
-        //print all keys of the levelData
-        for (String key : levelData.keySet()) {
-            System.out.println(key + ": " + levelData.get(key));
-        }
-
-        // Save the level to a file using JsonFileManager
         return JsonFileManager.writeJsonToFile(path + levelName + ".json", levelData);
     }
 
+    public void Play() {
+        timeLeft = levelInfo.get("timeLimit");
+        // init unicorns
+        DirectionEnum direction = goal.getDirection();
+        double[] coords;
+        DirectionEnum unicornDirection = direction.getOppositeDirection();
+        double[] unitDirection = new double[]{0, 0};
+        if (start.getDirection() == DirectionEnum.LEFT) {
+            coords = new double[]{-1, start.getPosition()[1]};
+            unitDirection[0] = -1;
+        } else if (start.getDirection() == DirectionEnum.RIGHT) {
+            coords = new double[]{mapSize[0], start.getPosition()[1]};
+            unitDirection[0] = 1;
+        } else if (start.getDirection() == DirectionEnum.UP) {
+            coords = new double[]{start.getPosition()[0], -1};
+            unitDirection[1] = -1;
+        } else {
+            coords = new double[]{start.getPosition()[0], mapSize[1]};
+            unitDirection[1] = 1;
+        }
 
+        for (int i = 0; i < levelInfo.get("unicorns"); i++) {
+            unicorns.add(new Unicorn(coords, unicornDirection));
+            coords[0] += unitDirection[0];
+            coords[1] += unitDirection[1];
+        }
+    }
 
-
+    void buildObjectsList() {
+        objects = new ArrayList<GameObject>();
+        objects.add(start);
+        objects.add(goal);
+        for (Tile tile : tiles) {
+            objects.add(tile);
+        }
+        for (Cloud enemy : enemies) {
+            objects.add(enemy);
+        }
+        for (Coin coin : coins) {
+            objects.add(coin);
+        }
+        for (IItem item : items) {
+            objects.add((GameObject)item);
+        }
+        for (Unicorn unicorn : unicorns) {
+            objects.add(unicorn);
+        }
+    }
 }
 

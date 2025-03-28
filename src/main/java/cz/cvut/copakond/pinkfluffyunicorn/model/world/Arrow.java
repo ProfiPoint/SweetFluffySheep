@@ -10,7 +10,7 @@ public class Arrow extends GameObject {
     int maxArrows = 10;
     DirectionEnum orientation;
 
-    public Arrow(int[] position) {
+    public Arrow(double[] position) {
         super("arrow", position, RenderPriorityEnums.ARROW.getValue());
         arrowCount++;
         if (arrowCount > maxArrows) {

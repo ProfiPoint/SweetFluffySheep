@@ -8,7 +8,7 @@ public class Goal extends GameObject {
     boolean locked = true;
     DirectionEnum orientation;
 
-    public Goal(int[] position, DirectionEnum orientation) {
+    public Goal(double[] position, DirectionEnum orientation) {
         super("goal", position, RenderPriorityEnums.ARROW.getValue());
         this.orientation = orientation;
     }

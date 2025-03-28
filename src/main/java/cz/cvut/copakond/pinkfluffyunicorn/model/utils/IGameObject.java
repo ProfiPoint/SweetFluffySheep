@@ -13,8 +13,8 @@ public interface IGameObject {
     void setRenderPriority(int renderPriority);
 
     // 2D Position {get, set}
-    int[] getPosition();
-    void setPosition(int[] position);
+    double[] getPosition();
+    void setPosition(double[] position);
 
     // Textures {get, set}
     Image getTexture();

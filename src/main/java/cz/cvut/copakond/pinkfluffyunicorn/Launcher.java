@@ -105,16 +105,15 @@ public class Launcher extends Application {
 
     public static void main(String[] args) {
         //launch();
-        Level level = new Level("_TEMPLATE", false);
+        Level level = new Level("test_level", false);
         if (!level.loadLevel()) {
             System.err.println("Error loading level data - main launcher");
             return;
         }
         System.out.println("Level loaded successfully from MAIN LAUNCHER:D");
-        if (!level.saveLevel("test_level")) {
+        if (!level.saveLevel("test_level2")) {
             System.out.println("Error saving level data - main launcher");
         }
         System.out.println("Level saved successfully from MAIN LAUNCHER:D");
-
     }
 }

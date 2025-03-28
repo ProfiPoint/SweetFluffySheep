@@ -9,7 +9,7 @@ public class Item extends GameObject implements IItem {
     ItemEnum itemEffect;
     boolean pickable;
 
-    public Item(String textureName, int[] position, int duration, ItemEnum itemEffect) {
+    public Item(String textureName, double[] position, int duration, ItemEnum itemEffect) {
         super(textureName, position, RenderPriorityEnums.ITEM.getValue());
         this.duration_ticks = duration * 60;
         this.itemEffect = itemEffect;

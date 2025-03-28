@@ -5,7 +5,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 public class RainbowItem extends Item {
     private static RainbowItem active = null; // only one fire item can be active at a time
 
-    public RainbowItem(int[] position, int duration) {
+    public RainbowItem(double[] position, int duration) {
         super("rainbow", position, duration, ItemEnum.RAINBOW);
     }
 }

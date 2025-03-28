@@ -23,9 +23,16 @@ public class SaveManager {
         this.data = data;
     }
 
+    public void addDefaultLevelData(boolean isDefaultLevel) {
+        data.put("defaultLevel", isDefaultLevel);
+    }
+
     public void addStartGoalData(Start start, Goal goal) {
-        data.put("start", new JSONArray(new int[]{start.getPosition()[0], start.getPosition()[1], start.getDirection().getValue()}));
-        data.put("goal", new JSONArray(new int[]{goal.getPosition()[0], goal.getPosition()[1], goal.getDirection().getValue()}));
+        data.put("start", new JSONArray(new int[]{(int)Math.round(start.getPosition()[0]),
+                (int)Math.round(start.getPosition()[1]),
+                start.getDirection().getValue()}));
+        data.put("goal", new JSONArray(new int[]{(int)Math.round(goal.getPosition()[0]),
+                (int)Math.round(goal.getPosition()[1]), goal.getDirection().getValue()}));
     }
 
     public void addMapSizeData(int[] mapSize) {
@@ -50,7 +57,7 @@ public class SaveManager {
     public void addTilesData(List<Tile> tiles) {
         JSONObject tilesObj = new JSONObject();
         for (Tile tile : tiles) {
-            String key = tile.getPosition()[0] + "-" + tile.getPosition()[1];
+            String key = (int)Math.round(tile.getPosition()[0]) + "-" + (int)Math.round(tile.getPosition()[1]);
             tilesObj.put(key, tile.getTextureType());
         }
         data.put("tiles", tilesObj);
@@ -59,7 +66,7 @@ public class SaveManager {
     public void addEnemiesData(List<Cloud> enemies) {
         JSONObject enemiesObj = new JSONObject();
         for (Cloud enemy : enemies) {
-            String key = enemy.getPosition()[0] + "-" + enemy.getPosition()[1];
+            String key = (int)Math.round(enemy.getPosition()[0]) + "-" + (int)Math.round(enemy.getPosition()[1]);
             enemiesObj.put(key, enemy.getDirection().getValue());
         }
         data.put("enemies", enemiesObj);
@@ -68,7 +75,8 @@ public class SaveManager {
     public void addCoinsData(List<Coin> coins) {
         JSONArray coinsArray = new JSONArray();
         for (Coin coin : coins) {
-            coinsArray.put(new JSONArray(new int[]{coin.getPosition()[0], coin.getPosition()[1]}));
+            coinsArray.put(new JSONArray(new int[]{(int)Math.round(coin.getPosition()[0]),
+                    (int)Math.round(coin.getPosition()[1])}));
         }
         data.put("coins", coinsArray);
     }
@@ -76,8 +84,9 @@ public class SaveManager {
     public void addItemsData(List<IItem> items) {
         JSONArray itemsArray = new JSONArray();
         for (IItem item : items) {
-            int[] itemPos = item.getPosition();
-            itemsArray.put(new JSONArray(new int[]{itemPos[0], itemPos[1], item.getItemEffect().ordinal(), 15})); // Assuming duration is 15
+            double[] itemPos = item.getPosition();
+            itemsArray.put(new JSONArray(new int[]{(int)Math.round(itemPos[0]), (int)Math.round(itemPos[1]),
+                    item.getItemEffect().ordinal(), 15})); // Assuming duration is 15
         }
         data.put("items", itemsArray);
     }

@@ -8,7 +8,7 @@ import java.util.List;
 public class Unicorn extends Character {
     static int counter = 0;
 
-    public Unicorn(int[] position, DirectionEnum direction) {
+    public Unicorn(double[] position, DirectionEnum direction) {
         super("unicorn", position, direction);
         this.setEnemy(false);
         counter++;

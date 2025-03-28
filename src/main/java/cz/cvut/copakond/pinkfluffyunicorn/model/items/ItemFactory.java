@@ -17,7 +17,7 @@ public class ItemFactory {
     }
 
     // Create an instance of the appropriate Item subclass based on the ItemEnum type
-    public static IItem createItem(ItemEnum itemEnum, int[] position, int duration) {
+    public static IItem createItem(ItemEnum itemEnum, double[] position, int duration) {
         Class<? extends Item> itemClass = itemMap.get(itemEnum);
 
         if (itemClass == null) {
@@ -26,7 +26,7 @@ public class ItemFactory {
 
         try {
             // Dynamically create the instance using the constructor that accepts position and duration
-            return itemClass.getConstructor(int[].class, int.class).newInstance(position, duration);
+            return itemClass.getConstructor(double[].class, int.class).newInstance(position, duration);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to create item of type: " + itemEnum, e);

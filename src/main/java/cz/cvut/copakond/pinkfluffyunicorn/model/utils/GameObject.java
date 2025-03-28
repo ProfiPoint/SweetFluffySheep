@@ -7,7 +7,7 @@ import java.util.List;
 public class GameObject implements IGameObject {
     protected boolean visible;
     protected int renderPriority;
-    protected int[] position;
+    protected double[] position;
 
     protected List<Image> textures;
     protected List<int[]> textureSizes;
@@ -16,7 +16,7 @@ public class GameObject implements IGameObject {
     // static to share the same texture manager (avoid loading the same textures multiple times)
     protected static TextureManager textureManager = new TextureManager();
 
-    public GameObject(String textureName, int[] position, int renderPriority) {
+    public GameObject(String textureName, double[] position, int renderPriority) {
         this.position = position;
         this.renderPriority = renderPriority;
         this.textureIdNow = 0;
@@ -44,11 +44,18 @@ public class GameObject implements IGameObject {
         this.renderPriority = renderPriority;
     }
 
-    public int[] getPosition() {
+    public double[] getPosition() {
         return this.position;
     }
 
-    public void setPosition(int[] position) {
+    public double getX() {
+        return this.position[0];
+    }
+    public double getY() {
+        return this.position[1];
+    }
+
+    public void setPosition(double[] position) {
         this.position = position;
     }
 

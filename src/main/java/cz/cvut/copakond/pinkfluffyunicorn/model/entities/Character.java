@@ -10,7 +10,7 @@ public class Character extends GameObject implements ICharacter {
     boolean isEnemy;
     String name;
 
-    public Character(String textureName, int[] position, DirectionEnum direction) {
+    public Character(String textureName, double[] position, DirectionEnum direction) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
         this.direction = direction;
         this.name = textureName;

@@ -8,7 +8,7 @@ import java.util.List;
 public class Cloud extends Character {
     static int counter = 0;
 
-    public Cloud(int[] position, DirectionEnum direction) {
+    public Cloud(double[] position, DirectionEnum direction) {
         super("cloud", position, direction);
         this.setEnemy(true);
         counter++;

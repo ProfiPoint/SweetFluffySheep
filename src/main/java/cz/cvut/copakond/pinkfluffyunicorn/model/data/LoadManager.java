@@ -29,6 +29,14 @@ public class LoadManager {
         return data.optJSONArray(key);
     }
 
+    public boolean getBoolean(String key) {
+        if (!data.has(key)) {
+            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            return false;
+        }
+        return data.optBoolean(key, false);
+    }
+
     public int[] getList3(String key, int[] limit) {
         JSONArray arr = getJSONArray(key);
         if (arr == null || arr.length() != 3) {

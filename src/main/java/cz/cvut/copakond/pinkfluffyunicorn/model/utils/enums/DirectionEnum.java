@@ -1,5 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
 
+import org.reflections.vfs.Vfs;
+
 public enum DirectionEnum {
     RIGHT(0),
     DOWN(90),
@@ -17,6 +19,10 @@ public enum DirectionEnum {
 
     DirectionEnum(int value) {
         this.value = value;
+    }
+
+    public DirectionEnum getOppositeDirection() {
+        return values()[(this.ordinal() + 2) % values().length];
     }
 
     public int getValue() {
