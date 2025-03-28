@@ -1,11 +1,18 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
 import javafx.scene.image.Image;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TextureManager {
+    static Map<String, Image> loadedTextures = new HashMap<String, Image>();
+
     List<Image> loadTexture(List<String> textureNames) {
         List<Image> images = new ArrayList<Image>();
         for (String textureName : textureNames) {
@@ -14,15 +21,51 @@ public class TextureManager {
         return images;
     }
 
-    public List<Image> getTexture(String objectName) {
-        if (objectName.equals("cloud"))    {
-            return loadTexture(new ArrayList<String>() {{
-                add("cloud.png");
-                add("tile1.png");
-                add("tile2.png");
-            }});
+    // avoid loading the same textures multiple times
+    Image getLoadedTexture(String textureName) {
+        if (loadedTextures.containsKey(textureName)) {
+            return loadedTextures.get(textureName);
         }
-        return null;
+        Image result;
+        try {
+            result = new Image(new File(textureName).toURI().toURL().toExternalForm());
+        } catch (Exception e) {
+            try {
+                result = new Image(new File("src/main/resources/textures/missing_texture.png").toURI().toURL().toExternalForm());
+                ErrorMsgsEnum.TEXTURE_MISSING.getValue(textureName, e);
+            } catch (Exception e2) {
+                String e3 = ErrorMsgsEnum.TEXTURE_MISSING_IS_MISSING.getValue(textureName, e2);
+                throw new RuntimeException(e3);
+            }
+        }
+        return result;
+    }
+    
+    public List<Image> getTexture(String objectName) {
+        TextureListEnum textureListEnum = TextureListEnum.fromValue(objectName);
+        String[] textureNames = textureListEnum.getTextures();
+        List<Image> textures = new ArrayList<Image>();
+        for (String textureName : textureNames) {
+            textures.add(getLoadedTexture(textureName));
+            // print the w,h of the previously loaded texture
+            System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
+        }
+        return textures;
+    }
+
+    public List<Image> getTexture(String objectName, int[] textureSelections) {
+        TextureListEnum textureListEnum = TextureListEnum.fromValue(objectName);
+        String[] textureNames = textureListEnum.getTextures();
+        List<Image> textures = new ArrayList<Image>();
+        for (int index : textureSelections) {
+            if (index >= 0 && index < textureNames.length) {
+                String textureName = textureNames[index];
+                textures.add(getLoadedTexture(textureName));
+                // print the w,h of the previously loaded texture
+                System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
+            }
+        }
+        return textures;
     }
 
     public List<int[]> getTextureSizes(List<Image> textures) {

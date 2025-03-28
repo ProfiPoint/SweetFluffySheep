@@ -11,4 +11,8 @@ public class Start extends GameObject {
         super("start", position, RenderPriorityEnums.ARROW.getValue());
         this.orientation = orientation;
     }
+
+    public DirectionEnum getDirection() {
+        return this.orientation;
+    }
 }

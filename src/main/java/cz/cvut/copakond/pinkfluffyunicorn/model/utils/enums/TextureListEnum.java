@@ -1,0 +1,104 @@
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public enum TextureListEnum {
+    CLOUD("cloud", "cloud.png",1),
+    UNICORN("unicorn", "unicorn.png", 1),
+    TILE("tile", "tile_{i}.png",2), // tile_001, tile_002
+    START("start", "start.png",1),
+    GOAL("goal", "goal_{b}.png",2), // end_true, end_false
+    EMPTY("empty", "missing_texture.png",1, false),
+    COIN("coin", "coin.png", 1),
+    FIRE("fire", "fire_{i}.png", 1),
+    RAINBOW("rainbow", "rainbow_{i}.png", 1);
+
+
+    private final String name;
+    private String fileName;
+    private int count;
+    private boolean returnList;
+    private boolean returnAuto; // automatically return
+
+    TextureListEnum(String name, String fileName) {
+        this.name = name;
+        this.fileName = fileName;
+        this.count = 1;
+        this.returnAuto = true;
+        this.returnList = true;
+    }
+
+    TextureListEnum(String name, String fileName, int count) {
+        this.name = name;
+        this.fileName = fileName;
+        this.count = count;
+        this.returnAuto = true;
+        this.returnList = true;
+    }
+
+    TextureListEnum(String name, String fileName, int count, boolean returnList) {
+        this.name = name;
+        this.fileName = fileName;
+        this.count = count;
+        this.returnAuto = false;
+        this.returnList = returnList;
+    }
+
+    public String[] getTextures() {
+        if (!returnAuto && !returnList) {
+            return new String[]{getName()[0]};
+        }
+        return getNames();
+    }
+
+    private String[] getName() {
+        String[] names = new String[count];
+        names[0] = "src/main/resources/textures/" + fileName.replace("{i}", String.format("%03d", 1));
+        names[0] = names[0].replace("{b}", "true");
+        return names;
+    }
+
+    private String[] getNames() {
+        String[] names = new String[count];
+        for (int i = 0; i < count; i++) {
+            names[i] = "src/main/resources/textures/" + fileName.replace("{i}", String.format("%03d", i + 1));
+            names[i] = names[i].replace("{b}", i == 0 ? "true" : "false");
+        }
+        return names;
+    }
+
+    public String getValue() {
+        return name;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public List<String> getTextureByOrder(int order) {
+        if (order < 0 || order >= count) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(getNames()[order]);
+    }
+
+    public static TextureListEnum fromValue(String value) {
+        for (TextureListEnum texture : TextureListEnum.values()) {
+            if (texture.getValue().equals(value)) {
+                return texture;
+            }
+        }
+        String allPaths = "";
+        for (TextureListEnum texture : TextureListEnum.values()) {
+            for (String path : texture.getTextures()) {
+                allPaths += " - " + path + "; CODE NAME: [" + texture.getValue() + "]\n ";
+            }
+        }
+
+        ErrorMsgsEnum.TEXTURE_UNKNOWN_NAME.getValue("Texture name: " + value + ")\n [List of all defined textures] " +
+                "\n " + allPaths);
+        return TextureListEnum.EMPTY;
+    }
+}

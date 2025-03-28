@@ -6,7 +6,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 public class Coin extends GameObject {
     static int coinsLeft = 0;
 
-    public Coin(int[] position, int renderPriority) {
+    public Coin(int[] position) {
         super("coin", position, RenderPriorityEnums.ITEM.getValue());
     }
 

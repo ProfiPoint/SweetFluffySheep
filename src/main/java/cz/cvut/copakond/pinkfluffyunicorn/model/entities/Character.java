@@ -33,6 +33,10 @@ public class Character extends GameObject implements ICharacter {
         }
     }
 
+    public DirectionEnum getDirection() {
+        return this.direction;
+    }
+
     public void changeDirection(DirectionEnum direction) {
         this.direction = direction;
     }

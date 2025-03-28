@@ -9,11 +9,11 @@ public class Item extends GameObject implements IItem {
     ItemEnum itemEffect;
     boolean pickable;
 
-    public Item(String textureName, int[] position, int duration_ticks, ItemEnum itemEffect, boolean pickable) {
+    public Item(String textureName, int[] position, int duration, ItemEnum itemEffect) {
         super(textureName, position, RenderPriorityEnums.ITEM.getValue());
-        this.duration_ticks = duration_ticks;
+        this.duration_ticks = duration * 60;
         this.itemEffect = itemEffect;
-        this.pickable = pickable;
+        this.pickable = true;
     }
 
     @Override
@@ -21,10 +21,13 @@ public class Item extends GameObject implements IItem {
         duration_ticks--;
     }
 
-    public boolean use(){
+    @Override
+    public boolean use() {
         return pickable;
     }
-    public ItemEnum getItemEffect(){
+
+    @Override
+    public ItemEnum getItemEffect() {
         return itemEffect;
     }
 }

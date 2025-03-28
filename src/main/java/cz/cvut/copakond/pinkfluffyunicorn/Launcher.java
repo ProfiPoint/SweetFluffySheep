@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.data.Level;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -103,6 +104,17 @@ public class Launcher extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        //launch();
+        Level level = new Level("_TEMPLATE", false);
+        if (!level.loadLevel()) {
+            System.err.println("Error loading level data - main launcher");
+            return;
+        }
+        System.out.println("Level loaded successfully from MAIN LAUNCHER:D");
+        if (!level.saveLevel("test_level")) {
+            System.out.println("Error saving level data - main launcher");
+        }
+        System.out.println("Level saved successfully from MAIN LAUNCHER:D");
+
     }
 }

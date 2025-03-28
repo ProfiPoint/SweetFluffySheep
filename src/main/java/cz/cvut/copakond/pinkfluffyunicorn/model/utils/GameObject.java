@@ -14,7 +14,7 @@ public class GameObject implements IGameObject {
     protected int textureIdNow;
 
     // static to share the same texture manager (avoid loading the same textures multiple times)
-    static TextureManager textureManager = new TextureManager();
+    protected static TextureManager textureManager = new TextureManager();
 
     public GameObject(String textureName, int[] position, int renderPriority) {
         this.position = position;
@@ -68,8 +68,15 @@ public class GameObject implements IGameObject {
         this.textureIdNow = (this.textureIdNow + 1) % this.textures.size();
     }
 
-    void loadTextures(String textureName) {
+    protected void loadTextures(String textureName) {
         List<Image> textures = textureManager.getTexture(textureName);
+        List<int[]> textureSizes = textureManager.getTextureSizes(textures);
+        this.textures = textures;
+        this.textureSizes = textureSizes;
+    }
+
+    protected void loadTextures(String textureName, int[] textureSelection) {
+        List<Image> textures = textureManager.getTexture(textureName, textureSelection);
         List<int[]> textureSizes = textureManager.getTextureSizes(textures);
         this.textures = textures;
         this.textureSizes = textureSizes;
