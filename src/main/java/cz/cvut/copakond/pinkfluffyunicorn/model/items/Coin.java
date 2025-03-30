@@ -1,13 +1,13 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.world;
+package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 
-public class Coin extends GameObject {
+public class Coin extends Item {
     static int coinsLeft = 0;
 
-    public Coin(double[] position) {
-        super("coin", position, RenderPriorityEnums.ITEM.getValue());
+    public Coin(double[] position, int duration) {
+        super("coin", position, duration, ItemEnum.COIN);
     }
 
     public void collect() {

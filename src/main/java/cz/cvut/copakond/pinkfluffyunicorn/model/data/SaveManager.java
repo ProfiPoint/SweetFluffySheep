@@ -1,18 +1,14 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.data;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Coin;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.*;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 

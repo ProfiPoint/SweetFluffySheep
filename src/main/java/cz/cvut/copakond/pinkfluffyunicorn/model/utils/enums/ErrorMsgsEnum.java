@@ -8,6 +8,8 @@ public enum ErrorMsgsEnum {
     TEXTURE_MISSING_IS_MISSING("Missing texture of missing 'missing_texture.png' is missing or corrupted."),
     TEXTURE_UNKNOWN_NAME("Unknown texture name in classes"),
 
+    PHISICS_ALREADY_INIT("PHISICS: Phisics already initialized."),
+
     SAVE_JSON_FILE("LEVEL SAVE: Error saving JSON file."),
     LOAD_DEFAULT("LEVEL LOAD: Error loading default file _TEMPLATE.json"),
     LOAD_JSON_FILE("LEVEL LOAD: Error loading JSON file."),

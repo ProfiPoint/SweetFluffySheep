@@ -5,6 +5,10 @@ import javafx.scene.image.Image;
 import java.util.List;
 
 public class GameObject implements IGameObject {
+    // Constants
+    public final static int ticksPerSecond = 60; // 60 ticks per second
+    public final static double maxSpeedPerSecond = 4; // 4 tiles per second
+
     protected boolean visible;
     protected int renderPriority;
     protected double[] position;

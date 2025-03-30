@@ -8,7 +8,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 public class Arrow extends GameObject {
     static int arrowCount = 0;
     int maxArrows = 10;
-    DirectionEnum orientation;
+    DirectionEnum direction;
 
     public Arrow(double[] position) {
         super("arrow", position, RenderPriorityEnums.ARROW.getValue());
@@ -20,12 +20,12 @@ public class Arrow extends GameObject {
     }
 
     // on click rotate arrow
-    public void rotate(DirectionEnum orientation) {
-        this.orientation = orientation.next();
+    public void rotate(DirectionEnum direction) {
+        this.direction = direction.next();
     }
 
-    public DirectionEnum getOrientation() {
-        return orientation;
+    public DirectionEnum getDirection() {
+        return direction;
     }
 
     public void destroy() {

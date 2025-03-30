@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
+package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.*;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 
@@ -11,6 +11,7 @@ public class ItemFactory {
 
     // Static block to register item types to their corresponding classes
     static {
+        itemMap.put(ItemEnum.COIN, Coin.class);
         itemMap.put(ItemEnum.FIRE, FireItem.class);
         itemMap.put(ItemEnum.RAINBOW, RainbowItem.class);
         // Add other item types here as needed

@@ -2,27 +2,20 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.data;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
-import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.ItemFactory;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.ItemFactory;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GamePhysics;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Coin;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Arrow;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
 import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.*;
 
 public class Level {
@@ -30,6 +23,7 @@ public class Level {
     JSONObject levelData;
     List<GameObject> objects;
     String path = "src/main/resources/datasaves/levels/";
+
 
     // game objects itselfs
     int[] mapSize;
@@ -41,13 +35,17 @@ public class Level {
     List<Unicorn> unicorns = new ArrayList<Unicorn>();
     List<Coin> coins = new ArrayList<Coin>();
     List<IItem> items = new ArrayList<IItem>();
+    List<Arrow> arrows = new ArrayList<Arrow>();
     // creator, creatorUpdated
     Map<String, String> playerInfo = new HashMap<String, String>();
     // timeLimit, unicorns, goalUnicorns, maxArrows, creationTime, updatedTime
     Map<String, Integer> levelInfo = new HashMap<String, Integer>();
 
+    Map<int[], Integer> tileMap = new HashMap<int[], Integer>();
+
+
     int score;
-    int timeLeft;
+    double timeLeft;
 
     public Level(String level, boolean levelEditor) {
         if (levelEditor) {
@@ -86,8 +84,6 @@ public class Level {
         defaultLevel = lm.getBoolean("defaultLevel");
         if (mapSize == null) {return false;}
 
-
-
         int[] startCoords = lm.getList3("start", mapSize);
         int[] endCoords = lm.getList3("goal", mapSize);
         if (startCoords == null || endCoords == null) {return false;}
@@ -118,13 +114,14 @@ public class Level {
         List<int[]> enemiesCoords = lm.getListOfListsWithDirFromDict("enemies", mapSize);
         if (enemiesCoords == null) {return false;}
         for (int[] enemiesCoord : enemiesCoords) {
-            enemies.add(new Cloud(new double[]{enemiesCoord[0], enemiesCoord[1]}, DirectionEnum.fromValue(enemiesCoord[2])));
+            enemies.add(new Cloud(new double[]{enemiesCoord[0], enemiesCoord[1]},
+                    DirectionEnum.fromValue(enemiesCoord[2]), tileMap));
         }
 
         List<int[]> coinsCoords = lm.getListOfLists("coins", mapSize);
         if (coinsCoords == null) {return false;}
         for (int[] coinCoord : coinsCoords) {
-            coins.add(new Coin(new double[]{coinCoord[0], coinCoord[1]}));
+            coins.add(new Coin(new double[]{coinCoord[0], coinCoord[1]}, 0));
         }
 
         List<int[]> itemsCoords = lm.getListOfListsWithLimit("items", mapSize, ItemEnum.getNumberOfItems());
@@ -156,7 +153,7 @@ public class Level {
     }
 
     public void Play() {
-        timeLeft = levelInfo.get("timeLimit");
+        timeLeft = (double) levelInfo.get("timeLimit");
         // init unicorns
         DirectionEnum direction = goal.getDirection();
         double[] coords;
@@ -181,6 +178,14 @@ public class Level {
             coords[0] += unitDirection[0];
             coords[1] += unitDirection[1];
         }
+
+
+        GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, items, coins, arrows);
+    }
+
+    public void Unload() {
+        objects = new ArrayList<>();
+        GamePhysics.unloadMapObjects();
     }
 
     void buildObjectsList() {

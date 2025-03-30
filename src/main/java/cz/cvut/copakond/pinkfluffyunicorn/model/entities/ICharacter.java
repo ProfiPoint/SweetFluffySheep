@@ -12,5 +12,4 @@ public interface ICharacter  {
     // manages the character's state
     boolean isAlive();
     boolean isEnemy();
-    void kill();
 }
