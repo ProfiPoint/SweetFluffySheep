@@ -14,6 +14,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.world.Arrow;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
+import cz.cvut.copakond.pinkfluffyunicorn.view.GameLoop;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -24,6 +25,7 @@ public class Level {
     List<GameObject> objects;
     String path = "src/main/resources/datasaves/levels/";
 
+    GameLoop gameLoop;
 
     // game objects itselfs
     int[] mapSize;
@@ -179,13 +181,22 @@ public class Level {
             coords[1] += unitDirection[1];
         }
 
-
         GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, items, coins, arrows);
+    }
+
+    public void Pause() {
+        gameLoop.stop();
+    }
+
+    public void Resume() {
+        gameLoop.start();
     }
 
     public void Unload() {
         objects = new ArrayList<>();
         GamePhysics.unloadMapObjects();
+        gameLoop.stop();
+        gameLoop = null;
     }
 
     void buildObjectsList() {

@@ -2,12 +2,14 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.data;
 
 import java.io.IOException;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class JsonFileManager {
     public static JSONObject readJsonFromFile(String filePath) {
@@ -77,5 +79,33 @@ public class JsonFileManager {
         }
 
         return sb.toString();
+    }
+
+    public static List<List<Integer>> getProfileLFromJsonFile(String filePath) {
+        List<List<Integer>> profileData = List.of(List.of(), List.of());
+        JSONObject jsonObject = readJsonFromFile(filePath);
+
+        if (jsonObject != null) {
+            JSONArray completedStory = jsonObject.optJSONArray("completedStory");
+            JSONArray completedCustom = jsonObject.optJSONArray("completedCustom");
+
+            if (completedStory != null && completedCustom != null) {
+                profileData = List.of(
+                        completedStory.toList().stream().map(Object::toString).map(Integer::valueOf).toList(),
+                        completedCustom.toList().stream().map(Object::toString).map(Integer::valueOf).toList()
+                );
+            }
+        }
+
+        return profileData;
+    }
+
+    public static boolean saveProfileLToJsonFile(String filePath, List<List<Integer>> data) {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray completedStory = new JSONArray(data.get(0));
+        JSONArray completedCustom = new JSONArray(data.get(1));
+        jsonObject.put("completedStory", completedStory);
+        jsonObject.put("completedCustom", completedCustom);
+        return writeJsonToFile(filePath, jsonObject);
     }
 }

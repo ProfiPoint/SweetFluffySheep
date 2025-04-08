@@ -4,6 +4,9 @@ import java.io.IOException;
 
 public enum ErrorMsgsEnum {
     CUSTOM_ERROR(""),
+
+    UNKNOWN_FOLDER("Folder does not exist."),
+
     TEXTURE_MISSING("Texture missing or corrupted."),
     TEXTURE_MISSING_IS_MISSING("Missing texture of missing 'missing_texture.png' is missing or corrupted."),
     TEXTURE_UNKNOWN_NAME("Unknown texture name in classes"),
