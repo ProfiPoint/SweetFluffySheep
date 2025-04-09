@@ -134,6 +134,7 @@ public class Level {
             items.add(item);
         }
 
+        buildObjectsList();
         return true; // level is loaded successfully, without any errors :D
     }
 

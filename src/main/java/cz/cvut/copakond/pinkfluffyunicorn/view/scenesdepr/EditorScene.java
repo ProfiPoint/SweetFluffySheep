@@ -1,10 +1,10 @@
-package cz.cvut.copakond.pinkfluffyunicorn.view.scenes;
+package cz.cvut.copakond.pinkfluffyunicorn.view.scenesdepr;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+/*
 public class EditorScene extends ResponsiveScene {
 
     public EditorScene(Stage stage) {
@@ -28,4 +28,4 @@ public class EditorScene extends ResponsiveScene {
         gc.fillText("Welcome to Pink Fluffy Unicorn!", canvas.getWidth() / 2 - 100, canvas.getHeight() / 2); // Add some text to center
     }
 
-}
+}*/

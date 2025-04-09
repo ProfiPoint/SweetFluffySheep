@@ -3,8 +3,9 @@ package cz.cvut.copakond.pinkfluffyunicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.InitClasses;
 import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenes.MenuScene;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenes.ProfileScene;
+import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
+import cz.cvut.copakond.pinkfluffyunicorn.view.frames.MenuFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.frames.ProfileFrame;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -25,23 +26,25 @@ public class Launcher  {
     }
 }*/
 
-public class Launcher extends Application {
 
+
+public class Launcher extends Application {
     @Override
     public void start(Stage primaryStage) {
+        AppViewManager.init(primaryStage);
         InitClasses initClasses = new InitClasses(
-            "src/main/resources/datasaves/levels",
-            "src/main/resources/datasaves/profiles"
+                "src/main/resources/datasaves/levels",
+                "src/main/resources/datasaves/profiles"
         );
 
+
         String currentProfile = FileUtils.readFile("src/main/resources/datasaves/profiles/_CURRENT.txt");
-        MenuScene menu = new MenuScene(primaryStage);
-        ProfileScene profileScene = new ProfileScene(primaryStage);
-        if (currentProfile.length() == 0) {
-            profileScene.show();
+
+        if (currentProfile.isBlank()) {
+            AppViewManager.get().switchTo(new ProfileFrame());
         } else {
             ProfileManager.switchProfile(currentProfile);
-            menu.show();
+            AppViewManager.get().switchTo(new MenuFrame());
         }
     }
 
@@ -49,4 +52,3 @@ public class Launcher extends Application {
         launch(args);
     }
 }
-
