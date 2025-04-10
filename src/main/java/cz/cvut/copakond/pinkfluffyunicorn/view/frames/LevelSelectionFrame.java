@@ -73,7 +73,7 @@ public class LevelSelectionFrame extends VBox implements ResizableFrame, Drawabl
         layout.getChildren().add(contentLayout);
 
         backButton.setOnAction(e -> {
-            AppViewManager.get().switchTo(new MenuFrame());
+            //AppViewManager.get().switchTo(new MenuFrame());
         });
 
         StackPane.setAlignment(backButton, Pos.TOP_RIGHT);

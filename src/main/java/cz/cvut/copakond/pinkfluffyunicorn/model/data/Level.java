@@ -71,6 +71,10 @@ public class Level {
         return objects;
     }
 
+    public int[] getMapSize() {
+        return mapSize;
+    }
+
     // used to update the level by the game loop
     public void tick(){
         for (GameObject object : objects) {

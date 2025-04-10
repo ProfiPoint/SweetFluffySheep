@@ -58,11 +58,13 @@ public class TextureManager {
         String[] textureNames = textureListEnum.getTextures();
         List<Image> textures = new ArrayList<Image>();
         for (int index : textureSelections) {
-            if (index >= 0 && index < textureNames.length) {
-                String textureName = textureNames[index];
+            if (index >= 0 && index < textureNames.length + 1) {
+                String textureName = textureNames[index-1];
                 textures.add(getLoadedTexture(textureName));
                 // print the w,h of the previously loaded texture
                 System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
+            } else {
+                System.err.println("Texture index out of range: " + index);
             }
         }
         return textures;

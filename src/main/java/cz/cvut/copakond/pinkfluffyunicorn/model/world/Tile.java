@@ -8,6 +8,7 @@ public class Tile extends GameObject {
     public Tile(double[] position, int textureType) {
         super("tile", position, RenderPriorityEnums.TILE.getValue());
         this.textureType = textureType;
+        System.out.println("Tile created with texture type: " + textureType);
         super.loadTextures("tile", new int[]{textureType});
     }
 

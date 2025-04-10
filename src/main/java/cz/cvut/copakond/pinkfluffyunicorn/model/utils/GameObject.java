@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.data.Level;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -69,6 +70,36 @@ public class GameObject implements IGameObject {
 
     public int[] getTextureSize() {
         return this.textureSizes.get(this.textureIdNow);
+    }
+
+    // gets the size in percentage 0 to 1 of the texture size relative to the map size
+    public double[] getScaledTextureSizePercentage(Level level) {
+        int[] textureSize = this.getTextureSize();
+        int[] mapSize = level.getMapSize();
+        // for instance mapSize = 24, 12 that is x = 24, y = 12
+        // texture size for instance 64, 22 that is x = 66, y = 22
+        // calculate percentage for one tile for x, y so x = 1/24, y = 1/12
+        // rescale the texture size to the map size, keep the aspect ratio, fit the texture to the tile, so do min,
+        double ratioTextureSize = ((double) textureSize[0] / (double) textureSize[1]);
+        double[] mapTileRatio = {((double) 1 / (double) mapSize[0]), ((double) 1 / (double) mapSize[1])};
+        double[] result = new double[2];
+        result[0] = mapTileRatio[0];
+        result[1] = mapTileRatio[1];
+
+        if (ratioTextureSize >= 1) {
+            result[1] *= 1/ratioTextureSize;
+        } else {
+            result[0] *= ratioTextureSize;
+        }
+        return result;
+    }
+
+    public double[] getScaledPositionSizePercentage(Level level) {
+        double[] scaledTextureSize = this.getScaledTextureSizePercentage(level);
+        double[] scaledPosition = new double[2];
+        scaledPosition[0] = this.position[0] * scaledTextureSize[0];
+        scaledPosition[1] = this.position[1] * scaledTextureSize[1];
+        return scaledPosition;
     }
 
     public void setTexture(int textureId) {

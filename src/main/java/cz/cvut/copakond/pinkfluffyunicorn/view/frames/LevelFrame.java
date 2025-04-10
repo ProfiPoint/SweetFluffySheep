@@ -36,6 +36,7 @@ public class LevelFrame extends VBox implements ResizableFrame, DrawableFrame {
             }
         };
         timer.start();
+
     }
 
     private void drawLevelObjects() {
@@ -56,9 +57,20 @@ public class LevelFrame extends VBox implements ResizableFrame, DrawableFrame {
     }
 
     private void drawObject(GraphicsContext gc, GameObject object) {
-        double[] position = object.getPosition();
+        //double[] position = object.getPosition();
+        double[] position = object.getScaledPositionSizePercentage(level);
+        // multiply by scene height and width to get the size in pixels
+        position[0] = position[0] * canvas.getWidth();
+        position[1] = position[1] * canvas.getHeight();
+
         Image texture = object.getTexture();
-        int[] textureSize = object.getTextureSize();
+        //int[] textureSize = object.getTextureSize();
+
+        double[] textureSizeRatio = object.getScaledTextureSizePercentage(level);
+        int[] textureSize = new int[2];
+        // multiply by scene height and width to get the size in pixels
+        textureSize[0] = (int) (canvas.getWidth() * textureSizeRatio[0]);
+        textureSize[1] = (int) (canvas.getHeight() * textureSizeRatio[1]);
 
         double x = position[0];
         double y = position[1];

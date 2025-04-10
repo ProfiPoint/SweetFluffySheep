@@ -3,9 +3,10 @@ package cz.cvut.copakond.pinkfluffyunicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.InitClasses;
 import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.view.frames.LevelSelectionFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
-import cz.cvut.copakond.pinkfluffyunicorn.view.frames.MenuFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.frames.ProfileFrame;
+//import cz.cvut.copakond.pinkfluffyunicorn.view.frames.MenuFrame;
+//import cz.cvut.copakond.pinkfluffyunicorn.view.frames.ProfileFrame;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -41,10 +42,11 @@ public class Launcher extends Application {
         String currentProfile = FileUtils.readFile("src/main/resources/datasaves/profiles/_CURRENT.txt");
 
         if (currentProfile.isBlank()) {
-            AppViewManager.get().switchTo(new ProfileFrame());
+            //AppViewManager.get().switchTo(new ProfileFrame());
         } else {
             ProfileManager.switchProfile(currentProfile);
-            AppViewManager.get().switchTo(new MenuFrame());
+            AppViewManager.get().switchTo(new LevelSelectionFrame());
+            //AppViewManager.get().switchTo(new MenuFrame());
         }
     }
 
