@@ -6,11 +6,10 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.data.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.DrawableFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.ResizableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IResizableFrame;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,7 +20,7 @@ import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LevelSelectionFrame extends VBox implements ResizableFrame, DrawableFrame {
+public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawableFrame {
     private static String profileName;
     private static int storyLevelsCount;
     private static int customLevelsCount;

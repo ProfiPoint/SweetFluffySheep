@@ -5,8 +5,8 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.data.FolderUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.DrawableFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.ResizableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IResizableFrame;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -16,7 +16,7 @@ import javafx.scene.text.Font;
 
 import java.util.List;
 
-public class ProfileFrame extends VBox implements ResizableFrame, DrawableFrame {
+public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFrame {
 
     private final Label titleLabel = new Label("Select Profile");
     private final ScrollPane scrollPane = new ScrollPane();

@@ -2,12 +2,22 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 public class Arrow extends GameObject {
+    private final int maxArrows = 10;
+    public static final int textureRotationSpeed = 10;
+
     static int arrowCount = 0;
-    int maxArrows = 10;
+    private int textureRotation = 0;
     DirectionEnum direction;
 
     public Arrow(double[] position) {
@@ -15,13 +25,16 @@ public class Arrow extends GameObject {
         arrowCount++;
         if (arrowCount > maxArrows) {
             destroy();
-            throw new IllegalStateException("Too many arrows");
+            System.out.println("Too many arrows! Limit is " + maxArrows);
         }
+        this.direction = DirectionEnum.UP;
+        this.textureRotation = this.direction.getValue();
     }
 
     // on click rotate arrow
-    public void rotate(DirectionEnum direction) {
-        this.direction = direction.next();
+    public void rotate() {
+        this.textureRotation = (textureRotation + textureRotationSpeed) % 360;
+        direction = direction.next();
     }
 
     public DirectionEnum getDirection() {
@@ -31,5 +44,45 @@ public class Arrow extends GameObject {
     public void destroy() {
         arrowCount--;
         super.visible = false;
+    }
+
+    @Override // tick
+    public void tick() {
+        super.tick();
+        if (textureRotation % 90 != 0) {
+            textureRotation = (textureRotation + textureRotationSpeed) % 360;
+        }
+    }
+
+    @Override
+    public Image getTexture() {
+        Image img = this.textures.get(this.textureIdNow);
+
+        if (this.textureRotation != 0) {
+            double width = img.getWidth();
+            double height = img.getHeight();
+
+            Canvas canvas = new Canvas(width, height);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+
+            // Draw rotated image onto transparent canvas
+            gc.save();
+            gc.translate(width / 2, height / 2);
+            gc.rotate(this.textureRotation);
+            gc.translate(-width / 2, -height / 2);
+            gc.drawImage(img, 0, 0);
+            gc.restore();
+
+            // Set up snapshot parameters with transparency
+            SnapshotParameters params = new SnapshotParameters();
+            params.setFill(Color.TRANSPARENT); // this is the key to keeping transparency
+
+            WritableImage rotatedImg = new WritableImage((int) width, (int) height);
+            canvas.snapshot(params, rotatedImg);
+
+            return rotatedImg;
+        }
+
+        return img;
     }
 }

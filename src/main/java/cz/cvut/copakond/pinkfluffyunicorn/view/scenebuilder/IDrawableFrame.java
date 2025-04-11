@@ -2,6 +2,6 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder;
 
 import javafx.scene.canvas.GraphicsContext;
 
-public interface DrawableFrame {
+public interface IDrawableFrame {
     void draw(GraphicsContext gc);
 }

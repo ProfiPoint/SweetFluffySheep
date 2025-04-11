@@ -68,6 +68,7 @@ public class Level {
 
     // used to render the level
     public List<GameObject> getListOfObjects() {
+        buildObjectsList();
         return objects;
     }
 
@@ -124,12 +125,6 @@ public class Level {
                     DirectionEnum.fromValue(enemiesCoord[2]), tileMap));
         }
 
-        List<int[]> coinsCoords = lm.getListOfLists("coins", mapSize);
-        if (coinsCoords == null) {return false;}
-        for (int[] coinCoord : coinsCoords) {
-            coins.add(new Coin(new double[]{coinCoord[0], coinCoord[1]}, 0));
-        }
-
         List<int[]> itemsCoords = lm.getListOfListsWithLimit("items", mapSize, ItemEnum.getNumberOfItems());
         if (itemsCoords == null) {return false;}
         for (int[] itemCoord : itemsCoords) {
@@ -153,10 +148,40 @@ public class Level {
         sm.addPlayerInfo(playerInfo);
         sm.addTilesData(tiles);
         sm.addEnemiesData(enemies);
-        sm.addCoinsData(coins);
         sm.addItemsData(items);
 
         return JsonFileManager.writeJsonToFile(path + levelName + ".json", levelData);
+    }
+
+    public void PlaceRotateRemoveArrow(int[] tileClick, int button) {
+        if (button == 1) {
+            Arrow arrow;
+            for (int i = 0; i < arrows.size(); i++) {
+                arrow = arrows.get(i);
+                if (arrow.getPosition()[0] == tileClick[0] && arrow.getPosition()[1] == tileClick[1]) {
+                    arrow.rotate();
+                    return;
+                }
+            }
+            // no arrow found, create new one
+            arrow = new Arrow(new double[]{tileClick[0], tileClick[1]});
+            if (arrow.isVisible()) {
+                arrows.add(arrow);
+            } else {
+                System.out.println("Arrow not created");
+            }
+
+        } else if (button == 2) {
+            // remove arrow
+            for (int i = 0; i < arrows.size(); i++) {
+                Arrow arrow = arrows.get(i);
+                if (arrow.getPosition()[0] == tileClick[0] && arrow.getPosition()[1] == tileClick[1]) {
+                    arrow.destroy();
+                    arrows.remove(i);
+                    return;
+                }
+            }
+        }
     }
 
     public void Play() {
@@ -187,7 +212,7 @@ public class Level {
             coords[1] += unitDirection[1];
         }
 
-        GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, items, coins, arrows);
+        GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, items, arrows);
         buildObjectsList();
     }
 
@@ -216,14 +241,14 @@ public class Level {
         for (Cloud enemy : enemies) {
             objects.add(enemy);
         }
-        for (Coin coin : coins) {
-            objects.add(coin);
-        }
         for (IItem item : items) {
             objects.add((GameObject)item);
         }
         for (Unicorn unicorn : unicorns) {
             objects.add(unicorn);
+        }
+        for (Arrow arrow : arrows) {
+            objects.add(arrow);
         }
     }
 }

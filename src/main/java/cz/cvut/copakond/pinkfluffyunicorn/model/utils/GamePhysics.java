@@ -17,7 +17,7 @@ import java.util.Map;
 
 // "public static class GamePhysics"
 public class GamePhysics {
-    static final double collisionLimit = (1 / (double) GameObject.getFPS()) * GameObject.maxSpeedPerSecond * 1 / 2 * 1.1;
+    static final double collisionLimit = (1 / (double) GameObject.getFPS()) * GameObject.getCollisionLimit() * 1 / 2 * 1.1;
     // dynamically calculated limit for collision detection, so even in max speed the collision will be detected
     // for normal settings it is 0.0367, and the max speed per tick is 0.0667, so because the collision is checked
     // around, it is 0.0367 * 2 = 0.0734, so the collision will be detected even in max speed
@@ -26,7 +26,6 @@ public class GamePhysics {
     static Map<int[], Tile> tileMap;
     static List<Cloud> enemies;
     static List<IItem> items;
-    static List<Coin> coins;
     static Start start;
     static Goal goal;
     static List<Arrow> arrows;
@@ -34,7 +33,7 @@ public class GamePhysics {
     static boolean initialized = false;
 
     public static void loadMapObjects(int[] mapSize, Start start, Goal goal, List<Tile> tiles, List<Cloud> enemies,
-                                      List<IItem> items, List<Coin> coins, List<Arrow> arrows) {
+                                      List<IItem> items, List<Arrow> arrows) {
         if (initialized) {
             ErrorMsgsEnum.PHISICS_ALREADY_INIT.getValue();
         }
@@ -43,7 +42,6 @@ public class GamePhysics {
         GamePhysics.mapSize = mapSize;
         GamePhysics.enemies = enemies;
         GamePhysics.items = items;
-        GamePhysics.coins = coins;
         GamePhysics.start = start;
         GamePhysics.goal = goal;
         GamePhysics.arrows = arrows;
@@ -60,7 +58,6 @@ public class GamePhysics {
         GamePhysics.tileMap = null;
         GamePhysics.enemies = null;
         GamePhysics.items = null;
-        GamePhysics.coins = null;
         GamePhysics.start = null;
         GamePhysics.goal = null;
         GamePhysics.arrows = null;
@@ -151,13 +148,7 @@ public class GamePhysics {
         for (IItem item : items) {
             if (item.isVisible() && isColliding(character, (Item) item) && !character.isEnemy()) {
                 item.use();
-                System.out.println("Item used: ") ;
-            }
-        }
-
-        for (Coin coin : coins) {
-            if (coin.isVisible() && isColliding(character, coin) && !character.isEnemy()) {
-                coin.collect();
+                //System.out.println("Item used: ") ;
             }
         }
 
@@ -178,8 +169,11 @@ public class GamePhysics {
         if (arrowDirectionChange != null) {
             targetTilePos = getTargetTilePosition(arrowDirectionChange, character);
 
-            if (isItWall(arrowDirectionChange, currentTilePos, character, targetTilePos)) {
-                // ARROW POINTING TO WALL -> IGNORE ARROW
+
+            if (arrowDirectionChange == character.getDirection()) {
+                 // CHECK IF THE ARROW DIRECTION IS THE SAME AS THE CHARACTER DIRECTION -> IGNORE ARROW
+            } else if (isItWall(arrowDirectionChange, currentTilePos, character, targetTilePos)) {
+                 // ARROW POINTING TO WALL -> IGNORE ARROW
             } else {
                 // ARROW POINTING TO EMPTY SPACE, ALLOW ROTATION
                 switch (arrowDirectionChange) {
@@ -209,6 +203,7 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection().next(), character);
         if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // on right side from characters perspective is a tile, not a wall -> rotate right
+            System.out.println("EVENT 1");
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().next());
         }
 
@@ -216,6 +211,7 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection().next().getOppositeDirection(), character);
         if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // on left side from characters perspective is a tile, not a wall -> rotate left
+            System.out.println("EVENT 2");
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().next().getOppositeDirection());
         }
 
@@ -224,6 +220,9 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection().getOppositeDirection(), character);
         if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // behind the character is a tile, not a wall -> rotate opposite
+            System.out.println("EVENT 3");
+            System.out.println("current direction: " + character.getDirection());
+            System.out.println("opposite direction: " + character.getDirection().getOppositeDirection());
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().getOppositeDirection());
         }
 
@@ -234,21 +233,12 @@ public class GamePhysics {
         // "thank you for your understanding" - the creator of the game
 
         // just rotate to the right,
+        System.out.println("EVENT 4");
         return PhisicsEventsEnum.ROTATION_STUCK_4WALLS;
     }
 
     // decide what direction to rotate
-    public static boolean decideClockwiseRotation(DirectionEnum current, DirectionEnum target) {
-        int firstDirectionAngle = current.getValue();
-        int secondDirectionAngle = target.getValue();
-        int angleDifferenceMod = (secondDirectionAngle - firstDirectionAngle) % 360;
-
-        // if it is closer to rotate counterclockwise than clockwise it will be 270 always
-        // if it doesn't matter, rotate clockwise
-        if (angleDifferenceMod == 270) {
-            return false; // counterclockwise
-        } else {
-            return true; // clockwise
-        }
+    public static boolean decideClockwiseRotation(int textureRotation, DirectionEnum direction) {
+        return (textureRotation - direction.getValue() + 360) % 360 < 180;
     }
 }

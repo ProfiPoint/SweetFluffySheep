@@ -1,8 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.DrawableFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.ResizableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IResizableFrame;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.layout.VBox;
 
-public class MenuFrame extends VBox implements ResizableFrame, DrawableFrame {
+public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
     private final Label logo = new Label("PINK FLUFFY UNICORN");
     private final Label creator = new Label("Created by: Ondřej Čopák, ProfiPoint 2025");
     private final Button playButton = new Button("PLAY");

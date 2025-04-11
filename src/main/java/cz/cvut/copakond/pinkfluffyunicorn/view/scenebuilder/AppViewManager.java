@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder;
 
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IClickListener;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ public class AppViewManager {
 
     private static AppViewManager instance;
 
+    private IClickListener clickListener;
     private final Canvas canvas = new Canvas();
     private final StackPane overlay = new StackPane(); // for frames/views
     private final StackPane root = new StackPane();
@@ -55,14 +57,28 @@ public class AppViewManager {
         scene.widthProperty().addListener(onResize());
         scene.heightProperty().addListener(onResize());
 
+        scene.setOnMouseClicked(event -> {
+            if (clickListener != null) {
+                clickListener.handleClick(event);
+            }
+        });
+
         stage.setScene(scene);
         stage.show();
 
         updateCanvasSize();
     }
 
+    protected int[] getOverlaySize() {
+        return new int[]{(int) overlay.getWidth(), (int) overlay.getHeight()};
+    }
+
     private ChangeListener<Number> onResize() {
         return (obs, oldVal, newVal) -> updateCanvasSize();
+    }
+
+    protected int[] getSceneSize() {
+        return new int[]{(int) scene.getWidth(), (int) scene.getHeight()};
     }
 
     private void updateCanvasSize() {
@@ -85,7 +101,7 @@ public class AppViewManager {
         overlay.setPrefSize(w, h);
         overlay.setMaxSize(w, h);
 
-        if (currentFrame instanceof ResizableFrame frame) {
+        if (currentFrame instanceof IResizableFrame frame) {
             frame.onResizeCanvas(w, h);
         }
 
@@ -101,7 +117,7 @@ public class AppViewManager {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        if (currentFrame instanceof DrawableFrame frame) {
+        if (currentFrame instanceof IDrawableFrame frame) {
             frame.draw(gc);
         }
     }
@@ -120,4 +136,9 @@ public class AppViewManager {
     public Stage getStage() {
         return stage;
     }
+
+    public void setClickListener(IClickListener listener) {
+        this.clickListener = listener;
+    }
+
 }

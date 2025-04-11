@@ -5,13 +5,19 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Character extends GameObject implements ICharacter {
-    public static final int textureRotationSpeed = 5;
+    public static final int textureRotationSpeed = 10;
 
     DirectionEnum direction;
     DirectionEnum previousDirection;
@@ -21,6 +27,7 @@ public class Character extends GameObject implements ICharacter {
     boolean isEnemy;
     String name;
     int textureRotation = 0;
+
 
     public Character(String textureName, double[] position, DirectionEnum direction) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
@@ -39,8 +46,9 @@ public class Character extends GameObject implements ICharacter {
         PhisicsEventsEnum event = GamePhysics.checkCollision(this);
 
         // continue rotating if it started rotating, thus is not in stable rotation rn.
-        if (textureRotation % 90 != 0) {
-            if (clockwiseRotation) {
+        if (textureRotation != direction.getValue()) {
+            boolean clockwise = GamePhysics.decideClockwiseRotation(textureRotation, direction);
+            if (!clockwise) {
                 textureRotation = (textureRotation + textureRotationSpeed) % 360;
             } else {
                 textureRotation = (textureRotation - textureRotationSpeed + 360) % 360;
@@ -78,15 +86,7 @@ public class Character extends GameObject implements ICharacter {
                 break;
         }
 
-        if (event.isRotation()) {
-            // do not move this tick, to avoid issues when stuck in 4-way collision
-            clockwiseRotation = GamePhysics.decideClockwiseRotation(direction, previousDirection);
-            if (clockwiseRotation) {
-                textureRotation = (textureRotation + textureRotationSpeed) % 360;
-            } else {
-                textureRotation = (textureRotation - textureRotationSpeed + 360) % 360;
-            }
-        } else {
+        if (!event.isRotation()) {
             switch (direction) {
                 case UP: position[1] -= tiles; break;
                 case DOWN: position[1] += tiles; break;
@@ -130,6 +130,40 @@ public class Character extends GameObject implements ICharacter {
         super.tick();
         move((double)2/GameObject.getFPS());
     }
+
+    @Override
+    public Image getTexture() {
+        Image img = this.textures.get(this.textureIdNow);
+
+        if (this.textureRotation != 0) {
+            double width = img.getWidth();
+            double height = img.getHeight();
+
+            Canvas canvas = new Canvas(width, height);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+
+            // Draw rotated image onto transparent canvas
+            gc.save();
+            gc.translate(width / 2, height / 2);
+            gc.rotate(this.textureRotation);
+            gc.translate(-width / 2, -height / 2);
+            gc.drawImage(img, 0, 0);
+            gc.restore();
+
+            // Set up snapshot parameters with transparency
+            SnapshotParameters params = new SnapshotParameters();
+            params.setFill(Color.TRANSPARENT); // this is the key to keeping transparency
+
+            WritableImage rotatedImg = new WritableImage((int) width, (int) height);
+            canvas.snapshot(params, rotatedImg);
+
+            return rotatedImg;
+        }
+
+        return img;
+    }
+
+
 
     //protected static void moveCharacter(Character character, int speed) {}
 }

@@ -1,5 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder;
 
-public interface ResizableFrame {
+public interface IResizableFrame {
     void onResizeCanvas(double width, double height);
 }

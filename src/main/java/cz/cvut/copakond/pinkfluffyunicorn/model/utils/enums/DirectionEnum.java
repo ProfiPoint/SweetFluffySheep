@@ -3,7 +3,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
 import org.reflections.vfs.Vfs;
 
 public enum DirectionEnum {
-    RIGHT(0),
+    RIGHT(0), //
     DOWN(90),
     LEFT(180),
     UP(270);

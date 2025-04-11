@@ -13,8 +13,8 @@ public enum TextureListEnum {
     EMPTY("empty", "missing_texture.png",1, false),
     COIN("coin", "coin.png", 1),
     FIRE("fire", "fire_{i}.png", 1),
-    RAINBOW("rainbow", "rainbow_{i}.png", 1);
-
+    RAINBOW("rainbow", "rainbow_{i}.png", 1),
+    ARROW("arrow", "arrow.png", 1);
 
     private final String name;
     private String fileName;
