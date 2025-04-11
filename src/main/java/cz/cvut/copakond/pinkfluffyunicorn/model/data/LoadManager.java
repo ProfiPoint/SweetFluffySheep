@@ -184,7 +184,7 @@ public class LoadManager {
     }
 
     // 3rd value is direction (0, 90, 180, 270)
-    public List<int[]> getListOfListsWithDirFromDict(String key, int[] limit) {
+    public List<int[]> getListOfListsWithDirFromDict(String key, int[] limit, boolean canBeEmpty) {
         if (!data.has(key)) {
             ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
             return null;
@@ -209,7 +209,7 @@ public class LoadManager {
             result.add(new int[]{x, y, v});
         }
 
-        if (result.isEmpty()) {
+        if (result.isEmpty() && !canBeEmpty) {
             ErrorMsgsEnum.LOAD_EMPTY_LIST.getValue("dict Key: "+key);
             return null;
         }

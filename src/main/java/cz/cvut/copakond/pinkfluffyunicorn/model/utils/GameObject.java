@@ -7,8 +7,8 @@ import java.util.List;
 
 public class GameObject implements IGameObject {
     // Constants
-    public final static int ticksPerSecond = 60; // 60 ticks per second
-    public final static double maxSpeedPerSecond = 4; // 4 tiles per second
+    private final static int FPS = 60; // 60 ticks per second
+    public final static double maxSpeedPerSecond = 0.01; // 4 tiles per second
 
     protected boolean visible;
     protected int renderPriority;
@@ -27,6 +27,10 @@ public class GameObject implements IGameObject {
         this.textureIdNow = 0;
         this.visible = true;
         this.loadTextures(textureName);
+    }
+
+    public static int getFPS() {
+        return FPS;
     }
 
     public boolean isVisible() {

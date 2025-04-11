@@ -3,12 +3,14 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.FolderUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.data.JsonFileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.data.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.DrawableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.ResizableFrame;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -73,7 +75,7 @@ public class LevelSelectionFrame extends VBox implements ResizableFrame, Drawabl
         layout.getChildren().add(contentLayout);
 
         backButton.setOnAction(e -> {
-            //AppViewManager.get().switchTo(new MenuFrame());
+            AppViewManager.get().switchTo(new MenuFrame());
         });
 
         StackPane.setAlignment(backButton, Pos.TOP_RIGHT);
@@ -111,7 +113,13 @@ public class LevelSelectionFrame extends VBox implements ResizableFrame, Drawabl
 
             levelButton.setOnAction(e -> {
                 System.out.println(prefix + " Level " + levelNumber + " clicked");
-                AppViewManager.get().switchTo(new LevelFrame(levelNumber, editorMode));
+                Integer levelNum = levelNumber;
+                Level level = new Level(Integer.toString(levelNum), editorMode);
+                if (!level.loadLevel()) {
+                    System.out.println("Level not loaded successfully");
+                    return;
+                }
+                AppViewManager.get().switchTo(new LevelFrame(level, editorMode));
             });
 
             grid.add(levelButton, col, row);

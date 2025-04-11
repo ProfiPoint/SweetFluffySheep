@@ -4,7 +4,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 
 public interface ICharacter  {
     // moves the character by one step in the current direction
-    void move(int pixels);
+    void move(double tiles);
 
     // changes the direction of the character
     void changeDirection(DirectionEnum direction);

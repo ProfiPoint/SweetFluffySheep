@@ -17,7 +17,7 @@ import java.util.Map;
 
 // "public static class GamePhysics"
 public class GamePhysics {
-    static final double collisionLimit = (1 / (double) GameObject.ticksPerSecond) * GameObject.maxSpeedPerSecond * 1 / 2 * 1.1;
+    static final double collisionLimit = (1 / (double) GameObject.getFPS()) * GameObject.maxSpeedPerSecond * 1 / 2 * 1.1;
     // dynamically calculated limit for collision detection, so even in max speed the collision will be detected
     // for normal settings it is 0.0367, and the max speed per tick is 0.0667, so because the collision is checked
     // around, it is 0.0367 * 2 = 0.0734, so the collision will be detected even in max speed
@@ -74,8 +74,19 @@ public class GamePhysics {
         return new int[]{(int) Math.round(x), (int) Math.round(y)};
     }
 
-    static boolean isCollidingWithWall(int[] currentTilePos, double characterPos, int[] targetTilePos) {
-        return getDistanceOnePoint(currentTilePos[0], characterPos) <= collisionLimit && tileMap.containsKey(targetTilePos);
+    // custom method to check if the tile is in the tileMap, because tileMap.containsKey() does not work for arrays key
+    static boolean tileExists(int[] tilePos) {
+        for (Map.Entry<int[], Tile> entry : tileMap.entrySet()) {
+            int[] key = entry.getKey();
+            if (key[0] == tilePos[0] && key[1] == tilePos[1]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean isCollidingWithWall(int currentTilePos, double characterPos, int[] targetTilePos) {
+        return getDistanceOnePoint(currentTilePos, characterPos) <= collisionLimit && !tileExists(targetTilePos);
     }
 
     static double getDistance(double[] position1, double[] position2) {
@@ -93,6 +104,8 @@ public class GamePhysics {
 
     static boolean isColliding(GameObject gameObject1, GameObject gameObject2) {
         double distance = distanceBetweenObjects(gameObject1, gameObject2);
+        if (distance <= collisionLimit) {
+        }
         return distance <= collisionLimit;
     }
 
@@ -106,12 +119,15 @@ public class GamePhysics {
         };
     }
 
-    static boolean isItWall(DirectionEnum playerDirection, int[] currentTilePos, Character character,
-                            int[] targetTilePos) {
-        if (playerDirection == DirectionEnum.UP || playerDirection == DirectionEnum.DOWN) {
-            return (targetTilePos != null && isCollidingWithWall(currentTilePos, character.getY(), targetTilePos));
-        } else if (playerDirection == DirectionEnum.LEFT || playerDirection == DirectionEnum.RIGHT) {
-            return (targetTilePos != null && isCollidingWithWall(currentTilePos, character.getX(), targetTilePos));
+    static boolean isItWall(DirectionEnum playerDirection, int[] currentTilePos, Character character, int[] targetTilePos) {
+        if (playerDirection == DirectionEnum.UP) {
+            return (isCollidingWithWall(currentTilePos[1]-1, character.getY() - 1, targetTilePos));
+        } else if (playerDirection == DirectionEnum.DOWN) {
+            return (isCollidingWithWall(currentTilePos[1]+1, character.getY() + 1, targetTilePos));
+        } else if (playerDirection == DirectionEnum.LEFT) {
+            return (isCollidingWithWall(currentTilePos[0]-1, character.getX() - 1, targetTilePos));
+        } else if (playerDirection == DirectionEnum.RIGHT) {
+            return (isCollidingWithWall(currentTilePos[0]+1, character.getX() + 1, targetTilePos));
         } else {
             return false;
         }
@@ -133,12 +149,14 @@ public class GamePhysics {
         }
 
         for (IItem item : items) {
-            if (isColliding(character, (Item) item)) {
+            if (item.isVisible() && isColliding(character, (Item) item) && !character.isEnemy()) {
                 item.use();
+                System.out.println("Item used: ") ;
             }
         }
+
         for (Coin coin : coins) {
-            if (isColliding(character, coin)) {
+            if (coin.isVisible() && isColliding(character, coin) && !character.isEnemy()) {
                 coin.collect();
             }
         }
@@ -181,7 +199,7 @@ public class GamePhysics {
 
         // tile straight in front of the character
         targetTilePos = getTargetTilePosition(character.getDirection(), character);
-        if (!isItWall(arrowDirectionChange, currentTilePos, character, targetTilePos)) {
+        if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // in front of the character is a tile, not a wall
             return PhisicsEventsEnum.NO_COLLISION;
         }
@@ -189,14 +207,14 @@ public class GamePhysics {
         // now there is a wall in front of the character
         // check if there is a wall on the right side first
         targetTilePos = getTargetTilePosition(character.getDirection().next(), character);
-        if (!isItWall(arrowDirectionChange, currentTilePos, character, targetTilePos)) {
+        if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // on right side from characters perspective is a tile, not a wall -> rotate right
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().next());
         }
 
         // check if there is a wall on the left side
         targetTilePos = getTargetTilePosition(character.getDirection().next().getOppositeDirection(), character);
-        if (!isItWall(arrowDirectionChange, currentTilePos, character, targetTilePos)) {
+        if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // on left side from characters perspective is a tile, not a wall -> rotate left
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().next().getOppositeDirection());
         }
@@ -204,16 +222,16 @@ public class GamePhysics {
         // now, this is getting tricky
         // check if there is a wall behind the character, if the character can even move
         targetTilePos = getTargetTilePosition(character.getDirection().getOppositeDirection(), character);
-        if (!isItWall(arrowDirectionChange, currentTilePos, character, targetTilePos)) {
+        if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // behind the character is a tile, not a wall -> rotate opposite
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().getOppositeDirection());
         }
 
         // ok, well... now it is certain that the character is stuck in a wall...
-        // that is not nice of you - the creator of the level...
+        // that is not nice of you...
         // please consider making the given character more space to move
         // as our characters has claustrophobia, and they are not able to move in such a small space
-        // thank you for your understanding - the creator of the game
+        // "thank you for your understanding" - the creator of the game
 
         // just rotate to the right,
         return PhisicsEventsEnum.ROTATION_STUCK_4WALLS;

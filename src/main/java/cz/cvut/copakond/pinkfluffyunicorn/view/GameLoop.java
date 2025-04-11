@@ -8,7 +8,7 @@ import java.util.List;
 
 public class GameLoop implements Runnable {
     private boolean running = false;
-    private final int targetFPS = GameObject.ticksPerSecond;
+    private final int targetFPS = GameObject.getFPS();
     private final long targetTime = 1000 / targetFPS;
 
     private List<GameObject> objects;

@@ -117,7 +117,7 @@ public class Level {
             tiles.add(new Tile(new double[]{tileCoords[0], tileCoords[1]}, tileCoords[2]));
         }
 
-        List<int[]> enemiesCoords = lm.getListOfListsWithDirFromDict("enemies", mapSize);
+        List<int[]> enemiesCoords = lm.getListOfListsWithDirFromDict("enemies", mapSize, true);
         if (enemiesCoords == null) {return false;}
         for (int[] enemiesCoord : enemiesCoords) {
             enemies.add(new Cloud(new double[]{enemiesCoord[0], enemiesCoord[1]},
@@ -180,13 +180,15 @@ public class Level {
             unitDirection[1] = 1;
         }
 
+        System.out.println("number of unicorns: " + levelInfo.get("unicorns"));
         for (int i = 0; i < levelInfo.get("unicorns"); i++) {
-            unicorns.add(new Unicorn(coords, unicornDirection));
+            unicorns.add(new Unicorn(new double[]{coords[0], coords[1]}, unicornDirection));
             coords[0] += unitDirection[0];
             coords[1] += unitDirection[1];
         }
 
         GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, items, coins, arrows);
+        buildObjectsList();
     }
 
     public void Pause() {

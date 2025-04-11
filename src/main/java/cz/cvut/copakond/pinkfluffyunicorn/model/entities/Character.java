@@ -35,7 +35,7 @@ public class Character extends GameObject implements ICharacter {
         this.previousEvent = previousEvent;
     }
 
-    public void move(int pixels) {
+    public void move(double tiles) {
         PhisicsEventsEnum event = GamePhysics.checkCollision(this);
 
         // continue rotating if it started rotating, thus is not in stable rotation rn.
@@ -46,6 +46,9 @@ public class Character extends GameObject implements ICharacter {
                 textureRotation = (textureRotation - textureRotationSpeed + 360) % 360;
             }
         }
+
+        //System.out.println("Moving character " + this.name + " in direction " + this.direction + " with event " +
+        // event + " and position " + this.position[0] + ", " + this.position[1]);
 
         switch (event) {
             case NO_COLLISION:
@@ -85,10 +88,10 @@ public class Character extends GameObject implements ICharacter {
             }
         } else {
             switch (direction) {
-                case UP: position[1] -= pixels; break;
-                case DOWN: position[1] += pixels; break;
-                case LEFT: position[0] -= pixels; break;
-                case RIGHT: position[0] += pixels; break;
+                case UP: position[1] -= tiles; break;
+                case DOWN: position[1] += tiles; break;
+                case LEFT: position[0] -= tiles; break;
+                case RIGHT: position[0] += tiles; break;
             }
         }
 
@@ -122,5 +125,11 @@ public class Character extends GameObject implements ICharacter {
         this.isEnemy = isEnemy;
     }
 
-    protected static void moveCharacter(Character character, int speed) {}
+    @Override
+    public void tick() {
+        super.tick();
+        move((double)2/GameObject.getFPS());
+    }
+
+    //protected static void moveCharacter(Character character, int speed) {}
 }

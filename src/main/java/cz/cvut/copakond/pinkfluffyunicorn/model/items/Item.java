@@ -23,6 +23,7 @@ public class Item extends GameObject implements IItem {
 
     @Override
     public boolean use() {
+        super.visible = false;
         return pickable;
     }
 
