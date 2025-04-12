@@ -1,6 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GamePhysics;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;
@@ -12,12 +12,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-
 public class Character extends GameObject implements ICharacter {
-    public static final int textureRotationSpeed = 10;
+    private static final int textureRotationSpeed = 10;
 
     DirectionEnum direction;
     DirectionEnum previousDirection;
@@ -49,9 +45,9 @@ public class Character extends GameObject implements ICharacter {
         if (textureRotation != direction.getValue()) {
             boolean clockwise = GamePhysics.decideClockwiseRotation(textureRotation, direction);
             if (!clockwise) {
-                textureRotation = (textureRotation + textureRotationSpeed) % 360;
+                textureRotation = (int)(textureRotation + textureRotationSpeed) % 360;
             } else {
-                textureRotation = (textureRotation - textureRotationSpeed + 360) % 360;
+                textureRotation = (int)(textureRotation - textureRotationSpeed + 360) % 360;
             }
         }
 
@@ -69,7 +65,7 @@ public class Character extends GameObject implements ICharacter {
                 // CAN NOT DIE + CAN NOT ROTATE, AND IT WILL
 
                 if (previousEvent != PhisicsEventsEnum.IN_GOAL) {
-                    // will happen only once it arrives to the goal
+                    Unicorn.unicornEnteredGoal(true);
                 }
                 previousEvent = PhisicsEventsEnum.IN_GOAL;
                 break;
@@ -118,6 +114,7 @@ public class Character extends GameObject implements ICharacter {
     }
 
     void kill() {
+        this.visible = false;
         this.alive = false;
     }
 
@@ -126,9 +123,9 @@ public class Character extends GameObject implements ICharacter {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        move((double)2/GameObject.getFPS());
+    public void tick(boolean doesTimeFlow) {
+        super.tick(doesTimeFlow);
+        move((double)1/GameObject.getFPS());
     }
 
     @Override

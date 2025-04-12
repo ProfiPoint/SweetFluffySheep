@@ -1,9 +1,9 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.FileUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.FolderUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.JsonFileManager;
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
@@ -113,7 +113,9 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
             levelButton.setOnAction(e -> {
                 System.out.println(prefix + " Level " + levelNumber + " clicked");
                 Integer levelNum = levelNumber;
-                Level level = new Level(Integer.toString(levelNum), editorMode);
+                Level level = new Level(Integer.toString(levelNum), editorMode, prefix.equals("Story"));
+                // true,
+                // else false
                 if (!level.loadLevel()) {
                     System.out.println("Level not loaded successfully");
                     return;

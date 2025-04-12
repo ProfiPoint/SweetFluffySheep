@@ -1,6 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.TextureManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -17,9 +19,12 @@ public class GameObject implements IGameObject {
     protected List<Image> textures;
     protected List<int[]> textureSizes;
     protected int textureIdNow;
+    protected static GameStatusEnum gameStatus = GameStatusEnum.PLAYING;
 
     // static to share the same texture manager (avoid loading the same textures multiple times)
     protected static TextureManager textureManager = new TextureManager();
+
+
 
     public GameObject(String textureName, double[] position, int renderPriority) {
         this.position = position;
@@ -27,6 +32,10 @@ public class GameObject implements IGameObject {
         this.textureIdNow = 0;
         this.visible = true;
         this.loadTextures(textureName);
+    }
+
+    public static GameStatusEnum getGameStatus() {
+        return gameStatus;
     }
 
     public static int getFPS() {
@@ -45,7 +54,7 @@ public class GameObject implements IGameObject {
         this.visible = visible;
     }
 
-    public void tick() {
+    public void tick(boolean doesTimeFlow) {
         // updates the game object
     }
 

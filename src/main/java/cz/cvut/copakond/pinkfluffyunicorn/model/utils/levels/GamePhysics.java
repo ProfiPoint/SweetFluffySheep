@@ -1,15 +1,16 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Character;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
-import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.FireItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.RainbowItem;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.*;
-import javafx.scene.control.skin.TextInputControlSkin;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +73,7 @@ public class GamePhysics {
     }
 
     // custom method to check if the tile is in the tileMap, because tileMap.containsKey() does not work for arrays key
-    static boolean tileExists(int[] tilePos) {
+    public static boolean tileExists(int[] tilePos) {
         for (Map.Entry<int[], Tile> entry : tileMap.entrySet()) {
             int[] key = entry.getKey();
             if (key[0] == tilePos[0] && key[1] == tilePos[1]) {
@@ -132,28 +133,41 @@ public class GamePhysics {
 
     public static PhisicsEventsEnum checkCollision(Character character) {
         if (!character.isEnemy()){
-            if (character.getPreviousEvent() == PhisicsEventsEnum.IN_GOAL) {
-                return PhisicsEventsEnum.IN_GOAL;
-            }
             if (character.getPreviousEvent() == PhisicsEventsEnum.BEFORE_START && !isColliding(character, start)) {
                 return PhisicsEventsEnum.BEFORE_START;
             }
-            for (Cloud enemy : enemies) {
-                if (isColliding(character, enemy)) {
-                    return PhisicsEventsEnum.SHEEP_KILLED;
+            if (character.getPreviousEvent() == PhisicsEventsEnum.IN_GOAL || (isColliding(character, goal) && !goal.isLocked())) {
+                return PhisicsEventsEnum.IN_GOAL;
+            }
+            if (!FireItem.isActive() && !RainbowItem.isActive()) {
+                for (Cloud enemy : enemies) {
+                    if (enemy.isVisible() && isColliding(character, enemy)) {
+                        return PhisicsEventsEnum.SHEEP_KILLED;
+                    }
+                }
+            }
+
+            if (RainbowItem.isActive()){
+                for (Cloud enemy : enemies) {
+                    if (character.isVisible() && isColliding(character, enemy)) {
+                        enemy.kill();
+                    }
+                }
+            }
+
+            for (IItem item : items) {
+                if (item.isVisible() && isColliding(character, (Item) item)) {
+                    boolean used = item.use();
+                    if (used) {
+                        System.out.println("Item used: " + item.getItemEffect());
+                    }
                 }
             }
         }
 
-        for (IItem item : items) {
-            if (item.isVisible() && isColliding(character, (Item) item) && !character.isEnemy()) {
-                item.use();
-                //System.out.println("Item used: ") ;
-            }
-        }
+
 
         DirectionEnum arrowDirectionChange = null;
-
         for (Arrow arrow : arrows) {
             if (isColliding(character, arrow)) {
                 DirectionEnum arrowDirection = arrow.getDirection();

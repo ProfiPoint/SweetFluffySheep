@@ -1,7 +1,6 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.data;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.json;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
-import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;

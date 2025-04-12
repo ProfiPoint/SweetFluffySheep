@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
@@ -48,7 +48,8 @@ public class TextureManager {
         for (String textureName : textureNames) {
             textures.add(getLoadedTexture(textureName));
             // print the w,h of the previously loaded texture
-            System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
+            //System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +
+            // textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
         }
         return textures;
     }
@@ -62,7 +63,8 @@ public class TextureManager {
                 String textureName = textureNames[index-1];
                 textures.add(getLoadedTexture(textureName));
                 // print the w,h of the previously loaded texture
-                System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
+                //System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size:
+                // " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
             } else {
                 System.err.println("Texture index out of range: " + index);
             }

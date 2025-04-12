@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.data;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.json;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import org.json.JSONArray;
@@ -172,7 +172,7 @@ public class LoadManager {
             int x = subArr.optInt(0, -1);
             int y = subArr.optInt(1, -1);
             int v = subArr.optInt(2, -1);
-            int d = subArr.optInt(2, -1);
+            int d = subArr.optInt(3, -1);
 
             if (!isValidCoordinate(x, y, limit) || v < 0 || v > valueLimit || d < 0) {
                 ErrorMsgsEnum.LOAD_VALUES4_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v + " d: "+d);

@@ -3,6 +3,7 @@ module cz.cvut.copakond.pfu.pinkfluffyunicorn {
     requires javafx.fxml;
     requires org.json;
     requires org.reflections;
+    requires jdk.compiler;
 
 
     opens cz.cvut.copakond.pinkfluffyunicorn to javafx.fxml;

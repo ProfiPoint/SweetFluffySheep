@@ -33,4 +33,16 @@ public class ItemFactory {
             throw new RuntimeException("Failed to create item of type: " + itemEnum, e);
         }
     }
+
+    public static void resetAllItems() {
+        // loop through all item types and call reset on each
+        for (Class<? extends Item> itemClass : itemMap.values()) {
+            try {
+                itemClass.getMethod("reset").invoke(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Failed to reset item of type: " + itemClass.getSimpleName(), e);
+            }
+        }
+    }
 }

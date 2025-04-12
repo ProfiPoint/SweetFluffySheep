@@ -1,8 +1,7 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.data;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.json;
 
 import java.io.IOException;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -91,11 +90,14 @@ public class JsonFileManager {
 
             if (completedStory != null && completedCustom != null) {
                 profileData = List.of(
-                        completedStory.toList().stream().map(Object::toString).map(Integer::valueOf).toList(),
-                        completedCustom.toList().stream().map(Object::toString).map(Integer::valueOf).toList()
+                        completedStory.toList().stream().map(Object::toString).map(Integer::valueOf).sorted().toList(),
+                        completedCustom.toList().stream().map(Object::toString).map(Integer::valueOf).sorted().toList()
                 );
             }
         }
+
+
+
 
         return profileData;
     }

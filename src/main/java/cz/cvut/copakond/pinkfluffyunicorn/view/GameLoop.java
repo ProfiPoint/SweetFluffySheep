@@ -41,7 +41,7 @@ public class GameLoop implements Runnable {
 
             // Update game objects
             for (GameObject object : objects) {
-                object.tick();
+                object.tick(true);
             }
 
             long waitTime = targetTime - elapsedTime;

@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.data;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 
 import java.io.IOException;
 import java.nio.file.Files;

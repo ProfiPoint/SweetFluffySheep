@@ -2,8 +2,6 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -47,11 +45,15 @@ public class Arrow extends GameObject {
     }
 
     @Override // tick
-    public void tick() {
-        super.tick();
+    public void tick(boolean doesTimeFlow) {
+        super.tick(doesTimeFlow);
         if (textureRotation % 90 != 0) {
             textureRotation = (textureRotation + textureRotationSpeed) % 360;
         }
+    }
+
+    public static void resetArrowCount() {
+        arrowCount = 0;
     }
 
     @Override

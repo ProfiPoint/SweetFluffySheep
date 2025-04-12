@@ -1,41 +1,44 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.data;
+package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.ItemFactory;
+import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GamePhysics;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Arrow;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
-import cz.cvut.copakond.pinkfluffyunicorn.view.GameLoop;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.LoadManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.SaveManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import org.json.JSONObject;
 
 import java.util.*;
 
 public class Level {
     // for render purposes
-    JSONObject levelData;
-    List<GameObject> objects;
-    String path = "src/main/resources/datasaves/levels/";
-
-    GameLoop gameLoop;
+    private static JSONObject levelData;
+    private static List<GameObject> objects;
+    private static String levelPath;
+    private static String profilesPath;
+    private static String path;
+    private String levelName;
+    private boolean isLevelEditor = false;
+    private boolean isStoryLevel = false; // false = custom level, true = non deleteable default level
 
     // game objects itselfs
     int[] mapSize;
-    boolean defaultLevel = false; // false = custom level, true = non deleteable default level
+
     Start start;
     Goal goal;
+    boolean defaultLevel = false;
     List<Tile> tiles = new ArrayList<Tile>();
     List<Cloud> enemies = new ArrayList<Cloud>();
     List<Unicorn> unicorns = new ArrayList<Unicorn>();
-    List<Coin> coins = new ArrayList<Coin>();
     List<IItem> items = new ArrayList<IItem>();
     List<Arrow> arrows = new ArrayList<Arrow>();
     // creator, creatorUpdated
@@ -45,12 +48,19 @@ public class Level {
 
     Map<int[], Integer> tileMap = new HashMap<int[], Integer>();
 
-
-    int score;
     double timeLeft;
 
-    public Level(String level, boolean levelEditor) {
-        if (levelEditor) {
+    public Level(String level, boolean isLevelEditor, boolean storyLevel) {
+        if (storyLevel) {
+            path = levelPath + "/";
+        } else {
+            path = profilesPath + "/" + ProfileManager.getCurrentProfile() + "/";
+        }
+        this.levelName = level;
+        this.isLevelEditor = isLevelEditor;
+        this.isStoryLevel = storyLevel;
+
+        if (isLevelEditor) {
             levelData = JsonFileManager.readJsonFromFile(path + "_TEMPLATE.json");
             if (levelData == null) {
                 ErrorMsgsEnum.LOAD_DEFAULT.getValue();
@@ -76,16 +86,47 @@ public class Level {
         return mapSize;
     }
 
+    public boolean isLevelEditor() {
+        return isLevelEditor;
+    }
+
+    public boolean isStoryLevel() {
+        return isStoryLevel;
+    }
+
+    public static void setLevelPath(String p) {
+        levelPath = p;
+    }
+
+    public static void setProfilesPath(String p) {
+       profilesPath = p;
+    }
+
     // used to update the level by the game loop
-    public void tick(){
-        for (GameObject object : objects) {
-            object.tick();
+    public void tick(boolean doesTimeFlow) {
+        if (doesTimeFlow) {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                timeLeft = 0;
+            }
+        }
+
+        // GameObjects are updated in another thread, so we need to catch the exception
+        try {
+            for (GameObject object : objects) {
+                object.tick(doesTimeFlow);
+            }
+        } catch (ConcurrentModificationException e) {
+            System.out.println("Frame skipped due to concurrent modification, if this happens often, consider lowering the FPS");
         }
     }
 
     // main function to load the level
     public boolean loadLevel() {
         if (levelData == null) {return false;}
+        Coin.resetCoins();
+        Arrow.resetArrowCount();
+        ItemFactory.resetAllItems();
         LoadManager lm = new LoadManager(levelData);
         mapSize = lm.getList2NoLimit("mapSize");
         defaultLevel = lm.getBoolean("defaultLevel");
@@ -111,6 +152,7 @@ public class Level {
                 levelInfo.get("creationTime") == null || levelInfo.get("updatedTime") == null) {return false;}
         levelInfo.put("goalUnicorns", lm.getIntLimit("goalUnicorns", levelData.getInt("unicorns")));
         if (levelInfo.get("goalUnicorns") == null) {return false;}
+        Unicorn.setGoalUnicorns(levelData.getInt("goalUnicorns"));
 
         List<int[]> tilesCoords = lm.getListOfListsWithLimitFromDict("tiles", mapSize, TextureListEnum.TILE.getCount());
         if (tilesCoords == null) {return false;}
@@ -129,7 +171,7 @@ public class Level {
         if (itemsCoords == null) {return false;}
         for (int[] itemCoord : itemsCoords) {
             ItemEnum itemEnum = ItemEnum.values()[itemCoord[2]]; // Get the ItemEnum from the coordinate
-            IItem item = ItemFactory.createItem(itemEnum, new double[]{itemCoord[0], itemCoord[1]}, 5);
+            IItem item = ItemFactory.createItem(itemEnum, new double[]{itemCoord[0], itemCoord[1]}, itemCoord[3]);
             items.add(item);
         }
 
@@ -185,7 +227,7 @@ public class Level {
     }
 
     public void Play() {
-        timeLeft = (double) levelInfo.get("timeLimit");
+        timeLeft = (double) levelInfo.get("timeLimit") * GameObject.getFPS();
         // init unicorns
         DirectionEnum direction = goal.getDirection();
         double[] coords;
@@ -216,19 +258,19 @@ public class Level {
         buildObjectsList();
     }
 
-    public void Pause() {
-        gameLoop.stop();
-    }
-
-    public void Resume() {
-        gameLoop.start();
-    }
-
     public void Unload() {
         objects = new ArrayList<>();
         GamePhysics.unloadMapObjects();
-        gameLoop.stop();
-        gameLoop = null;
+    }
+
+    public void Completed() {
+        LevelStatusUtils.markLevelAsCompleted(this);
+    }
+
+    public String[] getLevelData() {
+        String isLevelEditor = this.isLevelEditor ? "true" : "false";
+        String isStoryLevel = this.isStoryLevel ? "true" : "false";
+        return new String[]{levelName, isLevelEditor, isStoryLevel};
     }
 
     void buildObjectsList() {
@@ -250,6 +292,18 @@ public class Level {
         for (Arrow arrow : arrows) {
             objects.add(arrow);
         }
+    }
+
+    public int getLifes() {
+        return Unicorn.getUnicornsAlive() - levelInfo.get("goalUnicorns") + 1;
+    }
+
+    public int getTimeLeft() {
+        return (int) timeLeft / GameObject.getFPS();
+    }
+
+    public int[] getCoinsLeftAndCoins() {
+        return new int[]{Coin.getCoinsLeft(), Coin.getTotalCoins()};
     }
 }
 

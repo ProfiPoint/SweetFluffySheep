@@ -1,5 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IResizableFrame;
@@ -24,8 +26,32 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
         setAlignment(Pos.CENTER);
         setSpacing(20);
 
+        int[] continueLevel = LevelStatusUtils.getNextUncompletedLevel();
+        System.out.println("Continue level: " + continueLevel[0] + " " + continueLevel[1]);
+        if (continueLevel[0] == 1 && continueLevel[1] == 0) {
+            continueButton.setDisable(true);
+        } else {
+            if (continueLevel[1] == 0) {
+                continueButton.setText("CONTINUE (Level " + continueLevel[0] + ")");
+            } else {
+                continueButton.setText("CONTINUE (Custom Level " + continueLevel[0] + ")");
+            }
+        }
+
         playButton.setOnAction(e -> AppViewManager.get().switchTo(new LevelSelectionFrame(false)));
-        continueButton.setOnAction(e -> System.out.println("Continue clicked"));
+        continueButton.setOnAction(e -> {
+            System.out.println(" Level continued" + continueLevel[0] + " clicked");
+            Integer levelNum = continueLevel[0];
+            Level level = new Level(Integer.toString(levelNum), false, continueLevel[1] == 0);
+            if (!level.loadLevel()) {
+                System.out.println("Level not loaded successfully");
+                return;
+            }
+            AppViewManager.get().switchTo(new LevelFrame(level, false));
+        });
+
+
+
         editorButton.setOnAction(e -> AppViewManager.get().switchTo(new LevelSelectionFrame(true)));
         profileButton.setOnAction(e -> AppViewManager.get().switchTo(new ProfileFrame()));
         exitButton.setOnAction(e -> System.exit(0));

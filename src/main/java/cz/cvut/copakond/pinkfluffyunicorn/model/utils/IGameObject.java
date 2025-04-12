@@ -6,7 +6,7 @@ public interface IGameObject {
     // Visibility {get, set}
     boolean isVisible();
     void setVisible(boolean visible);
-    void tick();
+    void tick(boolean doesTimeFlow);
 
     // Render Priority {get, set}
     int getRenderPriority(); // 0 - background layer ... infinity - top layer

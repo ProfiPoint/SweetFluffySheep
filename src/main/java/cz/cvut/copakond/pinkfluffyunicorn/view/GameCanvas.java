@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.Level;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;

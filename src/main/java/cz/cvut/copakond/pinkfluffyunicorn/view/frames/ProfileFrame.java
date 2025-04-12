@@ -1,8 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.FileUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.FolderUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.JsonFileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
@@ -22,7 +22,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
     private final ScrollPane scrollPane = new ScrollPane();
     private final VBox profileListBox = new VBox();
     private final TextField nameField = new TextField();
-    private final Button confirmButton = new Button("Confirm");
+    private final Button confirmButton = new Button("Add New Profile");
     private final Button backButton = new Button("Back");
 
     private List<String> profiles = List.of();

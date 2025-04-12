@@ -56,7 +56,7 @@ public enum TextureListEnum {
     private String[] getName() {
         String[] names = new String[count];
         names[0] = "src/main/resources/textures/" + fileName.replace("{i}", String.format("%03d", 1));
-        names[0] = names[0].replace("{b}", "true");
+        names[0] = names[0].replace("{b}", "false");
         return names;
     }
 
@@ -64,7 +64,7 @@ public enum TextureListEnum {
         String[] names = new String[count];
         for (int i = 0; i < count; i++) {
             names[i] = "src/main/resources/textures/" + fileName.replace("{i}", String.format("%03d", i + 1));
-            names[i] = names[i].replace("{b}", i == 0 ? "true" : "false");
+            names[i] = names[i].replace("{b}", i == 0 ? "false" : "true");
         }
         return names;
     }

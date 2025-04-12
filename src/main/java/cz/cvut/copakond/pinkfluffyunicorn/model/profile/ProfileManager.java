@@ -1,9 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.profile;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.FileUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.model.data.FolderUtils;
-
-import java.io.File;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
 
 public class ProfileManager {
     static String currentProfile = "";

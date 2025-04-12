@@ -17,14 +17,18 @@ public class Item extends GameObject implements IItem {
     }
 
     @Override
-    public void tick() {
-        duration_ticks--;
+    public void tick(boolean doesTimeFlow) {
+        super.tick(doesTimeFlow);
     }
 
     @Override
     public boolean use() {
-        super.visible = false;
-        return pickable;
+        if (pickable){
+            pickable = false;
+            super.visible = false;
+            return true;
+        }
+        return false;
     }
 
     @Override
