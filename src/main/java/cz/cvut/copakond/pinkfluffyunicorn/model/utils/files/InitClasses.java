@@ -1,6 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 

@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.profile;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.game;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;

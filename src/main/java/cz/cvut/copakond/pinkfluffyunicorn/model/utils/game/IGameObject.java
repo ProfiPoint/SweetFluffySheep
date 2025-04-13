@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.game;
 
 import javafx.scene.image.Image;
 

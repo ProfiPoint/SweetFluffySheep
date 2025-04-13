@@ -5,7 +5,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IResizableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.GameLoop;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IClickListener;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelFrameUtils;

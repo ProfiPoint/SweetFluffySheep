@@ -1,7 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 

@@ -6,7 +6,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.items.FireItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.RainbowItem;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;

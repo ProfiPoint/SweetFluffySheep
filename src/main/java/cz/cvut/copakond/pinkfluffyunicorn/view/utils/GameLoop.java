@@ -1,6 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.frames.LevelFrame;

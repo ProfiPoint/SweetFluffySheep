@@ -2,7 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 import javafx.scene.SnapshotParameters;

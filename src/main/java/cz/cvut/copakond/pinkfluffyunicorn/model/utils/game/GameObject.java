@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.utils;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.game;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.TextureManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;

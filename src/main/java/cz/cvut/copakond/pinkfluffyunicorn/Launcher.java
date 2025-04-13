@@ -2,7 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.InitClasses;
-import cz.cvut.copakond.pinkfluffyunicorn.model.profile.ProfileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.frames.MenuFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.frames.ProfileFrame;
