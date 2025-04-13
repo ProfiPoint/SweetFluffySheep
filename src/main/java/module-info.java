@@ -2,7 +2,6 @@ module cz.cvut.copakond.pfu.pinkfluffyunicorn {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.json;
-    requires org.reflections;
     requires jdk.compiler;
 
 

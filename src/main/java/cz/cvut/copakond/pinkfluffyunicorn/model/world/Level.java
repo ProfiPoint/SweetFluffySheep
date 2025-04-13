@@ -16,9 +16,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.LoadManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.SaveManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import org.json.JSONObject;
-import org.reflections.Reflections;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class Level {
