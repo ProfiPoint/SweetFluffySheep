@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ItemFactory {
-
     private static final Map<ItemEnum, Class<? extends Item>> itemMap = new HashMap<>();
 
     // Static block to register item types to their corresponding classes
@@ -31,18 +30,6 @@ public class ItemFactory {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to create item of type: " + itemEnum, e);
-        }
-    }
-
-    public static void resetAllItems() {
-        // loop through all item types and call reset on each
-        for (Class<? extends Item> itemClass : itemMap.values()) {
-            try {
-                itemClass.getMethod("reset").invoke(null);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to reset item of type: " + itemClass.getSimpleName(), e);
-            }
         }
     }
 }

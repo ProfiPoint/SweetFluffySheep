@@ -24,8 +24,6 @@ public class GameObject implements IGameObject {
     // static to share the same texture manager (avoid loading the same textures multiple times)
     protected static TextureManager textureManager = new TextureManager();
 
-
-
     public GameObject(String textureName, double[] position, int renderPriority) {
         this.position = position;
         this.renderPriority = renderPriority;
@@ -54,9 +52,9 @@ public class GameObject implements IGameObject {
         this.visible = visible;
     }
 
-    public void tick(boolean doesTimeFlow) {
-        // updates the game object
-    }
+    public void tick(boolean doesTimeFlow) {};
+
+    public void resetLevel() {}
 
     public int getRenderPriority() {
         return this.renderPriority;

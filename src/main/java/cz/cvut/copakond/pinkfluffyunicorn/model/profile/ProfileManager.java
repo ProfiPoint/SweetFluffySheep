@@ -4,8 +4,8 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
 
 public class ProfileManager {
-    static String currentProfile = "";
-    static String profileFolderPath = "";
+    protected static String currentProfile = "";
+    protected static String profileFolderPath = "";
 
     public static void setProfileFolderPath(String path) {
         profileFolderPath = path;

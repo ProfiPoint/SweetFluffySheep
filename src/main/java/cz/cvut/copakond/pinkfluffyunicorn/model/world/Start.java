@@ -5,7 +5,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 
 public class Start extends GameObject {
-    DirectionEnum orientation;
+    private DirectionEnum orientation;
 
     public Start(double[] position, DirectionEnum orientation) {
         super("start", position, RenderPriorityEnums.ARROW.getValue());

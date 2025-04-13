@@ -12,11 +12,11 @@ import javafx.scene.paint.Color;
 
 public class Arrow extends GameObject {
     private final int maxArrows = 10;
-    public static final int textureRotationSpeed = 10;
+    private static final int textureRotationSpeed = 10;
 
-    static int arrowCount = 0;
+    private static int arrowCount = 0;
     private int textureRotation = 0;
-    DirectionEnum direction;
+    private DirectionEnum direction;
 
     public Arrow(double[] position) {
         super("arrow", position, RenderPriorityEnums.ARROW.getValue());
@@ -52,7 +52,9 @@ public class Arrow extends GameObject {
         }
     }
 
-    public static void resetArrowCount() {
+    @Override
+    public void resetLevel() {
+        super.resetLevel();
         arrowCount = 0;
     }
 

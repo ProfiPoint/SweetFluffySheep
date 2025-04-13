@@ -36,7 +36,9 @@ public class FireItem extends Item {
         }
     }
 
-    public static void reset() {
+    @Override
+    public void resetLevel() {
+        super.resetLevel();
         active = null;
     }
 }

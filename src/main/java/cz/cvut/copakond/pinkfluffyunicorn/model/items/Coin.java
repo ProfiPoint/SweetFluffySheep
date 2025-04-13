@@ -13,11 +13,9 @@ public class Coin extends Item {
         totalCoins++;
     }
 
-    public void collect() {
-        coinsLeft--;
-    }
-
-    public static void resetCoins() {
+    @Override
+    public void resetLevel() {
+        super.resetLevel();
         coinsLeft = 0;
         totalCoins = 0;
     }
@@ -32,13 +30,11 @@ public class Coin extends Item {
 
     @Override
     public boolean use() {
-        coinsLeft--;
+        collect();
         return super.use();
     }
 
-    // this method is here to make it easier to generalize the code to reset all items, but coins are non resetable
-    // items as they don't have any effect
-    public static void reset() {
-        return;
+    private void collect() {
+        coinsLeft--;
     }
 }

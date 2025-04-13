@@ -17,7 +17,6 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFrame {
-
     private final Label titleLabel = new Label("Select Profile");
     private final ScrollPane scrollPane = new ScrollPane();
     private final VBox profileListBox = new VBox();

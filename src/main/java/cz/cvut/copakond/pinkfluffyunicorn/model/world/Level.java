@@ -16,7 +16,9 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.LoadManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.SaveManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import org.json.JSONObject;
+import org.reflections.Reflections;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class Level {
@@ -31,24 +33,24 @@ public class Level {
     private boolean isStoryLevel = false; // false = custom level, true = non deleteable default level
 
     // game objects itselfs
-    int[] mapSize;
+    private int[] mapSize;
 
-    Start start;
-    Goal goal;
-    boolean defaultLevel = false;
-    List<Tile> tiles = new ArrayList<Tile>();
-    List<Cloud> enemies = new ArrayList<Cloud>();
-    List<Unicorn> unicorns = new ArrayList<Unicorn>();
-    List<IItem> items = new ArrayList<IItem>();
-    List<Arrow> arrows = new ArrayList<Arrow>();
+    private Start start;
+    private Goal goal;
+    private boolean defaultLevel = false;
+    private List<Tile> tiles = new ArrayList<Tile>();
+    private List<Cloud> enemies = new ArrayList<Cloud>();
+    private List<Unicorn> unicorns = new ArrayList<Unicorn>();
+    private List<IItem> items = new ArrayList<IItem>();
+    private List<Arrow> arrows = new ArrayList<Arrow>();
     // creator, creatorUpdated
-    Map<String, String> playerInfo = new HashMap<String, String>();
+    private Map<String, String> playerInfo = new HashMap<String, String>();
     // timeLimit, unicorns, goalUnicorns, maxArrows, creationTime, updatedTime
-    Map<String, Integer> levelInfo = new HashMap<String, Integer>();
+    private Map<String, Integer> levelInfo = new HashMap<String, Integer>();
 
-    Map<int[], Integer> tileMap = new HashMap<int[], Integer>();
+    private Map<int[], Integer> tileMap = new HashMap<int[], Integer>();
 
-    double timeLeft;
+    private double timeLeft;
 
     public Level(String level, boolean isLevelEditor, boolean storyLevel) {
         if (storyLevel) {
@@ -124,9 +126,7 @@ public class Level {
     // main function to load the level
     public boolean loadLevel() {
         if (levelData == null) {return false;}
-        Coin.resetCoins();
-        Arrow.resetArrowCount();
-        ItemFactory.resetAllItems();
+
         LoadManager lm = new LoadManager(levelData);
         mapSize = lm.getList2NoLimit("mapSize");
         defaultLevel = lm.getBoolean("defaultLevel");
@@ -259,6 +259,9 @@ public class Level {
     }
 
     public void Unload() {
+        for (GameObject object : objects) {
+            object.resetLevel();
+        }
         objects = new ArrayList<>();
         GamePhysics.unloadMapObjects();
     }

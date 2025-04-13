@@ -5,9 +5,9 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 
 public class Item extends GameObject implements IItem {
-    int duration_ticks;
-    ItemEnum itemEffect;
-    boolean pickable;
+    protected int duration_ticks;
+    private ItemEnum itemEffect;
+    private boolean pickable;
 
     public Item(String textureName, double[] position, int duration, ItemEnum itemEffect) {
         super(textureName, position, RenderPriorityEnums.ITEM.getValue());

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FolderUtils {
-    static String levelsPath;
-    static String profilesPath;
+    private static String levelsPath;
+    private static String profilesPath;
 
     public static void setLevelsPath(String path) {
         levelsPath = path;

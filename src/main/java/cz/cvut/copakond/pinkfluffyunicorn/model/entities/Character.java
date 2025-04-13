@@ -15,15 +15,12 @@ import javafx.scene.paint.Color;
 public class Character extends GameObject implements ICharacter {
     private static final int textureRotationSpeed = 10;
 
-    DirectionEnum direction;
-    DirectionEnum previousDirection;
-    PhisicsEventsEnum previousEvent = PhisicsEventsEnum.NO_COLLISION;
-    boolean alive = true;
-    boolean clockwiseRotation = true;
-    boolean isEnemy;
-    String name;
-    int textureRotation = 0;
-
+    private DirectionEnum direction;
+    private PhisicsEventsEnum previousEvent = PhisicsEventsEnum.NO_COLLISION;
+    private boolean alive = true;
+    private boolean isEnemy;
+    private String name;
+    private int textureRotation = 0;
 
     public Character(String textureName, double[] position, DirectionEnum direction) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
@@ -92,7 +89,6 @@ public class Character extends GameObject implements ICharacter {
         }
 
         previousEvent = event;
-        previousDirection = direction;
     }
 
     public DirectionEnum getDirection() {
@@ -159,8 +155,4 @@ public class Character extends GameObject implements ICharacter {
 
         return img;
     }
-
-
-
-    //protected static void moveCharacter(Character character, int speed) {}
 }

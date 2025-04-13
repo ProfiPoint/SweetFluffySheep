@@ -4,7 +4,8 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 
 public class Tile extends GameObject {
-    int textureType;
+    private int textureType;
+
     public Tile(double[] position, int textureType) {
         super("tile", position, RenderPriorityEnums.TILE.getValue());
         this.textureType = textureType;

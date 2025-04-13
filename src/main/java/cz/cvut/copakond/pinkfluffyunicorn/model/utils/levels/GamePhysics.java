@@ -18,20 +18,20 @@ import java.util.Map;
 
 // "public static class GamePhysics"
 public class GamePhysics {
-    static final double collisionLimit = (1 / (double) GameObject.getFPS()) * GameObject.getCollisionLimit() * 1 / 2 * 1.1;
+    private static final double collisionLimit = (1 / (double) GameObject.getFPS()) * GameObject.getCollisionLimit() * 1 / 2 * 1.1;
     // dynamically calculated limit for collision detection, so even in max speed the collision will be detected
     // for normal settings it is 0.0367, and the max speed per tick is 0.0667, so because the collision is checked
     // around, it is 0.0367 * 2 = 0.0734, so the collision will be detected even in max speed
 
-    static int[] mapSize;
-    static Map<int[], Tile> tileMap;
-    static List<Cloud> enemies;
-    static List<IItem> items;
-    static Start start;
-    static Goal goal;
-    static List<Arrow> arrows;
+    private static int[] mapSize;
+    private static Map<int[], Tile> tileMap;
+    private static List<Cloud> enemies;
+    private static List<IItem> items;
+    private static Start start;
+    private static Goal goal;
+    private static List<Arrow> arrows;
 
-    static boolean initialized = false;
+    private static boolean initialized = false;
 
     public static void loadMapObjects(int[] mapSize, Start start, Goal goal, List<Tile> tiles, List<Cloud> enemies,
                                       List<IItem> items, List<Arrow> arrows) {

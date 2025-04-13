@@ -9,36 +9,18 @@ import cz.cvut.copakond.pinkfluffyunicorn.view.frames.ProfileFrame;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-/*
-public class Launcher  {
-    public static void main(String[] args) {
-        //launch();
-        Level level = new Level("test_level", false);
-        if (!level.loadLevel()) {
-            System.err.println("Error loading level data - main launcher");
-            return;
-        }
-        System.out.println("Level loaded successfully from MAIN LAUNCHER:D");
-        if (!level.saveLevel("test_level2")) {
-            System.out.println("Error saving level data - main launcher");
-        }
-        System.out.println("Level saved successfully from MAIN LAUNCHER:D");
-    }
-}*/
-
-
-
 public class Launcher extends Application {
     @Override
     public void start(Stage primaryStage) {
         AppViewManager.init(primaryStage);
 
-        InitClasses initClasses = new InitClasses(
-                "src/main/resources/datasaves/levels",
-                "src/main/resources/datasaves/profiles"
-        );
+        String levelsPath = "src/main/resources/datasaves/levels";
+        String profilesPath = "src/main/resources/datasaves/profiles";
 
-        String currentProfile = FileUtils.readFile("src/main/resources/datasaves/profiles/_CURRENT.txt");
+        // init all directories to all file managers
+        InitClasses initClasses = new InitClasses(levelsPath, profilesPath);
+
+        String currentProfile = FileUtils.readFile(profilesPath + "/_CURRENT.txt");
         if (!currentProfile.isBlank()) {
             ProfileManager.switchProfile(currentProfile);
         }

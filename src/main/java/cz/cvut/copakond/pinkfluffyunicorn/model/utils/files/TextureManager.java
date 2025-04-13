@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TextureManager {
-    static Map<String, Image> loadedTextures = new HashMap<String, Image>();
+    private final static Map<String, Image> loadedTextures = new HashMap<String, Image>();
 
     List<Image> loadTexture(List<String> textureNames) {
         List<Image> images = new ArrayList<Image>();
