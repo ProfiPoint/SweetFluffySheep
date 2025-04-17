@@ -14,11 +14,12 @@ public class Launcher extends Application {
     public void start(Stage primaryStage) {
         AppViewManager.init(primaryStage);
 
-        String levelsPath = "src/main/resources/datasaves/levels";
-        String profilesPath = "src/main/resources/datasaves/profiles";
+        String texturesPath = "resources/textures";
+        String levelsPath = "resources/datasaves/levels";
+        String profilesPath = "resources/datasaves/profiles";
 
         // init all directories to all file managers
-        InitClasses initClasses = new InitClasses(levelsPath, profilesPath);
+        InitClasses initClasses = new InitClasses(texturesPath, levelsPath, profilesPath);
 
         String currentProfile = FileUtils.readFile(profilesPath + "/_CURRENT.txt");
         if (!currentProfile.isBlank()) {

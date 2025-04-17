@@ -162,7 +162,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
     }
 
     public void show() {
-        profiles = FolderUtils.getAllFolders("src/main/resources/datasaves/profiles");
+        profiles = FolderUtils.getAllFolders(ProfileManager.getProfileFolderPath());
         drawProfileButtons();
         AppViewManager.get().update();
     }

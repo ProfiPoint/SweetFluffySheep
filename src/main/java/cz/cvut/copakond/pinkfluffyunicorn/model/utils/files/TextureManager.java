@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class TextureManager {
     private final static Map<String, Image> loadedTextures = new HashMap<String, Image>();
+    private static String texturesPath;
 
     List<Image> loadTexture(List<String> textureNames) {
         List<Image> images = new ArrayList<Image>();
@@ -19,6 +20,10 @@ public class TextureManager {
             images.add(new Image(textureName));
         }
         return images;
+    }
+
+    public static void setTexturesPath(String path) {
+        texturesPath = path;
     }
 
     // avoid loading the same textures multiple times
@@ -31,7 +36,7 @@ public class TextureManager {
             result = new Image(new File(textureName).toURI().toURL().toExternalForm());
         } catch (Exception e) {
             try {
-                result = new Image(new File("src/main/resources/textures/missing_texture.png").toURI().toURL().toExternalForm());
+                result = new Image(new File(texturesPath+"/missing_texture.png").toURI().toURL().toExternalForm());
                 ErrorMsgsEnum.TEXTURE_MISSING.getValue(textureName, e);
             } catch (Exception e2) {
                 String e3 = ErrorMsgsEnum.TEXTURE_MISSING_IS_MISSING.getValue(textureName, e2);
@@ -48,8 +53,8 @@ public class TextureManager {
         for (String textureName : textureNames) {
             textures.add(getLoadedTexture(textureName));
             // print the w,h of the previously loaded texture
-            //System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +
-            // textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
+             System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +
+             textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
         }
         return textures;
     }
@@ -63,8 +68,7 @@ public class TextureManager {
                 String textureName = textureNames[index-1];
                 textures.add(getLoadedTexture(textureName));
                 // print the w,h of the previously loaded texture
-                //System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size:
-                // " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
+                 System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
             } else {
                 System.err.println("Texture index out of range: " + index);
             }
