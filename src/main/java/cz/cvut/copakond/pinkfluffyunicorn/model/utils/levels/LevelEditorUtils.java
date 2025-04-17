@@ -2,7 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.LevelEditorObjectsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ public class LevelEditorUtils {
     DESTROY("destroy"),
     EMPTY("empty");*/
 
+    // returns a list of objects that are at the given position
     private static List<GameObject> checkPosition(double[] position, List<GameObject> toCheck) {
         List<GameObject> objects = new ArrayList<>();
         for (GameObject object : toCheck) {
@@ -36,7 +37,8 @@ public class LevelEditorUtils {
     }
 
     public static void add_path(double[] position) {
-
+        List<Tile> tiles = level.getTiles();
+        //List<Tile> objectsInPosition = checkPosition(position, tiles);
     }
 
     public static void remove_path(double[] position) {

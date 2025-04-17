@@ -1,7 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IDrawableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IResizableFrame;

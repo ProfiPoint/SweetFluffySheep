@@ -3,7 +3,6 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 
 import java.util.ArrayList;
 import java.util.List;

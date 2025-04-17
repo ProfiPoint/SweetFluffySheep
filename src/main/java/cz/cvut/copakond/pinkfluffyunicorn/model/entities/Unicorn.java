@@ -43,7 +43,7 @@ public class Unicorn extends Character {
         super.resetLevel();
         counter = 0;
         unicornsInGoal = 0;
-        gameStatus = GameStatusEnum.PLAYING;
+        gameStatus = GameStatusEnum.RUNNING;
     }
 
     public static int getGoalUnicorns() {

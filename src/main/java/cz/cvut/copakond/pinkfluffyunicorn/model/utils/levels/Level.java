@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.world;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
@@ -6,7 +6,6 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.ItemFactory;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
@@ -14,7 +13,10 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.LoadManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.SaveManager;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Arrow;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -329,30 +331,6 @@ public class Level {
 
     public List<IItem> getItems() {
         return items;
-    }
-
-    public void setStart(Start start) {
-        this.start = start;
-    }
-
-    public void setGoal(Goal goal) {
-        this.goal = goal;
-    }
-
-    public void setTiles(List<Tile> tiles) {
-        this.tiles = tiles;
-    }
-
-    public void setEnemies(List<Cloud> enemies) {
-        this.enemies = enemies;
-    }
-
-    public void setUnicorns(List<Unicorn> unicorns) {
-        this.unicorns = unicorns;
-    }
-
-    public void setItems(List<IItem> items) {
-        this.items = items;
     }
 }
 

@@ -3,7 +3,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IDrawableFrame;

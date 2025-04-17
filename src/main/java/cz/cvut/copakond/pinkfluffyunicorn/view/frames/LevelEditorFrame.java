@@ -3,7 +3,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.LevelEditorObjectsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelEditorUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.GameLoop;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IClickListener;

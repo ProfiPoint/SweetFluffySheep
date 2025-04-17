@@ -2,8 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
-import cz.cvut.copakond.pinkfluffyunicorn.view.frames.LevelFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.ILevelFrame;
 
 import java.util.Comparator;
