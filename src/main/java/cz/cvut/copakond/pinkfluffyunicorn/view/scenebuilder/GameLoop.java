@@ -1,25 +1,26 @@
-package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
+package cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.frames.LevelFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.ILevelFrame;
 
 import java.util.Comparator;
 import java.util.List;
 
 
 public class GameLoop {
-    LevelFrame levelFrame;
+    ILevelFrame levelFrame;
     private boolean isRunning = false;
     private Level level;
     private List<GameObject> objects;
     private long currentFrame = 0;
-    private final int[] speedOptions = {1, 2, 4, 8}; // default speed is 2x, but is presented to user as 1x
+    private final int[] speedOptions = {1, 2, 4, 8, 16, 32, 64, 128}; // default speed is 2x, but is presented to user
+    // as 1x
     private int currentSpeedIndex = 1; // index of speedOptions
 
-    public GameLoop(LevelFrame levelFrame, Level level) {
+    public GameLoop(ILevelFrame levelFrame, Level level) {
         this.levelFrame = levelFrame;
         this.level = level;
     }
@@ -34,6 +35,9 @@ public class GameLoop {
                 //System.out.println("--- New frame ---");
                 long startTime = System.currentTimeMillis();
                 currentFrame++;
+
+                // check if the game is over or won
+                javafx.application.Platform.runLater(levelFrame::checkGameStatus);
 
                 // if the game speed is not 1 (on screen 0.5), skip the frame, for faster speeds
                 if (currentFrame % speedOptions[currentSpeedIndex] != 0) {
@@ -103,6 +107,10 @@ public class GameLoop {
         objects.sort(Comparator.comparingInt(GameObject::getRenderPriority));
         isRunning = true;
         run();
+    }
+
+    public void renderScene() {
+        javafx.application.Platform.runLater(levelFrame::drawLevelObjects);
     }
 
     public void unload() {

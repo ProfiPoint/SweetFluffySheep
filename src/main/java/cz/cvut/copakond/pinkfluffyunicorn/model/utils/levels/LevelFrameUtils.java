@@ -33,9 +33,6 @@ public class LevelFrameUtils {
                 (int) Math.floor(relativeClick[1] / oneTileSize[1])
         };
 
-        if (!GamePhysics.tileExists(tileClick)) {
-            return new int[] {-1,-1};
-        }
 
         return tileClick;
     }

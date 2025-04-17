@@ -32,10 +32,10 @@ public class Level {
 
     // game objects itselfs
     private int[] mapSize;
+    private boolean defaultLevel = false;
 
     private Start start;
     private Goal goal;
-    private boolean defaultLevel = false;
     private List<Tile> tiles = new ArrayList<Tile>();
     private List<Cloud> enemies = new ArrayList<Cloud>();
     private List<Unicorn> unicorns = new ArrayList<Unicorn>();
@@ -276,8 +276,8 @@ public class Level {
 
     void buildObjectsList() {
         objects = new ArrayList<GameObject>();
-        objects.add(start);
-        objects.add(goal);
+        if (start != null) {objects.add(start);}
+        if (goal != null) {objects.add(goal);}
         for (Tile tile : tiles) {
             objects.add(tile);
         }
@@ -305,6 +305,54 @@ public class Level {
 
     public int[] getCoinsLeftAndCoins() {
         return new int[]{Coin.getCoinsLeft(), Coin.getTotalCoins()};
+    }
+
+    public Start getStart() {
+        return start;
+    }
+
+    public Goal getGoal() {
+        return goal;
+    }
+
+    public List<Tile> getTiles() {
+        return tiles;
+    }
+
+    public List<Cloud> getEnemies() {
+        return enemies;
+    }
+
+    public List<Unicorn> getUnicorns() {
+        return unicorns;
+    }
+
+    public List<IItem> getItems() {
+        return items;
+    }
+
+    public void setStart(Start start) {
+        this.start = start;
+    }
+
+    public void setGoal(Goal goal) {
+        this.goal = goal;
+    }
+
+    public void setTiles(List<Tile> tiles) {
+        this.tiles = tiles;
+    }
+
+    public void setEnemies(List<Cloud> enemies) {
+        this.enemies = enemies;
+    }
+
+    public void setUnicorns(List<Unicorn> unicorns) {
+        this.unicorns = unicorns;
+    }
+
+    public void setItems(List<IItem> items) {
+        this.items = items;
     }
 }
 

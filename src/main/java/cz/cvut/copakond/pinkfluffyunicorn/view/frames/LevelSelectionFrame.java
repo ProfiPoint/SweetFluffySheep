@@ -6,8 +6,8 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IResizableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IDrawableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IResizableFrame;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
@@ -120,7 +120,12 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
                     System.out.println("Level not loaded successfully");
                     return;
                 }
-                AppViewManager.get().switchTo(new LevelFrame(level, editorMode));
+                if (editorMode) {
+                    AppViewManager.get().switchTo(new LevelEditorFrame(level));
+                } else {
+                    AppViewManager.get().switchTo(new LevelFrame(level, editorMode));
+                }
+
             });
 
             grid.add(levelButton, col, row);
@@ -131,7 +136,7 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
 
     @Override
     public void onResizeCanvas(double width, double height) {
-        double fontSize = height / 30; // adjust as needed
+        double fontSize = height / 30;
         double buttonSize = Math.min(width / 12, height / 12); // square button
 
         storyLabel.setFont(Font.font("Arial", fontSize * 1.5));

@@ -8,15 +8,13 @@ import java.util.Map;
 public class ItemFactory {
     private static final Map<ItemEnum, Class<? extends Item>> itemMap = new HashMap<>();
 
-    // Static block to register item types to their corresponding classes
+    // item register of types and their corresponding classes
     static {
         itemMap.put(ItemEnum.COIN, Coin.class);
         itemMap.put(ItemEnum.FIRE, FireItem.class);
         itemMap.put(ItemEnum.RAINBOW, RainbowItem.class);
-        // Add other item types here as needed
     }
 
-    // Create an instance of the appropriate Item subclass based on the ItemEnum type
     public static IItem createItem(ItemEnum itemEnum, double[] position, int duration) {
         Class<? extends Item> itemClass = itemMap.get(itemEnum);
 
@@ -25,7 +23,7 @@ public class ItemFactory {
         }
 
         try {
-            // Dynamically create the instance using the constructor that accepts position and duration
+            // dynamically create the instance using the constructor that accepts position and duration
             return itemClass.getConstructor(double[].class, int.class).newInstance(position, duration);
         } catch (Exception e) {
             e.printStackTrace();

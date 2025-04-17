@@ -1,12 +1,14 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IDrawableFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.IResizableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IDrawableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.ILevelFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IResizableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.GameLoop;
+import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.GameLoop;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IClickListener;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelFrameUtils;
 import javafx.geometry.Insets;
@@ -24,7 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.util.Comparator;
 
-public class LevelFrame extends VBox implements IResizableFrame, IDrawableFrame, IClickListener {
+public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, IDrawableFrame, IClickListener {
     private final GameLoop gameLoop;
     private final Canvas canvas;
     private final Region hudBar;
@@ -80,6 +82,10 @@ public class LevelFrame extends VBox implements IResizableFrame, IDrawableFrame,
             return;
         }
 
+        if (!GamePhysics.tileExists(tileClick)) {
+            return;
+        }
+
         gameLoop.getLevel().PlaceRotateRemoveArrow(tileClick, button);
 
         // update objects, to include the new arrows.
@@ -113,8 +119,6 @@ public class LevelFrame extends VBox implements IResizableFrame, IDrawableFrame,
         buttonBox.setAlignment(Pos.CENTER);
 
         if (isWin) {
-            gameLoop.getLevel().Completed(); // mark the level as completed
-
             Button nextLevelButton = new Button("Next Level");
             nextLevelButton.setOnAction(e -> {
                 popupStage.close();
@@ -149,6 +153,15 @@ public class LevelFrame extends VBox implements IResizableFrame, IDrawableFrame,
         popupStage.showAndWait(); // BLOCKS everything until popup closes
     }
 
+    public void checkGameStatus(){
+        GameStatusEnum gameStatus = GameObject.getGameStatus();
+        if (gameStatus == GameStatusEnum.WIN) {
+            gameLoop.getLevel().Completed(); // mark the level as completed
+            showPopup("You Win!", true);
+        } else if (gameStatus == GameStatusEnum.LOSE || gameLoop.getLevel().getTimeLeft() <= 0) {
+            showPopup("You Lose!", false);
+        }
+    }
 
     public void drawLevelObjects() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -167,14 +180,6 @@ public class LevelFrame extends VBox implements IResizableFrame, IDrawableFrame,
         coinsLabel.setText(coinsInfo[1]-coinsInfo[0] + "/" + coinsInfo[1]);
         lifesLabel.setText(gameLoop.getLevel().getLifes() + "♥");
         timeLabel.setText(gameLoop.getLevel().getTimeLeft() + "s");
-
-        GameStatusEnum gameStatus = GameObject.getGameStatus();
-        if (gameStatus == GameStatusEnum.WIN) {
-            showPopup("You Win!", true);
-        } else if (gameStatus == GameStatusEnum.LOSE || gameLoop.getLevel().getTimeLeft() <= 0) {
-            showPopup("You Lose!", false);
-        }
-
     }
 
     private void drawObject(GraphicsContext gc, GameObject object) {

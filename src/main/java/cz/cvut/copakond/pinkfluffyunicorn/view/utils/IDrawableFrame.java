@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder;
+package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
 import javafx.scene.canvas.GraphicsContext;
 
