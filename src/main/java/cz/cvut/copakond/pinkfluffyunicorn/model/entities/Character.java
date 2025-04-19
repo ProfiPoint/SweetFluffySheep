@@ -140,7 +140,6 @@ public class Character extends GameObject implements ICharacter {
         if (this.textureRotation % 90 != 0) {
             // in rotation animation
             this.textureIdNow = (25 * ((orientation+2) % 4)) + 16 + ((this.textureRotation)/textureRotationSpeed + 9) % 9;
-            System.out.println("Texture " +this.textures.get(this.textureIdNow).getUrl());
             return this.textures.get(this.textureIdNow);
         } else {
             // in movement animation

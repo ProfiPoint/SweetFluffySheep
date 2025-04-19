@@ -258,6 +258,7 @@ public class Level {
 
     public void Play() {
         timeLeft = (double) levelInfo.get("timeLimit") * GameObject.getFPS();
+        start.setVisibility(isLevelEditor);
         // init unicorns
         DirectionEnum direction = start.getDirection();
         double[] coords;

@@ -26,6 +26,14 @@ public class Start extends GameObject {
         this.direction = this.direction.next();
     }
 
+    public void setVisibility(boolean visibility) {
+        if (visibility) {
+            this.textureIdNow = 1;
+        } else {
+            this.textureIdNow = 0;
+        }
+    }
+
     @Override
     public Image getTexture() {
         Image img = this.textures.get(this.textureIdNow);

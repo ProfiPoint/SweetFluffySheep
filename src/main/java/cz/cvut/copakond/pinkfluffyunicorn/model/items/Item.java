@@ -3,6 +3,8 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+import javafx.scene.image.Image;
 
 public class Item extends GameObject implements IItem {
     public static ItemEnum ItemEffect;
@@ -35,5 +37,11 @@ public class Item extends GameObject implements IItem {
     @Override
     public ItemEnum getItemEffect() {
         return itemEffect;
+    }
+
+    @Override
+    public Image getTexture() {
+        this.textureIdNow = (int)((Level.getCurrentCalculatedFrame()/6) % 32);
+        return this.textures.get(this.textureIdNow);
     }
 }
