@@ -24,6 +24,11 @@ public class Level {
     private static String levelPath;
     private static String profilesPath;
     private static String path;
+
+    // 10 seconds with 60 FPS and 2x speed => currentRenderedFrame = 600, currentCalculatedFrame = 1200
+    private static long currentRenderedFrame = 0;
+    private static long currentCalculatedFrame = 0;
+
     private final String levelName;
     private boolean isLevelEditor = false;
     private boolean isStoryLevel = false; // false = custom level, true = non deletable default level
@@ -48,6 +53,8 @@ public class Level {
     private Map<int[], Integer> tileMap = new HashMap<int[], Integer>();
 
     private double timeLeft;
+
+
 
 
     private void initLevel(String level, boolean isLevelEditor, boolean storyLevel, boolean newLevel) {
@@ -114,14 +121,26 @@ public class Level {
        profilesPath = p;
     }
 
+    public static long getCurrentRenderedFrame() {
+        return currentRenderedFrame;
+    }
+
+    public static long getCurrentCalculatedFrame() {
+        return currentCalculatedFrame;
+    }
+
     // used to update the level by the game loop
     public void tick(boolean doesTimeFlow) {
-        if (doesTimeFlow && timeLeft > 0 && GameObject.getGameStatus() == GameStatusEnum.RUNNING) {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                timeLeft = 0;
+        if (doesTimeFlow){
+            currentRenderedFrame++;
+            if (timeLeft > 0 && GameObject.getGameStatus() == GameStatusEnum.RUNNING) {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                }
             }
         }
+        currentCalculatedFrame++;
 
         // GameObjects are updated in another thread, so we need to catch the exception
         try {

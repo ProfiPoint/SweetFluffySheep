@@ -5,6 +5,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -37,11 +38,11 @@ public class Character extends GameObject implements ICharacter {
         this.previousEvent = previousEvent;
     }
 
-    public void move(double tiles) {
+    public void move(double tiles, boolean doesTimeFlow) {
         PhisicsEventsEnum event = GamePhysics.checkCollision(this);
 
         // continue rotating if it started rotating, thus is not in stable rotation rn.
-        if (textureRotation != direction.getValue()) {
+        if (textureRotation != direction.getValue() && doesTimeFlow) {
             boolean clockwise = GamePhysics.decideClockwiseRotation(textureRotation, direction);
             if (!clockwise) {
                 textureRotation = (int)(textureRotation + textureRotationSpeed) % 360;
@@ -130,38 +131,21 @@ public class Character extends GameObject implements ICharacter {
     @Override
     public void tick(boolean doesTimeFlow) {
         super.tick(doesTimeFlow);
-        move((double)1/GameObject.getFPS());
+        move((double)1/GameObject.getFPS(), doesTimeFlow);
     }
 
     @Override
     public Image getTexture() {
-        Image img = this.textures.get(this.textureIdNow);
-
-        if (this.textureRotation != 0) {
-            double width = img.getWidth();
-            double height = img.getHeight();
-
-            Canvas canvas = new Canvas(width, height);
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-
-            // Draw rotated image onto transparent canvas
-            gc.save();
-            gc.translate(width / 2, height / 2);
-            gc.rotate(this.textureRotation);
-            gc.translate(-width / 2, -height / 2);
-            gc.drawImage(img, 0, 0);
-            gc.restore();
-
-            // Set up snapshot parameters with transparency
-            SnapshotParameters params = new SnapshotParameters();
-            params.setFill(Color.TRANSPARENT); // this is the key to keeping transparency
-
-            WritableImage rotatedImg = new WritableImage((int) width, (int) height);
-            canvas.snapshot(params, rotatedImg);
-
-            return rotatedImg;
+        int orientation = (this.textureRotation / 90);
+        if (this.textureRotation % 90 != 0) {
+            // in rotation animation
+            this.textureIdNow = (25 * ((orientation+2) % 4)) + 16 + ((this.textureRotation)/textureRotationSpeed + 9) % 9;
+            System.out.println("Texture " +this.textures.get(this.textureIdNow).getUrl());
+            return this.textures.get(this.textureIdNow);
+        } else {
+            // in movement animation
+            this.textureIdNow = (25 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/4) % 16) + 1;
+            return this.textures.get(this.textureIdNow);
         }
-
-        return img;
     }
 }

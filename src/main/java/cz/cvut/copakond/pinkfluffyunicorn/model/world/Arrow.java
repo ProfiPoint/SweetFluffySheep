@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
@@ -60,33 +61,7 @@ public class Arrow extends GameObject {
 
     @Override
     public Image getTexture() {
-        Image img = this.textures.get(this.textureIdNow);
-
-        if (this.textureRotation != 0) {
-            double width = img.getWidth();
-            double height = img.getHeight();
-
-            Canvas canvas = new Canvas(width, height);
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-
-            // Draw rotated image onto transparent canvas
-            gc.save();
-            gc.translate(width / 2, height / 2);
-            gc.rotate(this.textureRotation);
-            gc.translate(-width / 2, -height / 2);
-            gc.drawImage(img, 0, 0);
-            gc.restore();
-
-            // Set up snapshot parameters with transparency
-            SnapshotParameters params = new SnapshotParameters();
-            params.setFill(Color.TRANSPARENT); // this is the key to keeping transparency
-
-            WritableImage rotatedImg = new WritableImage((int) width, (int) height);
-            canvas.snapshot(params, rotatedImg);
-
-            return rotatedImg;
-        }
-
-        return img;
+        this.textureIdNow = ((this.textureRotation)/textureRotationSpeed + 9) % this.textures.size();
+        return this.textures.get(this.textureIdNow);
     }
 }

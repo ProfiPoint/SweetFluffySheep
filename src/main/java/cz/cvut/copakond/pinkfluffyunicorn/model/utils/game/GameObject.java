@@ -121,10 +121,6 @@ public class GameObject implements IGameObject {
         this.textureIdNow = textureId;
     }
 
-    public void nextTexture() {
-        this.textureIdNow = (this.textureIdNow + 1) % this.textures.size();
-    }
-
     protected void loadTextures(String textureName) {
         List<Image> textures = textureManager.getTexture(textureName);
         List<int[]> textureSizes = textureManager.getTextureSizes(textures);

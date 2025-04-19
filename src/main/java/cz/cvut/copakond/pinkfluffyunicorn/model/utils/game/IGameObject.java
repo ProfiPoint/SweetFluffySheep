@@ -20,5 +20,4 @@ public interface IGameObject {
     // Textures {get, set}
     Image getTexture();
     int[] getTextureSize();
-    void nextTexture();
 }

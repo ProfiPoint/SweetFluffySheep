@@ -4,8 +4,8 @@
   "goal": [12,8,0],
   "mapSize": [24,12],
   "timeLimit":180,
-  "unicorns": 10,
-  "goalUnicorns": 5,
+  "unicorns": 1,
+  "goalUnicorns": 1,
   "maxArrows": 20,
   "creator": "ProfiPoint",
   "creatorUpdated": "ProfiPoint",
@@ -302,7 +302,7 @@
     "23-11": 1
   },
   "enemies": {
-    "10-10": 0
+   
   },
   "items":[
     [5,8,1,15],

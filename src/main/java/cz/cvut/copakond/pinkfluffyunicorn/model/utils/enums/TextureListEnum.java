@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum TextureListEnum {
-    CLOUD("cloud", "cloud.png",1),
-    UNICORN("unicorn", "unicorn.png", 1),
+    CLOUD("cloud", "characters/clouds/cloud_{i}.png",100),
+    UNICORN("unicorn", "characters/unicorns/unicorn_{i}.png", 100),
     TILE("tile", "tile_{i}.png",2), // tile_001, tile_002
     START("start", "start.png",1),
     GOAL("goal", "goal_{b}.png",2), // end_true, end_false
@@ -14,7 +14,7 @@ public enum TextureListEnum {
     COIN("coin", "coin.png", 1),
     FIRE("fire", "fire_{i}.png", 1),
     RAINBOW("rainbow", "rainbow_{i}.png", 1),
-    ARROW("arrow", "arrow.png", 1);
+    ARROW("arrow", "arrows/arrow_{i}.png", 36);
 
     private final String name;
     private String fileName;
