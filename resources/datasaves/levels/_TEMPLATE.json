@@ -1,32 +1,42 @@
 {
-  "defaultLevel": false,
-  "start": [10,8,0],
-  "goal": [12,8,0],
-  "mapSize": [24,12],
-  "timeLimit":180,
-  "unicorns": 10,
-  "goalUnicorns": 1,
-  "maxArrows": 20,
+  "updatedTime": 29084541,
   "creator": "ProfiPoint",
-  "creatorUpdated": "ProfiPoint",
+  "goal": [5,0,0],
+  "mapSize": [24,12],
   "creationTime": 0,
-  "updatedTime": 0,
-  "tiles": {
-    "10-9": 2,
-    "11-9": 1,
-    "10-10": 1,
-    "10-11": 2,
-    "11-10": 2,
-    "11-11": 1
-  },
+  "maxArrows": 20,
+  "defaultLevel": false,
+  "start": [1,1,180],
   "enemies": {
-    "10-10": 0
+    "5-2": 270
   },
-  "coins":[
-    [10,11]
-  ],
-  "items":[
-    [11,11,0,10],
-    [11,10,1,10]
+  "timeLimit": 180,
+  "unicorns": 8,
+  "tiles": {
+    "0-1": 2,
+    "1-1": 1,
+    "1-2": 2,
+    "2-1": 2,
+    "1-3": 1,
+    "2-2": 1,
+    "3-1": 1,
+    "2-3": 2,
+    "4-1": 2,
+    "3-2": 2,
+    "5-0": 2,
+    "3-3": 1,
+    "4-2": 1,
+    "5-1": 1,
+    "4-3": 2,
+    "5-2": 2,
+    "5-3": 1
+  },
+  "goalUnicorns": 8,
+  "creatorUpdated": "ProfiPoint",
+  "items": [
+    [5,3,0,15],
+    [4,3,0,15],
+    [2,2,1,15],
+    [3,2,2,15]
   ]
 }
