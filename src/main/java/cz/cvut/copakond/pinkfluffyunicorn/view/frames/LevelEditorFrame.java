@@ -2,6 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.LevelEditorObjectsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelEditorUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.PathFinder;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
@@ -105,7 +106,19 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         }
 
         playButton.setOnAction(event -> {
-
+            Level level = gameLoop.getLevel();
+            PathFinder pathFinder = new PathFinder(level);
+            boolean valid = pathFinder.canLevelBeCompleted();
+            if (valid) {
+                level.saveLevel();
+                AppViewManager.get().switchTo(new LevelFrame(level, true));
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid Level");
+                alert.setHeaderText("Level cannot be completed");
+                alert.setContentText("Reason: " + pathFinder.reasonForFailure());
+                alert.showAndWait();
+            }
         });
 
         settingsButton.setOnAction(event -> {
