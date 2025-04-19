@@ -136,6 +136,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         if (isWin) {
             Button nextLevelButton = new Button("Next Level");
             if (isEditor) {
+                messageLabel.setText("Level Accepted!");
                 nextLevelButton.setText("Edit");
                 nextLevelButton.setOnAction(e -> {
                     String[] levelData = gameLoop.getLevel().getLevelData();
@@ -149,6 +150,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
                     AppViewManager.get().switchTo(new LevelEditorFrame(level));
                 });
             } else {
+                messageLabel.setText("Level Not Accepted!");
                 nextLevelButton.setOnAction(e -> {
                     popupStage.close();
                     speedButton.setText("1x");
