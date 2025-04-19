@@ -33,16 +33,30 @@ public class LevelStatusUtils {
         levelData.add(new ArrayList<>(original.get(0))); // normal levels
         levelData.add(new ArrayList<>(original.get(1))); // editor levels
 
+
+
         try {
             int levelNumber = Integer.parseInt(level.getLevelData()[0]);
             if (level.isLevelEditor()) {
                 List<Integer> editorLevels = levelData.get(1);
+                for (int i = 0; i < editorLevels.size(); i++) {
+                    if (editorLevels.get(i) == levelNumber) {
+                        editorLevels.remove(i);
+                        break;
+                    }
+                }
                 editorLevels.add(levelNumber);
-                editorLevels.removeIf(i -> editorLevels.indexOf(i) != editorLevels.lastIndexOf(i));
+
             } else {
                 List<Integer> normalLevels = levelData.get(0);
+                for (int i = 0; i < normalLevels.size(); i++) {
+                    if (normalLevels.get(i) == levelNumber) {
+                        normalLevels.remove(i);
+                        break;
+                    }
+                }
                 normalLevels.add(levelNumber);
-                normalLevels.removeIf(i -> normalLevels.indexOf(i) != normalLevels.lastIndexOf(i));
+
             }
         } catch (NumberFormatException e) {
             System.out.println("Error parsing level number: " + e.getMessage());

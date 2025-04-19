@@ -61,6 +61,23 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         gameLoop.renderScene();
     }
 
+    private boolean saveLevel(String headerText) {
+        Level level = gameLoop.getLevel();
+        PathFinder pathFinder = new PathFinder(level);
+        boolean valid = pathFinder.canLevelBeCompleted();
+        if (valid) {
+            level.saveLevel();
+            return true;
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid Level");
+            alert.setHeaderText(headerText);
+            alert.setContentText("Reason: " + pathFinder.reasonForFailure());
+            alert.showAndWait();
+            return false;
+        }
+    }
+
     private GridPane createEditorHudBar() {
         GridPane bar = new GridPane();
         bar.setStyle("-fx-background-color: #222;");
@@ -106,19 +123,18 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         }
 
         playButton.setOnAction(event -> {
-            Level level = gameLoop.getLevel();
-            PathFinder pathFinder = new PathFinder(level);
-            boolean valid = pathFinder.canLevelBeCompleted();
-            if (valid) {
-                level.saveLevel();
-                AppViewManager.get().switchTo(new LevelFrame(level, true));
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Invalid Level");
-                alert.setHeaderText("Level cannot be completed");
-                alert.setContentText("Reason: " + pathFinder.reasonForFailure());
-                alert.showAndWait();
+            if (!saveLevel("Level cannot be completed")) {
+                return;
             }
+
+            String[] levelData = gameLoop.getLevel().getLevelData();
+            Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+            gameLoop.unload();
+            if (!newLevel.loadLevel()) {
+                System.out.println("Level not loaded successfully");
+                return;
+            }
+            AppViewManager.get().switchTo(new LevelFrame(newLevel, true));
         });
 
         settingsButton.setOnAction(event -> {
@@ -130,13 +146,16 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, cancelButtonType);
 
             Map<String, Integer> levelInfo = gameLoop.getLevel().getLevelInfo();
+            int[] mapSize = gameLoop.getLevel().getMapSize();
 
 
             // set the limits for the values
             Spinner<Integer> timeLimitSpinner = new Spinner<>(10, Integer.MAX_VALUE, levelInfo.get("timeLimit"));
             Spinner<Integer> unicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("unicorns"));
-            Spinner<Integer> maxArrowsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("maxArrows"));
             Spinner<Integer> goalUnicornsSpinner = new Spinner<>(1, unicornsSpinner.getValue(), levelInfo.get("goalUnicorns"));
+            Spinner<Integer> maxArrowsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("maxArrows"));
+            Spinner<Integer> mapSizeXSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[0]);
+            Spinner<Integer> mapSizeYSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[1]);
             Spinner<Integer> itemDurationSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("deafultItemDuration"));
 
             // user can edit the values with keyboard
@@ -144,6 +163,8 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             unicornsSpinner.setEditable(true);
             maxArrowsSpinner.setEditable(true);
             goalUnicornsSpinner.setEditable(true);
+            mapSizeXSpinner.setEditable(true);
+            mapSizeYSpinner.setEditable(true);
             itemDurationSpinner.setEditable(true);
 
             GridPane grid = new GridPane();
@@ -155,10 +176,14 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             grid.add(timeLimitSpinner, 1, 0);
             grid.add(new Label("Unicorns:"), 0, 1);
             grid.add(unicornsSpinner, 1, 1);
+            grid.add(new Label("Goal Unicorns:"), 2, 1);
+            grid.add(goalUnicornsSpinner, 3, 1);
             grid.add(new Label("Max Arrows:"), 0, 2);
             grid.add(maxArrowsSpinner, 1, 2);
-            grid.add(new Label("Goal Unicorns:"), 0, 3);
-            grid.add(goalUnicornsSpinner, 1, 3);
+            grid.add(new Label("Map Size (Width):"), 0, 3);
+            grid.add(mapSizeXSpinner, 1, 3);
+            grid.add(new Label("Map Size (Height):"), 2, 3);
+            grid.add(mapSizeYSpinner, 3, 3);
             grid.add(new Label("Item Duration (s):"), 0, 4);
             grid.add(itemDurationSpinner, 1, 4);
 
@@ -169,16 +194,36 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             if (result.isPresent() && result.get() == confirmButtonType) {
                 levelInfo.put("timeLimit", timeLimitSpinner.getValue());
                 levelInfo.put("unicorns", unicornsSpinner.getValue());
-                levelInfo.put("maxArrows", maxArrowsSpinner.getValue());
                 levelInfo.put("goalUnicorns", goalUnicornsSpinner.getValue());
+                levelInfo.put("maxArrows", maxArrowsSpinner.getValue());
                 levelInfo.put("deafultItemDuration", itemDurationSpinner.getValue());
                 System.out.println("Level settings updated: " + levelInfo);
+                // check if the map size is updated
+                if (mapSize[0] != mapSizeXSpinner.getValue() || mapSize[1] != mapSizeYSpinner.getValue()) {
+                    mapSize[0] = mapSizeXSpinner.getValue();
+                    mapSize[1] = mapSizeYSpinner.getValue();
+                    System.out.println("Map size updated: " + Arrays.toString(mapSize));
+
+                    // now reload the level
+                    if (!saveLevel("Level can not be resized")) {
+                        return;
+                    }
+
+                    String[] levelData = gameLoop.getLevel().getLevelData();
+                    Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+                    gameLoop.unload();
+                    if (!newLevel.loadLevel()) {
+                        System.out.println("Level not loaded successfully");
+                        return;
+                    }
+                    AppViewManager.get().switchTo(new LevelEditorFrame(newLevel));
+                }
             }
         });
 
         menuButton.setOnAction(e -> {
             gameLoop.unload();
-            AppViewManager.get().switchTo(new MenuFrame());
+            AppViewManager.get().switchTo(new LevelSelectionFrame(true));
         });
 
         bar.add(playButton, col++, 0);

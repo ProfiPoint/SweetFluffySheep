@@ -58,17 +58,20 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
         if (editorMode) {
             customLevelsCount++;
             userLabel.setText("User Created Levels (Editor Mode: Click to edit)");
-            storyLabel.setText("Story Mode (Editor Mode: Click to edit)");
+            contentLayout.getChildren().addAll(storyGrid, userLabel, userGrid);
+        } else {
+            setupGrid(storyGrid, storyLevelsCount, "Story", storyButtons);
+            contentLayout.getChildren().addAll(storyLabel, storyGrid, userLabel, userGrid);
         }
 
-        setupGrid(storyGrid, storyLevelsCount, "Story", storyButtons);
+
         setupGrid(userGrid, customLevelsCount, "User", userButtons);
 
         storyLabel.setTextFill(Color.WHITE);
         userLabel.setTextFill(Color.WHITE);
 
         contentLayout.setAlignment(Pos.CENTER);
-        contentLayout.getChildren().addAll(storyLabel, storyGrid, userLabel, userGrid);
+
 
         StackPane layout = new StackPane();
         layout.getChildren().add(contentLayout);
@@ -113,9 +116,9 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
             levelButton.setOnAction(e -> {
                 System.out.println(prefix + " Level " + levelNumber + " clicked");
                 Integer levelNum = levelNumber;
-                Level level = new Level(Integer.toString(levelNum), editorMode, prefix.equals("Story"));
-                // true,
-                // else false
+                Level level = new Level(Integer.toString(levelNum), editorMode, prefix.equals("Story"),
+                        levelButton.getText().equals("+"));
+
                 if (!level.loadLevel()) {
                     System.out.println("Level not loaded successfully");
                     return;
@@ -123,7 +126,7 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
                 if (editorMode) {
                     AppViewManager.get().switchTo(new LevelEditorFrame(level));
                 } else {
-                    AppViewManager.get().switchTo(new LevelFrame(level, editorMode));
+                    AppViewManager.get().switchTo(new LevelFrame(level, false));
                 }
 
             });

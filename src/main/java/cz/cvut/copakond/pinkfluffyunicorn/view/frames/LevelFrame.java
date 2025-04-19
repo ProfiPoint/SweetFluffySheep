@@ -40,9 +40,11 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
     private final Button menuButton = new Button("Menu");
 
     private boolean popupShown = false;
+    private final boolean isEditor;
 
     public LevelFrame(Level level, boolean isEditor) {
         gameLoop = new GameLoop(this, level);
+        this.isEditor = isEditor;
         this.canvas = new Canvas();
         this.gameLoop.getLevel().Play();
 
@@ -58,6 +60,10 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
         gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
         gameLoop.resume();
+
+        if (isEditor) {
+            menuButton.setText("Edit");
+        }
     }
 
     @Override
@@ -101,7 +107,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         Stage popupStage = new Stage();
         popupStage.setTitle("Game Result");
 
-        // Make the popup modal (blocks input to other windows)
+        // make the popup modal
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.initOwner(this.getScene().getWindow());
 
@@ -109,30 +115,71 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         messageLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;");
 
         Button backToMenuButton = new Button("Back to Menu");
-        backToMenuButton.setOnAction(e -> {
-            popupStage.close();
-            gameLoop.unload();
-            AppViewManager.get().switchTo(new MenuFrame());
-        });
+        if (isEditor) {
+            backToMenuButton.setText("Retry");
+            backToMenuButton.setOnAction(e -> {
+                popupStage.close();
+                resetLevel();
+            });
+        } else {
+            backToMenuButton.setOnAction(e -> {
+                popupStage.close();
+                gameLoop.unload();
+                AppViewManager.get().switchTo(new LevelSelectionFrame(false));
+            });
+        }
+
 
         VBox buttonBox = new VBox(10);
         buttonBox.setAlignment(Pos.CENTER);
 
         if (isWin) {
             Button nextLevelButton = new Button("Next Level");
-            nextLevelButton.setOnAction(e -> {
-                popupStage.close();
-                speedButton.setText("1x");
-                pauseButton.setText("Pause");
-                gameLoop.setNewLevel();
-            });
+            if (isEditor) {
+                nextLevelButton.setText("Edit");
+                nextLevelButton.setOnAction(e -> {
+                    String[] levelData = gameLoop.getLevel().getLevelData();
+                    Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+                    gameLoop.unload();
+                    if (!level.loadLevel()) {
+                        System.out.println("Level not loaded successfully");
+                        return;
+                    }
+                    popupStage.close();
+                    AppViewManager.get().switchTo(new LevelEditorFrame(level));
+                });
+            } else {
+                nextLevelButton.setOnAction(e -> {
+                    popupStage.close();
+                    speedButton.setText("1x");
+                    pauseButton.setText("Pause");
+                    gameLoop.setNewLevel();
+                });
+            }
+
             buttonBox.getChildren().addAll(backToMenuButton, nextLevelButton);
         } else {
             Button retryLevelButton = new Button("Retry");
-            retryLevelButton.setOnAction(e -> {
-                popupStage.close();
-                resetLevel();
-            });
+            if (isEditor) {
+                retryLevelButton.setText("Edit");
+                retryLevelButton.setOnAction(e -> {
+                    String[] levelData = gameLoop.getLevel().getLevelData();
+                    Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+                    gameLoop.unload();
+                    if (!level.loadLevel()) {
+                        System.out.println("Level not loaded successfully");
+                        return;
+                    }
+                    popupStage.close();
+                    AppViewManager.get().switchTo(new LevelEditorFrame(level));
+                });
+            } else {
+                retryLevelButton.setOnAction(e -> {
+                    popupStage.close();
+                    resetLevel();
+                });
+            }
+
             buttonBox.getChildren().addAll(backToMenuButton, retryLevelButton);
         }
 
@@ -146,11 +193,10 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         popupStage.setResizable(false);
 
         popupStage.setOnCloseRequest(e -> {
-            // Ensure game stays paused or handled if user clicks X
-            e.consume(); // Prevent closing if you want full control
+            e.consume();
         });
 
-        popupStage.showAndWait(); // BLOCKS everything until popup closes
+        popupStage.showAndWait();
     }
 
     public void checkGameStatus(){
@@ -248,8 +294,6 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         bar.setStyle("-fx-background-color: #222;");
         bar.setAlignment(Pos.CENTER_LEFT);
 
-        // Create UI components
-
         pauseButton.setOnAction(event -> {
             if (gameLoop.isRunning()) {
                 pauseButton.setText("Resume");
@@ -261,8 +305,19 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         });
 
         menuButton.setOnAction(e -> {
-            gameLoop.unload();
-            AppViewManager.get().switchTo(new MenuFrame());
+            if (isEditor) {
+                String[] levelData = gameLoop.getLevel().getLevelData();
+                Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+                gameLoop.unload();
+                if (!level.loadLevel()) {
+                    System.out.println("Level not loaded successfully");
+                    return;
+                }
+                AppViewManager.get().switchTo(new LevelEditorFrame(level));
+            } else {
+                gameLoop.unload();
+                AppViewManager.get().switchTo(new LevelSelectionFrame(false));
+            }
         });
 
         retryButton.setOnAction(e -> {
@@ -276,13 +331,10 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
             gameLoop.resume();
         });
 
-
-        // Styling for labels
         coinsLabel.setStyle("-fx-text-fill: gold; -fx-font-weight: bold;");
         lifesLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
         timeLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
 
-        // Put all elements in an array to loop through
         javafx.scene.Node[] nodes = {
                 speedButton, coinsLabel, lifesLabel, timeLabel,
                 pauseButton, retryButton, menuButton
@@ -291,14 +343,12 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         for (javafx.scene.Node node : nodes) {
             if (node instanceof Region) {
                 ((Region) node).setMaxWidth(Double.MAX_VALUE);
-                HBox.setHgrow(node, Priority.ALWAYS); // Allow even horizontal growth
+                HBox.setHgrow(node, Priority.ALWAYS);
             }
         }
 
-        // Add all to the bar (no spacer needed)
         bar.getChildren().addAll(nodes);
 
-        // Let the bar expand fully
         bar.setMaxWidth(Double.MAX_VALUE);
         bar.setPrefWidth(Double.MAX_VALUE);
 
@@ -312,6 +362,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
     }
     
     void resetLevel() {
+        popupShown = false;
         speedButton.setText("1x");
         pauseButton.setText("Pause");
         gameLoop.resetLevel();

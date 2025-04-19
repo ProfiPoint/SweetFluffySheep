@@ -5,12 +5,9 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.ItemFactory;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.*;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.LoadManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.SaveManager;
@@ -27,13 +24,14 @@ public class Level {
     private static String levelPath;
     private static String profilesPath;
     private static String path;
-    private String levelName;
+    private final String levelName;
     private boolean isLevelEditor = false;
-    private boolean isStoryLevel = false; // false = custom level, true = non deleteable default level
+    private boolean isStoryLevel = false; // false = custom level, true = non deletable default level
 
-    // game objects itselfs
+    // game objects itself
     private int[] mapSize;
     private boolean defaultLevel = false;
+    private boolean levelIsCompleted = false;
 
     private Start start;
     private Goal goal;
@@ -51,30 +49,43 @@ public class Level {
 
     private double timeLeft;
 
-    public Level(String level, boolean isLevelEditor, boolean storyLevel) {
+
+    private void initLevel(String level, boolean isLevelEditor, boolean storyLevel, boolean newLevel) {
         if (storyLevel) {
             path = levelPath + "/";
         } else {
             path = profilesPath + "/" + ProfileManager.getCurrentProfile() + "/";
         }
-        this.levelName = level;
+
         this.isLevelEditor = isLevelEditor;
         this.isStoryLevel = storyLevel;
 
-        if (isLevelEditor) {
-            levelData = JsonFileManager.readJsonFromFile(path + "_TEMPLATE.json");
+        if (newLevel) {
+            levelData = JsonFileManager.readJsonFromFile(levelPath + "/_TEMPLATE.json");
             if (levelData == null) {
                 ErrorMsgsEnum.LOAD_DEFAULT.getValue();
             } else {
                 System.out.println("Default Level loaded");
             }
+        } else {
+            levelData = JsonFileManager.readJsonFromFile(path + level + ".json");
         }
-        levelData = JsonFileManager.readJsonFromFile(path + level + ".json");
+
         if (levelData == null) {
             ErrorMsgsEnum.CUSTOM_ERROR.getValue("Error loading level data");
         } else {
             System.out.println("Level loaded");
         }
+    }
+
+    public Level(String level, boolean isLevelEditor, boolean storyLevel, boolean newLevel) {
+        this.levelName = level;
+        initLevel(level, isLevelEditor, storyLevel, newLevel);
+    }
+
+    public Level(String level, boolean isLevelEditor, boolean storyLevel) {
+        this.levelName = level;
+        initLevel(level, isLevelEditor, storyLevel, false);
     }
 
     // used to render the level
@@ -105,7 +116,7 @@ public class Level {
 
     // used to update the level by the game loop
     public void tick(boolean doesTimeFlow) {
-        if (doesTimeFlow) {
+        if (doesTimeFlow && timeLeft > 0 && GameObject.getGameStatus() == GameStatusEnum.RUNNING) {
             timeLeft--;
             if (timeLeft <= 0) {
                 timeLeft = 0;
@@ -179,7 +190,7 @@ public class Level {
         return true; // level is loaded successfully, without any errors :D
     }
 
-    public boolean saveLevel(String levelName) {
+    public boolean saveLevel() {
         JSONObject levelData = new JSONObject();
         SaveManager sm = new SaveManager(levelData);
 
@@ -264,10 +275,15 @@ public class Level {
         }
         objects = new ArrayList<>();
         GamePhysics.unloadMapObjects();
+        levelIsCompleted = false;
     }
 
     public void Completed() {
+        if (levelIsCompleted) {
+            return;
+        }
         LevelStatusUtils.markLevelAsCompleted(this);
+        levelIsCompleted = true;
     }
 
     public String[] getLevelData() {

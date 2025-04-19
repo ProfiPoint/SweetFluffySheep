@@ -145,7 +145,7 @@ public class PathFinder {
             int y = pos[1];
 
             tileMap[x][y] = PathFinderEnum.VISITED;
-            
+
             if (x == goalX && y == goalY) {
                 goalFound = true;
                 if (coinCount == 0) {

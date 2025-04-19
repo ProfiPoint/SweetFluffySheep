@@ -7,8 +7,6 @@ public class FireItem extends Item {
 
     public FireItem(double[] position, int duration) {
         super("fire", position, duration, ItemEnum.FIRE);
-        System.out.println("duration: " + duration);
-
     }
 
     public static boolean isActive() {
