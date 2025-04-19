@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
+package cz.cvut.copakond.pinkfluffyunicorn.view.interfaces;
 
 public interface ILevelFrame {
     void drawLevelObjects();

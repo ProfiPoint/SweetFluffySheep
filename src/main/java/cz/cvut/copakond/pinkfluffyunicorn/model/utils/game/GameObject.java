@@ -1,7 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.game;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.TextureManager;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
 import javafx.scene.image.Image;
 

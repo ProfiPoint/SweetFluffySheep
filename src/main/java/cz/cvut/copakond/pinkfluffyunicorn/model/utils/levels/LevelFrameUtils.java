@@ -1,5 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+
 public class LevelFrameUtils {
     private final static double levelBoxHeightCoeff = (1 - 11.111 / 100);
     

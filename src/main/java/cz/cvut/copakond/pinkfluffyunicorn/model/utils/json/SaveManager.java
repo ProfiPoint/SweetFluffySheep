@@ -76,9 +76,9 @@ public class SaveManager {
         data.put("coins", coinsArray);
     }
 
-    public void addItemsData(List<IItem> items) {
+    public void addItemsData(List<Item> items) {
         JSONArray itemsArray = new JSONArray();
-        for (IItem item : items) {
+        for (Item item : items) {
             double[] itemPos = item.getPosition();
             itemsArray.put(new JSONArray(new int[]{(int)Math.round(itemPos[0]), (int)Math.round(itemPos[1]),
                     item.getItemEffect().ordinal(), 15})); // Assuming duration is 15

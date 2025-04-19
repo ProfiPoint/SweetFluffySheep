@@ -1,8 +1,9 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
+package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.ItemFactory;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
@@ -13,10 +14,8 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.LoadManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.SaveManager;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Arrow;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
-import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.GamePhysics;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -41,7 +40,7 @@ public class Level {
     private List<Tile> tiles = new ArrayList<Tile>();
     private List<Cloud> enemies = new ArrayList<Cloud>();
     private List<Unicorn> unicorns = new ArrayList<Unicorn>();
-    private List<IItem> items = new ArrayList<IItem>();
+    private List<Item> items = new ArrayList<Item>();
     private List<Arrow> arrows = new ArrayList<Arrow>();
     // creator, creatorUpdated
     private Map<String, String> playerInfo = new HashMap<String, String>();
@@ -147,6 +146,7 @@ public class Level {
         levelInfo.put("maxArrows", lm.getIntLimit("maxArrows", mapSize[0]*mapSize[1]));
         levelInfo.put("creationTime", lm.getInt("creationTime"));
         levelInfo.put("updatedTime", lm.getInt("updatedTime"));
+        levelInfo.put("deafultItemDuration", 10); // default item duration in seconds
         if (levelInfo.get("updatedTime") == 0) {levelInfo.put("updatedTime",(int) (System.currentTimeMillis() / (1000 * 60)));}
         if (levelInfo.get("timeLimit") == null || levelInfo.get("unicorns") == null || levelInfo.get("maxArrows") == null ||
                 levelInfo.get("creationTime") == null || levelInfo.get("updatedTime") == null) {return false;}
@@ -171,8 +171,8 @@ public class Level {
         if (itemsCoords == null) {return false;}
         for (int[] itemCoord : itemsCoords) {
             ItemEnum itemEnum = ItemEnum.values()[itemCoord[2]]; // Get the ItemEnum from the coordinate
-            IItem item = ItemFactory.createItem(itemEnum, new double[]{itemCoord[0], itemCoord[1]}, itemCoord[3]);
-            items.add(item);
+            IItem iitem = ItemFactory.createItem(itemEnum, new double[]{itemCoord[0], itemCoord[1]}, itemCoord[3]);
+            items.add((Item)iitem);
         }
 
         buildObjectsList();
@@ -329,8 +329,20 @@ public class Level {
         return unicorns;
     }
 
-    public List<IItem> getItems() {
+    public List<Item> getItems() {
         return items;
+    }
+
+    public Map<String, Integer> getLevelInfo() {
+        return levelInfo;
+    }
+
+    public void setStart(Start start) {
+        this.start = start;
+    }
+
+    public void setGoal(Goal goal) {
+        this.goal = goal;
     }
 }
 

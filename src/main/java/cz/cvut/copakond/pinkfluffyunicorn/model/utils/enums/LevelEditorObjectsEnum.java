@@ -1,19 +1,15 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public enum LevelEditorObjectsEnum {
-    //"path", "removePath", "cloud", "coin", "fire", "rainbow", "start", "goal", "destroy"
-    PATH("path"),
-    REMOVEPATH("removePath"),
+    TILE("tile"),
+    REMOVETILE("removeTile"),
     CLOUD("cloud"),
     COIN("coin"),
     FIRE("fire"),
     RAINBOW("rainbow"),
     START("start"),
     GOAL("goal"),
+    ROTATE("rotate"),
     DESTROY("destroy"),
     EMPTY("empty");
 

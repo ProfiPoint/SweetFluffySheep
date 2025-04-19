@@ -2,31 +2,29 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.LevelEditorObjectsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelEditorUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.AppViewManager;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
-import cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder.GameLoop;
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IClickListener;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.GameLoop;
+import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IClickListener;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelFrameUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IDrawableFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.ILevelFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IResizableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IDrawableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.ILevelFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IResizableFrame;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFrame, IDrawableFrame, IClickListener {
     private final GameLoop gameLoop;
@@ -34,8 +32,15 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
     private final GridPane hudBar;
     private LevelEditorObjectsEnum selectedObject = LevelEditorObjectsEnum.EMPTY;
 
-    private final Button playButton = new Button("Play");
-    private final Button menuButton = new Button("Menu");
+    private final Button playButton =     new Button("   Play   ");
+    private final Button settingsButton = new Button("Settings");
+    private final Button menuButton =     new Button("  Menu  ");
+
+    private static String texturePath;
+
+    public static void setTexturePath(String path) {
+        texturePath = path;
+    }
 
     public LevelEditorFrame(Level level) {
         gameLoop = new GameLoop(this, level);
@@ -59,17 +64,27 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         GridPane bar = new GridPane();
         bar.setStyle("-fx-background-color: #222;");
         bar.setAlignment(Pos.CENTER);
-        bar.setPadding(new Insets(5));
+        bar.setPadding(new Insets(1));
         bar.setHgap(5);
 
         String[] imageNames = {
-                "path", "removePath", "cloud", "coin", "fire", "rainbow", "start", "goal", "destroy"
+                "tile", "removeTile", "cloud", "coin", "fire", "rainbow", "start", "goal", "rotate", "destroy"
         };
 
         int col = 0;
         List<Button> imgButtons = new ArrayList<>();
         for (String name : imageNames) {
-            Image image = new Image(getClass().getResourceAsStream("/textures/editor/" + name + ".png"));
+            String fullPath = texturePath + "/editor/" + name + ".png";
+
+            Image image;
+            try {
+                image = new Image(new File(fullPath).toURI().toURL().toExternalForm());
+                ImageView imageView = new ImageView(image);
+                imageView.setPreserveRatio(true);
+            } catch (java.net.MalformedURLException e) {
+                e.printStackTrace();
+                continue;
+            }
             ImageView imageView = new ImageView(image);
             imageView.setPreserveRatio(true);
 
@@ -93,12 +108,68 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
 
         });
 
+        settingsButton.setOnAction(event -> {
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Level Settings");
+
+            ButtonType confirmButtonType = new ButtonType("Confirm");
+            ButtonType cancelButtonType = new ButtonType("Cancel");
+            dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, cancelButtonType);
+
+            Map<String, Integer> levelInfo = gameLoop.getLevel().getLevelInfo();
+
+
+            // set the limits for the values
+            Spinner<Integer> timeLimitSpinner = new Spinner<>(10, Integer.MAX_VALUE, levelInfo.get("timeLimit"));
+            Spinner<Integer> unicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("unicorns"));
+            Spinner<Integer> maxArrowsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("maxArrows"));
+            Spinner<Integer> goalUnicornsSpinner = new Spinner<>(1, unicornsSpinner.getValue(), levelInfo.get("goalUnicorns"));
+            Spinner<Integer> itemDurationSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("deafultItemDuration"));
+
+            // user can edit the values with keyboard
+            timeLimitSpinner.setEditable(true);
+            unicornsSpinner.setEditable(true);
+            maxArrowsSpinner.setEditable(true);
+            goalUnicornsSpinner.setEditable(true);
+            itemDurationSpinner.setEditable(true);
+
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
+
+            grid.add(new Label("Time Limit (s):"), 0, 0);
+            grid.add(timeLimitSpinner, 1, 0);
+            grid.add(new Label("Unicorns:"), 0, 1);
+            grid.add(unicornsSpinner, 1, 1);
+            grid.add(new Label("Max Arrows:"), 0, 2);
+            grid.add(maxArrowsSpinner, 1, 2);
+            grid.add(new Label("Goal Unicorns:"), 0, 3);
+            grid.add(goalUnicornsSpinner, 1, 3);
+            grid.add(new Label("Item Duration (s):"), 0, 4);
+            grid.add(itemDurationSpinner, 1, 4);
+
+            dialog.getDialogPane().setContent(grid);
+
+            // update the values, when the user changes the number of unicorns
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.isPresent() && result.get() == confirmButtonType) {
+                levelInfo.put("timeLimit", timeLimitSpinner.getValue());
+                levelInfo.put("unicorns", unicornsSpinner.getValue());
+                levelInfo.put("maxArrows", maxArrowsSpinner.getValue());
+                levelInfo.put("goalUnicorns", goalUnicornsSpinner.getValue());
+                levelInfo.put("deafultItemDuration", itemDurationSpinner.getValue());
+                System.out.println("Level settings updated: " + levelInfo);
+            }
+        });
+
         menuButton.setOnAction(e -> {
             gameLoop.unload();
             AppViewManager.get().switchTo(new MenuFrame());
         });
 
         bar.add(playButton, col++, 0);
+        bar.add(settingsButton, col++, 0);
         bar.add(menuButton, col++, 0);
 
         for (int i = 0; i < col; i++) {
@@ -111,7 +182,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
     }
 
     private void adjustFontSize(double width) {
-        double fontSize = width / 50;
+        double fontSize = width / 75;
 
         for (Node node : hudBar.getChildrenUnmodifiable()) {
             if (node instanceof Button button) {
@@ -192,11 +263,6 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
 
     @Override
     public void handleClick(MouseEvent event) {
-        if (!gameLoop.isRunning() || gameLoop.elapsedSeconds() < 1) return;
-
-        int button = event.getButton().name().equals("PRIMARY") ? 1 :
-                event.getButton().name().equals("SECONDARY") ? 2 : 0;
-
         int[] canvasSize = {(int) canvas.getWidth(), (int) canvas.getHeight()};
         int[] appCanvasSize = {(int) AppViewManager.get().getScene().getWidth(),
                 (int) AppViewManager.get().getScene().getHeight()};
@@ -209,9 +275,13 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
 
         if (tileClick[0] == -1) return;
 
-        gameLoop.getLevel().PlaceRotateRemoveArrow(tileClick, button);
+        LevelEditorUtils.addObjectToLevel(
+                new double[]{tileClick[0], tileClick[1]},
+                selectedObject
+        );
         gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
         gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
+        gameLoop.renderScene();
     }
 
     @Override

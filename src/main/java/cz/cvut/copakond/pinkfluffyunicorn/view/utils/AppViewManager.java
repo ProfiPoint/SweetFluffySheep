@@ -1,8 +1,8 @@
-package cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder;
+package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IClickListener;
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IDrawableFrame;
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.IResizableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IClickListener;
+import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IDrawableFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IResizableFrame;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

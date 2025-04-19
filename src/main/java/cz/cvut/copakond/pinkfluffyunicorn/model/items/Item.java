@@ -5,6 +5,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 
 public class Item extends GameObject implements IItem {
+    public static ItemEnum ItemEffect;
     protected int duration_ticks;
     private ItemEnum itemEffect;
     private boolean pickable;

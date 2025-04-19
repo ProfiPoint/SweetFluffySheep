@@ -26,7 +26,7 @@ public class GamePhysics {
     private static int[] mapSize;
     private static Map<int[], Tile> tileMap;
     private static List<Cloud> enemies;
-    private static List<IItem> items;
+    private static List<Item> items;
     private static Start start;
     private static Goal goal;
     private static List<Arrow> arrows;
@@ -34,7 +34,7 @@ public class GamePhysics {
     private static boolean initialized = false;
 
     public static void loadMapObjects(int[] mapSize, Start start, Goal goal, List<Tile> tiles, List<Cloud> enemies,
-                                      List<IItem> items, List<Arrow> arrows) {
+                                      List<Item> items, List<Arrow> arrows) {
         if (initialized) {
             ErrorMsgsEnum.PHISICS_ALREADY_INIT.getValue();
         }

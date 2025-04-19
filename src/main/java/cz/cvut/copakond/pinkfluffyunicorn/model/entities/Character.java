@@ -25,12 +25,14 @@ public class Character extends GameObject implements ICharacter {
     public Character(String textureName, double[] position, DirectionEnum direction) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
         this.direction = direction;
+        this.textureRotation = direction.getValue();
         this.name = textureName;
     }
 
     public Character(String textureName, double[] position, DirectionEnum direction, PhisicsEventsEnum previousEvent) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
         this.direction = direction;
+        this.textureRotation = direction.getValue();
         this.name = textureName;
         this.previousEvent = previousEvent;
     }
@@ -112,6 +114,13 @@ public class Character extends GameObject implements ICharacter {
     void kill() {
         this.visible = false;
         this.alive = false;
+    }
+
+    // for level editor visualization purposes
+    public void rotateCharacterLE(){
+        DirectionEnum direction = this.direction.next();
+        this.direction = direction;
+        this.textureRotation = direction.getValue();
     }
 
     protected void setEnemy(boolean isEnemy) {

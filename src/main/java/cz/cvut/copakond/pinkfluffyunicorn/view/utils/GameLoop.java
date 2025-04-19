@@ -1,9 +1,9 @@
-package cz.cvut.copakond.pinkfluffyunicorn.view.scenebuilder;
+package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.Level;
-import cz.cvut.copakond.pinkfluffyunicorn.view.utils.ILevelFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.ILevelFrame;
 
 import java.util.Comparator;
 import java.util.List;

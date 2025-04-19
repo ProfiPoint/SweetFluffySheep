@@ -1,11 +1,21 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.ItemFactory;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.LevelEditorObjectsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
+import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LevelEditorUtils {
     private static Level level;
@@ -14,21 +24,10 @@ public class LevelEditorUtils {
         LevelEditorUtils.level = level;
     }
 
-    /*PATH("path"),
-    REMOVE_PATH("removePath"),
-    CLOUD("cloud"),
-    COIN("coin"),
-    FIRE("fire"),
-    RAINBOW("rainbow"),
-    START("start"),
-    GOAL("goal"),
-    DESTROY("destroy"),
-    EMPTY("empty");*/
-
-    // returns a list of objects that are at the given position
-    private static List<GameObject> checkPosition(double[] position, List<GameObject> toCheck) {
-        List<GameObject> objects = new ArrayList<>();
-        for (GameObject object : toCheck) {
+    // returns a list of given class objects that are at the given position
+    private static <T extends GameObject> List<T> checkPosition(double[] position, List<T> toCheck) {
+        List<T> objects = new ArrayList<>();
+        for (T object : toCheck) {
             if (object.getPosition()[0] == position[0] && object.getPosition()[1] == position[1]) {
                 objects.add(object);
             }
@@ -36,54 +35,153 @@ public class LevelEditorUtils {
         return objects;
     }
 
-    public static void add_path(double[] position) {
+    public static void addTile(double[] position) {
         List<Tile> tiles = level.getTiles();
-        //List<Tile> objectsInPosition = checkPosition(position, tiles);
+        List<Tile> objectsInPosition = checkPosition(position, tiles);
+        if (objectsInPosition.isEmpty()) {
+            Tile tile = new Tile(position, (int)(position[0] + position[1]) % 2 + 1);
+            tiles.add(tile);
+        }
     }
 
-    public static void remove_path(double[] position) {
-
+    private static boolean isTileAtPosition(double[] position) {
+        List<Tile> tiles = level.getTiles();
+        for (Tile tile : tiles) {
+            if (tile.getPosition()[0] == position[0] && tile.getPosition()[1] == position[1]) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public static void add_cloud(double[] position) {
-
+    public static void removeTile(double[] position) {
+        List<Tile> tiles = level.getTiles();
+        List<Tile> objectsInPosition = checkPosition(position, tiles);
+        for (Tile object : objectsInPosition) {
+            tiles.remove(object);
+            destroyObject(position);
+        }
     }
 
-    public static void add_coin(double[] position) {
-
+    public static void addCloud(double[] position) {
+        if (!isTileAtPosition(position)) {
+            return;
+        }
+        List<Cloud> clouds = level.getEnemies();
+        List<Cloud> objectsInPosition = checkPosition(position, clouds);
+        if (objectsInPosition.isEmpty()) {
+            Cloud cloud = new Cloud(position, DirectionEnum.LEFT);
+            clouds.add(cloud);
+        }
     }
 
-    public static void add_fire(double[] position) {
-
+    private static void addItem(double[] position, ItemEnum itemEffect) {
+        if (!isTileAtPosition(position)) {
+            return;
+        }
+        List<Item> items = level.getItems();
+        List<Item> objectsInPosition = checkPosition(position, items);
+        for (Item object : objectsInPosition) {
+            if (object.getItemEffect() == itemEffect) {
+                return; // item already exists
+            }
+        }
+        Map<String, Integer> levelInfo = level.getLevelInfo();
+        IItem iitem = ItemFactory.createItem(itemEffect, position, levelInfo.get("deafultItemDuration"));
+        items.add((Item) iitem);
     }
 
-    public static void add_rainbow(double[] position) {
-
+    public static void addCoin(double[] position) {
+        addItem(position, ItemEnum.COIN);
     }
 
-    public static void add_start(double[] position) {
-
+    public static void addFire(double[] position) {
+        addItem(position, ItemEnum.FIRE);
     }
 
-    public static void add_goal(double[] position) {
-
+    public static void addRainbow(double[] position) {
+        addItem(position, ItemEnum.RAINBOW);
     }
 
-    public static void destroy_object(double[] position) {
-
+    public static void addStart(double[] position) {
+        if (!isTileAtPosition(position)) {
+            return;
+        }
+        Start start = level.getStart();
+        if (start == null) {
+            start = new Start(position, DirectionEnum.RIGHT);
+            level.setStart(start);
+        } else {
+            start.setPosition(position);
+        }
     }
 
-    public static void addObjectToLevel( double[] position, LevelEditorObjectsEnum objectType) {
+    public static void addGoal(double[] position) {
+        if (!isTileAtPosition(position)) {
+            return;
+        }
+        Goal goal = level.getGoal();
+        if (goal == null) {
+            goal = new Goal(position, DirectionEnum.RIGHT);
+            level.setGoal(goal);
+        } else {
+            goal.setPosition(position);
+        }
+    }
+
+    public static void rotateObject(double[] position) {
+        List<Cloud> clouds = level.getEnemies();
+        Start start = level.getStart();
+        Goal goal = level.getGoal();
+
+        List<Cloud> objectsInPosition = checkPosition(position, clouds);
+        for (Cloud object : objectsInPosition) {
+            object.rotateCharacterLE();
+        }
+
+        if (start != null && start.getPosition()[0] == position[0] && start.getPosition()[1] == position[1]) {
+            start.rotateCharacterLE();
+        }
+
+        if (goal != null && goal.getPosition()[0] == position[0] && goal.getPosition()[1] == position[1]) {
+            goal.rotateCharacterLE();
+        }
+    }
+
+    public static void destroyObject(double[] position) {
+        List<Cloud> clouds = level.getEnemies();
+        List<Item> items = level.getItems();
+        List<Cloud> objectsInPosition = checkPosition(position, clouds);
+        for (Cloud object : objectsInPosition) {
+            clouds.remove(object);
+        }
+        List<Item> objectsInPosition2 = checkPosition(position, items);
+        for (Item object : objectsInPosition2) {
+            items.remove(object);
+        }
+        Start start = level.getStart();
+        if (start != null && start.getPosition()[0] == position[0] && start.getPosition()[1] == position[1]) {
+            level.setStart(null);
+        }
+        Goal goal = level.getGoal();
+        if (goal != null && goal.getPosition()[0] == position[0] && goal.getPosition()[1] == position[1]) {
+            level.setGoal(null);
+        }
+    }
+
+    public static void addObjectToLevel(double[] position, LevelEditorObjectsEnum objectType) {
+        System.out.println("Adding object: " + objectType);
         switch (objectType) {
-            case PATH -> add_path(position);
-            case REMOVEPATH -> remove_path(position);
-            case CLOUD -> add_cloud(position);
-            case COIN -> add_coin(position);
-            case FIRE -> add_fire(position);
-            case RAINBOW -> add_rainbow(position);
-            case START -> add_start(position);
-            case GOAL -> add_goal(position);
-            case DESTROY -> destroy_object(position);
+            case TILE -> addTile(position);
+            case REMOVETILE -> removeTile(position);
+            case CLOUD -> addCloud(position);
+            case COIN -> addCoin(position);
+            case FIRE -> addFire(position);
+            case RAINBOW -> addRainbow(position);
+            case START -> addStart(position);
+            case GOAL -> addGoal(position);
+            case ROTATE -> rotateObject(position);
+            case DESTROY -> destroyObject(position);
         }
     }
 }
