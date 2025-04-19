@@ -3,6 +3,8 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 
 public class Unicorn extends Character {
     private static int counter = 0;
@@ -20,6 +22,7 @@ public class Unicorn extends Character {
     public void kill() {
         super.kill();
         counter--;
+        SoundManager.playSound(SoundListEnum.HERO_DOWN);
         unicornEnteredGoal(false);
         if (counter < goalUnicorns && gameStatus != GameStatusEnum.WIN) {
             System.out.println("Game Over");
@@ -30,6 +33,7 @@ public class Unicorn extends Character {
     public static void unicornEnteredGoal(boolean entered) {
         if (entered) {
             unicornsInGoal++;
+            SoundManager.playSound(SoundListEnum.HERO_FINISH);
         }
 
         if (counter - unicornsInGoal == 0 && unicornsInGoal >= goalUnicorns) {

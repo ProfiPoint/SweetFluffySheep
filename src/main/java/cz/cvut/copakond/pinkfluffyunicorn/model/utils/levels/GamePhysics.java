@@ -6,10 +6,8 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.items.FireItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.RainbowItem;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.*;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.*;
 
 import java.util.HashMap;
@@ -96,7 +94,6 @@ public class GamePhysics {
         double y1 = gameObject1.getY();
         double x2 = gameObject2.getX();
         double y2 = gameObject2.getY();
-
         return getDistance(new double[]{x1, y1}, new double[]{x2, y2});
     }
 
@@ -144,7 +141,7 @@ public class GamePhysics {
             }
             if (!FireItem.isActive() && !RainbowItem.isActive()) {
                 for (Cloud enemy : enemies) {
-                    if (enemy.isVisible() && isColliding(character, enemy, 2)) {
+                    if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS())) {
                         return PhisicsEventsEnum.SHEEP_KILLED;
                     }
                 }
@@ -152,7 +149,7 @@ public class GamePhysics {
 
             if (RainbowItem.isActive()){
                 for (Cloud enemy : enemies) {
-                    if (character.isVisible() && isColliding(character, enemy, 2)) {
+                    if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS())) {
                         enemy.kill();
                     }
                 }

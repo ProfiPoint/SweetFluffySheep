@@ -1,6 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
@@ -33,6 +35,7 @@ public class Goal extends GameObject {
         super.tick(doesTimeFlow);
         if (this.locked && Coin.getCoinsLeft() <= 0) {
             this.locked = false;
+            SoundManager.playSound(SoundListEnum.GOAL_UNLOCKED);
         }
     }
 
@@ -46,6 +49,7 @@ public class Goal extends GameObject {
         this.textureIdNow = (32 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/6) % 32);
         if (this.locked) {
             this.textureIdNow += 32*4;
+
         }
         return this.textures.get(this.textureIdNow);
     }

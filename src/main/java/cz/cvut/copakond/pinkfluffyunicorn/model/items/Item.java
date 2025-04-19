@@ -1,6 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
@@ -27,6 +29,9 @@ public class Item extends GameObject implements IItem {
     @Override
     public boolean use() {
         if (pickable){
+            if (itemEffect != ItemEnum.COIN) {
+                SoundManager.playSound(SoundListEnum.PRIZE);
+            }
             pickable = false;
             super.visible = false;
             return true;

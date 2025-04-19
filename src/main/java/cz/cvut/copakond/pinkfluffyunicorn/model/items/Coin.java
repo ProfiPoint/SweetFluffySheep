@@ -2,6 +2,8 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 
 public class Coin extends Item {
     private static int totalCoins = 0;
@@ -36,5 +38,6 @@ public class Coin extends Item {
 
     private void collect() {
         coinsLeft--;
+        SoundManager.playSound(SoundListEnum.MONEY);
     }
 }

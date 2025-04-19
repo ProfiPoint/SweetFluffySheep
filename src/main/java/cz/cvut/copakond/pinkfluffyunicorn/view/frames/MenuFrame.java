@@ -1,5 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
@@ -60,7 +62,7 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
         creator.setTextFill(Color.DARKORANGE);
         getChildren().addAll(logo, playButton, continueButton, editorButton, profileButton, exitButton, creator);
 
-        //show(); // Initial draw
+        SoundManager.playSound(SoundListEnum.MENU_THEME);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IDrawableFrame;
@@ -64,6 +66,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         if (isEditor) {
             menuButton.setText("Edit");
         }
+        SoundManager.playSound(SoundListEnum.GAME_THEME);
     }
 
     @Override
@@ -103,6 +106,14 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         if (popupShown) {
             return;
         }
+
+        SoundManager.stopMusic();
+        if (isWin){
+            SoundManager.playSound(SoundListEnum.FINISH);
+        } else {
+            SoundManager.playSound(SoundListEnum.GAME_OVER);
+        }
+
         popupShown = true;
         Stage popupStage = new Stage();
         popupStage.setTitle("Game Result");
@@ -150,19 +161,21 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
                     AppViewManager.get().switchTo(new LevelEditorFrame(level));
                 });
             } else {
-                messageLabel.setText("Level Not Accepted!");
                 nextLevelButton.setOnAction(e -> {
+                    gameLoop.pause();
                     popupStage.close();
                     speedButton.setText("1x");
                     pauseButton.setText("Pause");
+                    SoundManager.playSound(SoundListEnum.GAME_THEME);
                     gameLoop.setNewLevel();
+                    popupShown = false;
                 });
             }
-
             buttonBox.getChildren().addAll(backToMenuButton, nextLevelButton);
         } else {
             Button retryLevelButton = new Button("Retry");
             if (isEditor) {
+                messageLabel.setText("Level Not Accepted!");
                 retryLevelButton.setText("Edit");
                 retryLevelButton.setOnAction(e -> {
                     String[] levelData = gameLoop.getLevel().getLevelData();
@@ -368,5 +381,6 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         speedButton.setText("1x");
         pauseButton.setText("Pause");
         gameLoop.resetLevel();
+        SoundManager.playSound(SoundListEnum.GAME_THEME);
     }
 }

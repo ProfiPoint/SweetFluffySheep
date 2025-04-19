@@ -2,6 +2,8 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.FireItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import javafx.scene.image.Image;
 
@@ -25,6 +27,8 @@ public class Cloud extends Character {
 
     public void kill() {
         super.kill();
+        SoundManager.playSound(SoundListEnum.HERO_ENEMY_COLLISION);
+        SoundManager.playSound(SoundListEnum.ENEMY_DOWN);
         counter--;
     }
 

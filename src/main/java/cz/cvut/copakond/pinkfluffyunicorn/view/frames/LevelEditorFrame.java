@@ -1,6 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.LevelEditorObjectsEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelEditorUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.PathFinder;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
@@ -59,6 +61,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
         gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
         gameLoop.renderScene();
+        SoundManager.playSound(SoundListEnum.EDITOR_THEME);
     }
 
     private boolean saveLevel(String headerText) {

@@ -39,6 +39,10 @@ public class Character extends GameObject implements ICharacter {
     }
 
     public void move(double tiles, boolean doesTimeFlow) {
+        if (!this.alive || !this.visible) {
+            return;
+        }
+
         PhisicsEventsEnum event = GamePhysics.checkCollision(this);
 
         // continue rotating if it started rotating, thus is not in stable rotation rn.

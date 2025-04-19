@@ -1,7 +1,9 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
@@ -38,12 +40,9 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
 
     private boolean editorMode = false;
 
-    public LevelSelectionFrame() {
-        init(false);
-    }
-
     public LevelSelectionFrame(boolean editorMode) {
         init(editorMode);
+        SoundManager.playSound(SoundListEnum.MENU_THEME);
     }
 
     private void init(boolean editorMode){

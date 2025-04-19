@@ -128,6 +128,7 @@ public class AppViewManager {
         currentFrame = newFrame;
         overlay.getChildren().add(newFrame);
         updateCanvasSize();
+        ButtonSoundInjector.injectToAllButtons(newFrame);
     }
 
     public Scene getScene() {

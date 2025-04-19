@@ -1,6 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 
 public class RainbowItem extends Item {
     private static RainbowItem active = null; // only one fire item can be active at a time
@@ -19,6 +21,7 @@ public class RainbowItem extends Item {
             return false; // fire item is already active
         }
         active = this;
+        SoundManager.playSound(SoundListEnum.IMMORTAL);
         return super.use();
     }
 
@@ -30,6 +33,7 @@ public class RainbowItem extends Item {
             if (duration_ticks == 0) {
                 active = null;
                 System.out.println("Rainbow item expired");
+                SoundManager.stopSfx(SoundListEnum.IMMORTAL);
             }
         }
     }

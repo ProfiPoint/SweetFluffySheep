@@ -6,6 +6,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.ItemFactory;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.*;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
@@ -135,8 +136,13 @@ public class Level {
             currentRenderedFrame++;
             if (timeLeft > 0 && GameObject.getGameStatus() == GameStatusEnum.RUNNING) {
                 timeLeft--;
+
                 if (timeLeft <= 0) {
                     timeLeft = 0;
+                }
+
+                if (timeLeft/GameObject.getFPS() <= 6 && timeLeft % GameObject.getFPS() == 0 && timeLeft != 0) {
+                    SoundManager.playSound(SoundListEnum.TIME_OUT);
                 }
             }
         }
@@ -232,6 +238,7 @@ public class Level {
                 arrow = arrows.get(i);
                 if (arrow.getPosition()[0] == tileClick[0] && arrow.getPosition()[1] == tileClick[1]) {
                     arrow.rotate();
+                    SoundManager.playSound(SoundListEnum.ARROW);
                     return;
                 }
             }
@@ -239,6 +246,7 @@ public class Level {
             arrow = new Arrow(new double[]{tileClick[0], tileClick[1]});
             if (arrow.isVisible()) {
                 arrows.add(arrow);
+                SoundManager.playSound(SoundListEnum.ARROW);
             } else {
                 System.out.println("Arrow not created");
             }
@@ -250,6 +258,7 @@ public class Level {
                 if (arrow.getPosition()[0] == tileClick[0] && arrow.getPosition()[1] == tileClick[1]) {
                     arrow.destroy();
                     arrows.remove(i);
+                    SoundManager.playSound(SoundListEnum.ARROW_DEL);
                     return;
                 }
             }

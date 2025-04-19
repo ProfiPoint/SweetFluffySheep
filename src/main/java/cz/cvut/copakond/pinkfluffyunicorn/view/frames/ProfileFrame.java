@@ -1,7 +1,9 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
@@ -73,6 +75,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
             Button profileBtn = new Button(name);
             profileBtn.setMaxWidth(Double.MAX_VALUE);
             profileListBox.getChildren().add(profileBtn);
+            SoundManager.playSound(SoundListEnum.PROFILE_CREATED);
         }
     }
 
