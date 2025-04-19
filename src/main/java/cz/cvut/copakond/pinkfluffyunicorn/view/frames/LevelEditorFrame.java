@@ -148,7 +148,6 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             Map<String, Integer> levelInfo = gameLoop.getLevel().getLevelInfo();
             int[] mapSize = gameLoop.getLevel().getMapSize();
 
-
             // set the limits for the values
             Spinner<Integer> timeLimitSpinner = new Spinner<>(10, Integer.MAX_VALUE, levelInfo.get("timeLimit"));
             Spinner<Integer> unicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("unicorns"));
@@ -192,6 +191,11 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             // update the values, when the user changes the number of unicorns
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get() == confirmButtonType) {
+                // goal unicorns must be less than or equal to unicorns
+                if (goalUnicornsSpinner.getValue() > unicornsSpinner.getValue()) {
+                    goalUnicornsSpinner.getValueFactory().setValue(unicornsSpinner.getValue());
+                }
+
                 levelInfo.put("timeLimit", timeLimitSpinner.getValue());
                 levelInfo.put("unicorns", unicornsSpinner.getValue());
                 levelInfo.put("goalUnicorns", goalUnicornsSpinner.getValue());

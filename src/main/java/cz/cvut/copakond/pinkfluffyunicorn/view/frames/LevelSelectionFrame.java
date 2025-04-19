@@ -172,6 +172,10 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
     private void updateButtonStyles(List<Integer> levelData, List<Button> buttons, String prefix) {
         for (int i = 0; i < levelData.size(); i++) {
             int levelNumber = levelData.get(i) - 1;
+            if (levelNumber < 0 || levelNumber >= buttons.size()) {
+                System.out.println("Invalid level number: " + levelNumber);
+                continue;
+            }
             Button button = buttons.get(levelNumber);
             if (button != null) {
                 button.setStyle("-fx-background-color: green; -fx-text-fill: white;");

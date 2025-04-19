@@ -102,9 +102,12 @@ public class GamePhysics {
 
     static boolean isColliding(GameObject gameObject1, GameObject gameObject2) {
         double distance = distanceBetweenObjects(gameObject1, gameObject2);
-        if (distance <= collisionLimit) {
-        }
         return distance <= collisionLimit;
+    }
+
+    static boolean isColliding(GameObject gameObject1, GameObject gameObject2, int hitboxMultiplier) {
+        double distance = distanceBetweenObjects(gameObject1, gameObject2);
+        return distance <= collisionLimit * hitboxMultiplier;
     }
 
     static int[] getTargetTilePosition(DirectionEnum direction, Character character) {
@@ -141,7 +144,7 @@ public class GamePhysics {
             }
             if (!FireItem.isActive() && !RainbowItem.isActive()) {
                 for (Cloud enemy : enemies) {
-                    if (enemy.isVisible() && isColliding(character, enemy)) {
+                    if (enemy.isVisible() && isColliding(character, enemy, 2)) {
                         return PhisicsEventsEnum.SHEEP_KILLED;
                     }
                 }
@@ -149,7 +152,7 @@ public class GamePhysics {
 
             if (RainbowItem.isActive()){
                 for (Cloud enemy : enemies) {
-                    if (character.isVisible() && isColliding(character, enemy)) {
+                    if (character.isVisible() && isColliding(character, enemy, 2)) {
                         enemy.kill();
                     }
                 }
@@ -164,8 +167,6 @@ public class GamePhysics {
                 }
             }
         }
-
-
 
         DirectionEnum arrowDirectionChange = null;
         for (Arrow arrow : arrows) {

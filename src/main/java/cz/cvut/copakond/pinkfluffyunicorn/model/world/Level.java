@@ -240,7 +240,7 @@ public class Level {
     public void Play() {
         timeLeft = (double) levelInfo.get("timeLimit") * GameObject.getFPS();
         // init unicorns
-        DirectionEnum direction = goal.getDirection();
+        DirectionEnum direction = start.getDirection();
         double[] coords;
         DirectionEnum unicornDirection = direction.getOppositeDirection();
         double[] unitDirection = new double[]{0, 0};
