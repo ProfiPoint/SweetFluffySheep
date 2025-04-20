@@ -21,9 +21,11 @@ public class Launcher extends Application {
         String soundsPath = "resources/sounds";
         new InitClasses(texturesPath, levelsPath, profilesPath, soundsPath);
 
+
         String currentProfile = FileUtils.readFile(profilesPath + "/_CURRENT.txt");
         if (!currentProfile.isBlank()) {
             ProfileManager.switchProfile(currentProfile);
+            AppViewManager.initSettings(profilesPath);
         }
 
         if (currentProfile.isBlank()) {

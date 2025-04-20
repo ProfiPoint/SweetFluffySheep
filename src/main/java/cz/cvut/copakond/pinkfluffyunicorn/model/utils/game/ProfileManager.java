@@ -22,9 +22,11 @@ public class ProfileManager {
     public static boolean addNewProfile(String profileName) {
         boolean result = FolderUtils.createFolder(profileFolderPath + "/" + profileName);
         if (!result) {return false;}
-        result = FileUtils.copyFile(profileFolderPath + "/_TEMPLATE.json", profileFolderPath + "/" + profileName +
-                "/" + "_DATA.json");
+        result = FileUtils.copyFile(profileFolderPath + "/_TEMPLATE.json", profileFolderPath + "/" + profileName +  "/" + "_DATA.json");
         if (!result) {return false;}
+        result = FileUtils.copyFile(profileFolderPath + "/_TEMPLATE2.json", profileFolderPath + "/" + profileName + "/" + "_SETTINGS.json");
+        if (!result) {return false;}
+
         currentProfile = profileName;
         return true;
     }

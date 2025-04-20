@@ -1,5 +1,8 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IClickListener;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IDrawableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IResizableFrame;
@@ -11,6 +14,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class AppViewManager {
     private static AppViewManager instance;
@@ -70,6 +75,28 @@ public class AppViewManager {
         updateCanvasSize();
     }
 
+    public static boolean initSettings(String profilesPath) {
+        String profile = ProfileManager.getCurrentProfile();
+        if (profile == null || profile.isBlank()) {
+            System.out.println("No profile selected, using default settings.");
+            return true;
+        }
+        String path = profilesPath + "/" + profile + "/_SETTINGS.json";
+        List<Integer> settings = JsonFileManager.readSettingsFromJson(path);
+        if (settings != null) {
+            int musicVolume = settings.get(0);
+            int sfxVolume = settings.get(1);
+            boolean isFullscreen = settings.get(2) == 1;
+            SoundManager.setMusicVolume(musicVolume);
+            SoundManager.setSfxVolume(sfxVolume);
+            AppViewManager.get().setFullScreen(isFullscreen);
+            return true;
+        } else {
+            System.out.println("Settings not found, using default values.");
+            return false;
+        }
+    }
+
     protected int[] getOverlaySize() {
         return new int[]{(int) overlay.getWidth(), (int) overlay.getHeight()};
     }
@@ -111,6 +138,14 @@ public class AppViewManager {
 
     public void update() {
         this.updateCanvasSize();
+    }
+
+    public void setFullScreen(boolean fullScreen) {
+        stage.setFullScreen(fullScreen);
+    }
+
+    public boolean isFullScreen() {
+        return stage.isFullScreen();
     }
 
     private void draw() {

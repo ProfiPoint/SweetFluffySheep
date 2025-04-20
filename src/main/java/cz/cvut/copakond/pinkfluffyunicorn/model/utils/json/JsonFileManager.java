@@ -95,10 +95,6 @@ public class JsonFileManager {
                 );
             }
         }
-
-
-
-
         return profileData;
     }
 
@@ -108,6 +104,33 @@ public class JsonFileManager {
         JSONArray completedCustom = new JSONArray(data.get(1));
         jsonObject.put("completedStory", completedStory);
         jsonObject.put("completedCustom", completedCustom);
+        return writeJsonToFile(filePath, jsonObject);
+    }
+
+    /*{
+      "music": 50,
+      "sfx": 50,
+      "fullScreen": false
+    }*/
+
+    public static List<Integer> readSettingsFromJson(String filePath) {
+        JSONObject jsonObject = readJsonFromFile(filePath);
+
+        if (jsonObject != null) {
+            int musicVolume = jsonObject.optInt("music", 50);
+            int sfxVolume = jsonObject.optInt("sfx", 50);
+            int fullScreen = jsonObject.optBoolean("fullScreen", false) ? 1 : 0;
+
+            return List.of(musicVolume, sfxVolume, fullScreen);
+        }
+        return null;
+    }
+
+    public static boolean writeSettingsToJson(String filePath, int musicVolume, int sfxVolume, boolean fullScreen) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("music", musicVolume);
+        jsonObject.put("sfx", sfxVolume);
+        jsonObject.put("fullScreen", fullScreen);
         return writeJsonToFile(filePath, jsonObject);
     }
 }

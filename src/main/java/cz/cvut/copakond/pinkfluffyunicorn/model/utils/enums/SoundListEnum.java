@@ -5,33 +5,34 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum SoundListEnum {
-    MENU_THEME("menu",  "music/menu.wav", false,true, 1),
-    GAME_THEME("game",  "music/game.wav", false,true, 1),
-    EDITOR_THEME("editor",  "music/editor.wav", false,true, 1),
-    NONE("none",  "", false,true, 1),
+    MENU_THEME("menu",  "music/menu.wav", false,true, 1, 100),
+    GAME_THEME("game",  "music/game.wav", false,true, 1, 100),
+    EDITOR_THEME("editor",  "music/editor.wav", false,true, 1, 100),
+    NONE("none",  "", false,true, 1, 100),
 
-    ARROW("arrow",  "sfx/arrow.wav", true,false, 1),
-    ARROW_DEL("arrow-del",  "sfx/arrow-del.wav", true,false, 1),
-    ENEMY_DOWN("enemy-down",  "sfx/enemy-down.wav", true,false, 1),
-    FINISH("finish",  "sfx/finish.wav", true,false, 1),
-    GAME_OVER("game-over",  "sfx/game-over.wav", true,false, 1),
-    GOAL_UNLOCKED("goal-unlocked",  "sfx/goal-unlocked.wav", true,false, 1),
-    HERO_DOWN("hero-down",  "sfx/hero-down_{i}.wav", true,false, 5),
-    HERO_ENEMY_COLLISION("hero-enemy-collision",  "sfx/hero-enemy-collision.wav", true,false, 1),
-    HERO_FINISH("hero-finish",  "sfx/hero-finish.wav", true,false, 1),
-    HOLD("hold",  "sfx/hold.wav", true,true, 1),
-    IMMORTAL("immortal",  "sfx/immortal.wav", true,true, 1),
-    MONEY("money",  "sfx/money.wav", true,false, 1),
-    MOUSE_CLICK("mouse-click",  "sfx/mouse-click.wav", true,false, 1),
-    PRIZE("prize",  "sfx/prize.wav", true,false, 1),
-    PROFILE_CREATED("profile-created",  "sfx/profile-created.wav", true,false, 1),
-    TIME_OUT("time_out",  "sfx/time-out.wav", true,false, 1);
+    ARROW("arrow",  "sfx/arrow.wav", true,false, 1, 100),
+    ARROW_DEL("arrow-del",  "sfx/arrow-del.wav", true,false, 1, 100),
+    ENEMY_DOWN("enemy-down",  "sfx/enemy-down.wav", true,false, 1, 100),
+    FINISH("finish",  "sfx/finish.wav", true,false, 1, 100),
+    GAME_OVER("game-over",  "sfx/game-over.wav", true,false, 1, 100),
+    GOAL_UNLOCKED("goal-unlocked",  "sfx/goal-unlocked.wav", true,false, 1, 100),
+    HERO_DOWN("hero-down",  "sfx/hero-down_{i}.wav", true,false, 5, 100),
+    HERO_ENEMY_COLLISION("hero-enemy-collision",  "sfx/hero-enemy-collision.wav", true,false, 1, 100),
+    HERO_FINISH("hero-finish",  "sfx/hero-finish.wav", true,false, 1, 100),
+    HOLD("hold",  "sfx/hold.wav", true,true, 1, 100),
+    IMMORTAL("immortal",  "sfx/immortal.wav", true,true, 1, 100),
+    MONEY("money",  "sfx/money.wav", true,false, 1, 100),
+    MOUSE_CLICK("mouse-click",  "sfx/mouse-click.wav", true,false, 1, 100),
+    PRIZE("prize",  "sfx/prize.wav", true,false, 1, 100),
+    PROFILE_CREATED("profile-created",  "sfx/profile-created.wav", true,false, 1, 100),
+    TIME_OUT("time_out",  "sfx/time-out.wav", true,false, 1, 100);
 
     private final String name;
     private String fileName;
     private boolean isSFX;
     private boolean playOnRepeat;
     private int count;
+    private int volume;
 
 
     private static String soundPath;
@@ -40,12 +41,13 @@ public enum SoundListEnum {
         soundPath = path + "/";
     }
 
-    SoundListEnum(String name, String fileName, boolean isSFX, boolean playOnRepeat, int variants) {
+    SoundListEnum(String name, String fileName, boolean isSFX, boolean playOnRepeat, int variants, int volume) {
         this.name = name;
         this.fileName = fileName;
         this.isSFX = isSFX;
         this.playOnRepeat = playOnRepeat;
         this.count = variants;
+        this.volume = volume;
     }
 
     public String getRandomSound() {
@@ -62,6 +64,10 @@ public enum SoundListEnum {
             names[i] = names[i].replace("{b}", i == 0 ? "false" : "true");
         }
         return names;
+    }
+
+    public int getVolume() {
+        return volume;
     }
 
     public boolean isSFX() {

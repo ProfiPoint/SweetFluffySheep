@@ -25,6 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.Node;
+import javafx.stage.Modality;
 
 import java.io.File;
 import java.util.*;
@@ -143,6 +144,8 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         settingsButton.setOnAction(event -> {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setTitle("Level Settings");
+            dialog.initOwner(AppViewManager.get().getStage());
+            dialog.initModality(Modality.APPLICATION_MODAL);
 
             ButtonType confirmButtonType = new ButtonType("Confirm");
             ButtonType cancelButtonType = new ButtonType("Cancel");

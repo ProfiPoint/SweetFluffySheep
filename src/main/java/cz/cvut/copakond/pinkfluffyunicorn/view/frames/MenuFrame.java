@@ -2,18 +2,25 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IDrawableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IResizableFrame;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+
+import java.util.List;
+import java.util.Optional;
 
 public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
     private final Label logo = new Label("PINK FLUFFY UNICORN");
@@ -22,7 +29,10 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
     private final Button continueButton = new Button("CONTINUE");
     private final Button editorButton = new Button("LEVEL EDITOR");
     private final Button profileButton = new Button("SWITCH PROFILE");
+    private final Button settingsButton = new Button("SETTINGS");
     private final Button exitButton = new Button("EXIT");
+
+    private static String profilesPath;
 
     public MenuFrame() {
         setAlignment(Pos.CENTER);
@@ -52,17 +62,99 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
             AppViewManager.get().switchTo(new LevelFrame(level, false));
         });
 
-
-
         editorButton.setOnAction(e -> AppViewManager.get().switchTo(new LevelSelectionFrame(true)));
         profileButton.setOnAction(e -> AppViewManager.get().switchTo(new ProfileFrame()));
         exitButton.setOnAction(e -> System.exit(0));
 
+        settingsButton.setOnAction(event -> {
+            openSettings();
+        });
+
+
         logo.setTextFill(Color.HOTPINK);
         creator.setTextFill(Color.DARKORANGE);
-        getChildren().addAll(logo, playButton, continueButton, editorButton, profileButton, exitButton, creator);
+        getChildren().addAll(logo, playButton, continueButton, editorButton, profileButton, settingsButton,
+                exitButton, creator);
 
         SoundManager.playSound(SoundListEnum.MENU_THEME);
+    }
+
+    public static void setProfilesPath(String path) {
+        profilesPath = path;
+    }
+
+    private void openSettings() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Settings");
+        dialog.initOwner(AppViewManager.get().getStage());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        ButtonType confirmButtonType = new ButtonType("Confirm");
+        ButtonType cancelButtonType = new ButtonType("Cancel");
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, cancelButtonType);
+
+        int musicVolume = SoundManager.getMusicVolume();
+        int sfxVolume = SoundManager.getSfxVolume();
+
+        Slider musicVolumeSlider = new Slider(0, 100, musicVolume);
+        musicVolumeSlider.setShowTickLabels(true);
+        musicVolumeSlider.setShowTickMarks(true);
+        musicVolumeSlider.setMajorTickUnit(25);
+        musicVolumeSlider.setBlockIncrement(1);
+        musicVolumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Music Volume: " + newVal.intValue());
+            SoundManager.setMusicVolume(newVal.intValue());
+        });
+
+        long[] lastTimeSFXPlayed = {0}; // used array to allow modification in lambda, because reference as pointer.
+
+        Slider sfxVolumeSlider = new Slider(0, 100, sfxVolume);
+        sfxVolumeSlider.setShowTickLabels(true);
+        sfxVolumeSlider.setShowTickMarks(true);
+        sfxVolumeSlider.setMajorTickUnit(25);
+        sfxVolumeSlider.setBlockIncrement(1);
+        sfxVolumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("SFX Volume: " + newVal.intValue());
+            SoundManager.setSfxVolume(newVal.intValue());
+            // avoid playing sample sfx too fast.
+            if (System.currentTimeMillis() - lastTimeSFXPlayed[0] > 200) {
+                lastTimeSFXPlayed[0] = System.currentTimeMillis();
+                SoundManager.playSound(SoundListEnum.ENEMY_DOWN);
+            }
+        });
+
+        CheckBox fullscreenCheckBox = new CheckBox("Enable Fullscreen");
+        fullscreenCheckBox.setSelected(AppViewManager.get().getStage().isFullScreen());
+        fullscreenCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Fullscreen: " + newVal);
+            AppViewManager.get().getStage().setFullScreen(newVal);
+        });
+
+        GridPane grid = new GridPane();
+        grid.setHgap(15);
+        grid.setVgap(15);
+        grid.setPadding(new Insets(30, 50, 30, 50));
+        grid.setAlignment(Pos.CENTER); // center the grid
+
+        grid.add(new Label("Music Volume:"), 0, 0);
+        grid.add(musicVolumeSlider, 1, 0);
+
+        grid.add(new Label("SFX Volume:"), 0, 1);
+        grid.add(sfxVolumeSlider, 1, 1);
+
+        grid.add(fullscreenCheckBox, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().setMinWidth(400);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == confirmButtonType) {
+            musicVolume = (int) musicVolumeSlider.getValue();
+            sfxVolume = (int) sfxVolumeSlider.getValue();
+            boolean isFullscreen = fullscreenCheckBox.isSelected();
+            String path = profilesPath + "/" + ProfileManager.getCurrentProfile() + "/_SETTINGS.json";
+            JsonFileManager.writeSettingsToJson(path, musicVolume, sfxVolume, isFullscreen);
+        }
     }
 
     @Override
@@ -77,6 +169,7 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
         continueButton.setStyle("-fx-font-size: " + fontSize + "px;");
         editorButton.setStyle("-fx-font-size: " + fontSize + "px;");
         profileButton.setStyle("-fx-font-size: " + fontSize + "px;");
+        settingsButton.setStyle("-fx-font-size: " + fontSize + "px;");
         exitButton.setStyle("-fx-font-size: " + fontSize + "px;");
 
         setSpacing(spacing);

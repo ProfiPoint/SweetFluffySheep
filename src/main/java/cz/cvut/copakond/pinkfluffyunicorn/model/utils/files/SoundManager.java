@@ -12,9 +12,32 @@ import java.util.Map;
 public class SoundManager {
     private static final Map<String, Media> mediaCache = new HashMap<>();
     private static final Map<String, List<MediaPlayer>> loopedSfxPlayers = new HashMap<>();
+    private static final Map<MediaPlayer, SoundListEnum> sfxToSoundMap = new HashMap<>();
+
+    private static int musicVolume = 50;
+    private static int sfxVolume = 50;
 
     private static MediaPlayer musicPlayer;
+    private static SoundListEnum currentMusicSound;
     private static String currentMusicUri;
+
+    public static int getMusicVolume() {
+        return musicVolume;
+    }
+
+    public static int getSfxVolume() {
+        return sfxVolume;
+    }
+
+    public static void setMusicVolume(int newMusicVolume) {
+        musicVolume = newMusicVolume;
+        updateMusicVolume();
+    }
+
+    public static void setSfxVolume(int newSfxVolume) {
+        sfxVolume = newSfxVolume;
+        updateAllSfxVolumes();
+    }
 
     public static void playSound(SoundListEnum sound) {
         if (sound == SoundListEnum.NONE) return;
@@ -26,7 +49,7 @@ public class SoundManager {
             playSfx(uri, sound);
         } else {
             stopAllSfx();
-            playMusic(uri, sound.shouldPlayOnRepeat());
+            playMusic(uri, sound, sound.shouldPlayOnRepeat());
         }
     }
 
@@ -34,6 +57,7 @@ public class SoundManager {
         List<MediaPlayer> players = loopedSfxPlayers.remove(sound.name());
         if (players != null) {
             for (MediaPlayer player : players) {
+                sfxToSoundMap.remove(player);
                 player.stop();
                 player.dispose();
             }
@@ -50,12 +74,14 @@ public class SoundManager {
             musicPlayer.dispose();
             musicPlayer = null;
             currentMusicUri = null;
+            currentMusicSound = null;
         }
     }
 
     private static void playSfx(String uri, SoundListEnum sound) {
         Media media = getCachedMedia(uri);
         MediaPlayer player = new MediaPlayer(media);
+        setEffectiveVolume(player, sound.getVolume(), sfxVolume);
 
         if (sound.shouldPlayOnRepeat()) {
             if (musicPlayer != null && musicPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
@@ -64,6 +90,7 @@ public class SoundManager {
 
             player.setCycleCount(MediaPlayer.INDEFINITE);
             loopedSfxPlayers.computeIfAbsent(sound.name(), k -> new ArrayList<>()).add(player);
+            sfxToSoundMap.put(player, sound);
         } else {
             player.setCycleCount(1);
             player.setOnEndOfMedia(() -> {
@@ -75,9 +102,11 @@ public class SoundManager {
         player.play();
     }
 
-    private static void playMusic(String uri, boolean loop) {
+    private static void playMusic(String uri, SoundListEnum sound, boolean loop) {
         if (uri.equals(currentMusicUri)) {
-            if (musicPlayer != null && (musicPlayer.getStatus() == MediaPlayer.Status.PLAYING || musicPlayer.getStatus() == MediaPlayer.Status.PAUSED)) {
+            if (musicPlayer != null &&
+                    (musicPlayer.getStatus() == MediaPlayer.Status.PLAYING ||
+                            musicPlayer.getStatus() == MediaPlayer.Status.PAUSED)) {
                 return;
             }
         }
@@ -86,22 +115,43 @@ public class SoundManager {
 
         Media media = getCachedMedia(uri);
         MediaPlayer player = new MediaPlayer(media);
+        setEffectiveVolume(player, sound.getVolume(), musicVolume);
+
         player.setCycleCount(loop ? MediaPlayer.INDEFINITE : 1);
         player.play();
 
         musicPlayer = player;
         currentMusicUri = uri;
+        currentMusicSound = sound;
+    }
+
+    private static void updateMusicVolume() {
+        if (musicPlayer != null && currentMusicSound != null) {
+            setEffectiveVolume(musicPlayer, currentMusicSound.getVolume(), musicVolume);
+        }
+    }
+
+    private static void updateAllSfxVolumes() {
+        for (Map.Entry<MediaPlayer, SoundListEnum> entry : sfxToSoundMap.entrySet()) {
+            MediaPlayer player = entry.getKey();
+            SoundListEnum sound = entry.getValue();
+            setEffectiveVolume(player, sound.getVolume(), sfxVolume);
+        }
+    }
+
+    private static void setEffectiveVolume(MediaPlayer player, int soundVolume, int generalVolume) {
+        double effectiveVolume = (soundVolume * generalVolume) / 10000.0;
+        player.setVolume(effectiveVolume);
     }
 
     private static Media getCachedMedia(String uri) {
-        return mediaCache.computeIfAbsent(uri, key -> {
-            return new Media(key);
-        });
+        return mediaCache.computeIfAbsent(uri, key -> new Media(key));
     }
 
     private static void stopAllSfx() {
         for (List<MediaPlayer> players : loopedSfxPlayers.values()) {
             for (MediaPlayer player : players) {
+                sfxToSoundMap.remove(player);
                 player.stop();
                 player.dispose();
             }

@@ -36,7 +36,9 @@ public class FileUtils {
 
     public static int getNumberOfFilesInDirectory(String directoryPath) {
         try {
-            return (int) Files.list(Path.of(directoryPath)).count() -1; // Exclude the "default" file
+            return (int) Files.list(Path.of(directoryPath))
+                    .filter(path -> !path.getFileName().toString().startsWith("_")) // don't count default files starting with "_"
+                    .count();
         } catch (IOException e) {
             e.printStackTrace();
             return -1;
