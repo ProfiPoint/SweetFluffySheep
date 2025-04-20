@@ -10,7 +10,10 @@ public enum PhisicsEventsEnum {
     ROTATION_UP(true),
     ROTATION_DOWN(true),
     ROTATION_OPPOSITE(true),
-    ROTATION_STUCK_4WALLS(true); // stuck in 4 walls -> so it can not move, so it will only rotate :'(
+    ROTATION_STUCK_4WALLS(true), // stuck in 4 walls -> so it can not move, so it will only rotate :'(
+
+    // Used when multiple same characters get "compressed" into one tile, this makes them slow down to equally spread again
+    SLOWDOWN(false);
 
     // should character start to rotate?
     private final boolean rotation;

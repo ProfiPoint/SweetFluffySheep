@@ -18,6 +18,7 @@ public class Character extends GameObject implements ICharacter {
 
     private DirectionEnum direction;
     private PhisicsEventsEnum previousEvent = PhisicsEventsEnum.NO_COLLISION;
+    private PhisicsEventsEnum previousSpeedEvent = PhisicsEventsEnum.NO_COLLISION;
     private boolean alive = true;
     private boolean isEnemy;
     private String name;
@@ -38,12 +39,13 @@ public class Character extends GameObject implements ICharacter {
         this.previousEvent = previousEvent;
     }
 
-    public void move(double tiles, boolean doesTimeFlow) {
+    public void move(double tilesSpeed, boolean doesTimeFlow) {
         if (!this.alive || !this.visible) {
             return;
         }
 
         PhisicsEventsEnum event = GamePhysics.checkCollision(this);
+
 
         // continue rotating if it started rotating, thus is not in stable rotation rn.
         if (textureRotation != direction.getValue() && doesTimeFlow) {
@@ -71,7 +73,6 @@ public class Character extends GameObject implements ICharacter {
                 if (previousEvent != PhisicsEventsEnum.IN_GOAL) {
                     Unicorn.unicornEnteredGoal(true);
                 }
-                previousEvent = PhisicsEventsEnum.IN_GOAL;
                 break;
             case BEFORE_START:
 
@@ -86,12 +87,25 @@ public class Character extends GameObject implements ICharacter {
                 break;
         }
 
+        if (!event.isRotation() && previousSpeedEvent != PhisicsEventsEnum.SLOWDOWN) {
+            PhisicsEventsEnum speedEvent = GamePhysics.checkCharactersStruggle(this);
+            if (speedEvent == PhisicsEventsEnum.SLOWDOWN) {
+                tilesSpeed = tilesSpeed / 2;
+                previousSpeedEvent = PhisicsEventsEnum.SLOWDOWN;
+            }
+        } else if (!event.isRotation()) {
+            // the character must always end up in the same tileSpeed offset, so if the speed is halved, it will be
+            // halved also in the next frame, to get to the same tileSpeed offset to prevent weird collisions behavior
+            tilesSpeed = tilesSpeed / 2;
+            previousSpeedEvent = PhisicsEventsEnum.NO_COLLISION;
+        }
+
         if (!event.isRotation()) {
             switch (direction) {
-                case UP: position[1] -= tiles; break;
-                case DOWN: position[1] += tiles; break;
-                case LEFT: position[0] -= tiles; break;
-                case RIGHT: position[0] += tiles; break;
+                case UP: position[1] -= tilesSpeed; break;
+                case DOWN: position[1] += tilesSpeed; break;
+                case LEFT: position[0] -= tilesSpeed; break;
+                case RIGHT: position[0] += tilesSpeed; break;
             }
         }
 

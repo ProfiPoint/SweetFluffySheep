@@ -2,6 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Character;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
+import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.FireItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
@@ -10,6 +11,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.*;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,8 @@ public class GamePhysics {
     private static int[] mapSize;
     private static Map<int[], Tile> tileMap;
     private static List<Cloud> enemies;
+    private static List<Unicorn> unicorns;
+    private static List<Character> allCharacters;
     private static List<Item> items;
     private static Start start;
     private static Goal goal;
@@ -32,7 +36,7 @@ public class GamePhysics {
     private static boolean initialized = false;
 
     public static void loadMapObjects(int[] mapSize, Start start, Goal goal, List<Tile> tiles, List<Cloud> enemies,
-                                      List<Item> items, List<Arrow> arrows) {
+                                      List<Unicorn> unicorns, List<Item> items, List<Arrow> arrows) {
         if (initialized) {
             ErrorMsgsEnum.PHISICS_ALREADY_INIT.getValue();
         }
@@ -40,10 +44,16 @@ public class GamePhysics {
         GamePhysics.initialized = true;
         GamePhysics.mapSize = mapSize;
         GamePhysics.enemies = enemies;
+        GamePhysics.unicorns = unicorns;
         GamePhysics.items = items;
         GamePhysics.start = start;
         GamePhysics.goal = goal;
         GamePhysics.arrows = arrows;
+
+        // add all characters to the list
+        GamePhysics.allCharacters = new ArrayList<>();
+        GamePhysics.allCharacters.addAll(enemies);
+        GamePhysics.allCharacters.addAll(unicorns);
 
         GamePhysics.tileMap = new HashMap<int[], Tile>();
         for (Tile tile : tiles) {
@@ -56,6 +66,8 @@ public class GamePhysics {
         GamePhysics.mapSize = null;
         GamePhysics.tileMap = null;
         GamePhysics.enemies = null;
+        GamePhysics.unicorns = null;
+        GamePhysics.allCharacters = null;
         GamePhysics.items = null;
         GamePhysics.start = null;
         GamePhysics.goal = null;
@@ -129,6 +141,58 @@ public class GamePhysics {
         } else {
             return false;
         }
+    }
+
+    // prevents characters from getting stuck in each other, if there is any character in front of the character, slow down
+    public static PhisicsEventsEnum checkCharactersStruggle(Character character) {
+        DirectionEnum direction = character.getDirection();
+        boolean isEnemy = character.isEnemy();
+        double[] position = character.getPosition();
+        Character firstCharacter = character;
+
+        for (Character other : allCharacters) {
+            if (other == character || !other.isVisible() || !other.isAlive()) {
+                continue;
+            }
+
+            if (isEnemy != other.isEnemy() || direction != other.getDirection()) {
+                continue;
+            }
+
+            double[] otherPosition = other.getPosition();
+            double distance = distanceBetweenObjects(character, other);
+
+            if (distance > 1) {
+                continue;
+            }
+
+            boolean aligned = switch (direction) {
+                case UP, DOWN -> getDistanceOnePoint(position[0], otherPosition[0]) < 0.5;
+                case LEFT, RIGHT -> getDistanceOnePoint(position[1], otherPosition[1]) < 0.5;
+            };
+
+            if (!aligned) {
+                continue;
+            }
+
+            boolean isCloser = switch (direction) {
+                case UP -> otherPosition[1] < firstCharacter.getPosition()[1];
+                case DOWN -> otherPosition[1] > firstCharacter.getPosition()[1];
+                case LEFT -> otherPosition[0] < firstCharacter.getPosition()[0];
+                case RIGHT -> otherPosition[0] > firstCharacter.getPosition()[0];
+            };
+
+            if (isCloser) {
+                firstCharacter = other;
+            }
+        }
+
+        if (firstCharacter == character){
+            return PhisicsEventsEnum.NO_COLLISION;
+        } else {
+            return PhisicsEventsEnum.SLOWDOWN;
+        }
+
     }
 
     public static PhisicsEventsEnum checkCollision(Character character) {

@@ -294,7 +294,7 @@ public class Level {
             coords[1] += unitDirection[1];
         }
 
-        GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, items, arrows);
+        GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, unicorns, items, arrows);
         buildObjectsList();
     }
 
