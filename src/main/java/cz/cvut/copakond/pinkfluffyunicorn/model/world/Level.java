@@ -193,7 +193,7 @@ public class Level {
         List<int[]> tilesCoords = lm.getListOfListsWithLimitFromDict("tiles", mapSize, TextureListEnum.TILE.getCount());
         if (tilesCoords == null) {return false;}
         for (int[] tileCoords : tilesCoords) {
-            tiles.add(new Tile(new double[]{tileCoords[0], tileCoords[1]}, tileCoords[2]));
+            tiles.add(new Tile(new double[]{tileCoords[0], tileCoords[1]}, tileCoords[2] * 16, true));
         }
 
         List<int[]> enemiesCoords = lm.getListOfListsWithDirFromDict("enemies", mapSize, true);
@@ -218,13 +218,19 @@ public class Level {
     public boolean saveLevel() {
         JSONObject levelData = new JSONObject();
         SaveManager sm = new SaveManager(levelData);
+        List<Tile> tilesFiltered = new ArrayList<Tile>();
 
+        for (Tile tile : tiles) {
+            if (tile.isWalkable()) {
+                tilesFiltered.add(tile);
+            }
+        }
         sm.addDefaultLevelData(defaultLevel);
         sm.addStartGoalData(start, goal);
         sm.addMapSizeData(mapSize);
         sm.addLevelInfo(levelInfo);
         sm.addPlayerInfo(playerInfo);
-        sm.addTilesData(tiles);
+        sm.addTilesData(tilesFiltered);
         sm.addEnemiesData(enemies);
         sm.addItemsData(items);
 
@@ -321,8 +327,77 @@ public class Level {
         return new String[]{levelName, isLevelEditor, isStoryLevel};
     }
 
+    private boolean[] getNumberOfWalkableTilesAround(int[] position, Map<String, Tile> allTiles) {
+        boolean[] walkableTiles = new boolean[4];
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // left, down, right, up
+        for (int i = 0; i < directions.length; i++) {
+            int[] direction = directions[i];
+            int[] newPosition = {position[0] + direction[0], position[1] + direction[1]};
+            String name = newPosition[0] + "-" + newPosition[1];
+            if (allTiles.containsKey(name)) {
+                Tile tile = allTiles.get(name);
+                walkableTiles[i] = tile.isWalkable();
+            } else {
+                walkableTiles[i] = false;
+            }
+        }
+        return walkableTiles;
+    }
+
+    void buildDecorationTiles() {
+        Map<String, Tile> allTiles = new HashMap<String, Tile>();
+
+        List<Tile> newTiles = new ArrayList<Tile>();
+        for (Tile tile : tiles) {
+            if (tile.isWalkable())  {
+                newTiles.add(tile);
+                allTiles.put(tile.getTileName(), tile);
+            }
+        }
+        tiles = newTiles;
+
+        // get all the border tiles
+        List<Tile> toBeChecked = new ArrayList<Tile>();
+        for (Tile tile : tiles) {
+            if (!tile.isWalkable()) {
+                continue;
+            }
+
+            int[] position = new int[]{(int) tile.getPosition()[0], (int) tile.getPosition()[1]};
+            int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // left, down, right, up
+            for (int[] direction : directions) {
+                double[] newPosition = new double[]{position[0] + direction[0], position[1] + direction[1]};
+                int[] newPositionInt = new int[]{(int) newPosition[0], (int) newPosition[1]};
+
+                // check if the newPosition is in the map
+                if (newPositionInt[0] >= 0 && newPositionInt[0] < mapSize[0] && newPositionInt[1] >= 0 && newPositionInt[1] < mapSize[1]) {
+                    String name = newPositionInt[0] + "-" + newPositionInt[1];
+                    if (!allTiles.containsKey(name)) {
+                        int tileIndex = 16 * ((newPositionInt[0] + newPositionInt[1] + 1) % 2);
+                        boolean[] areWalkableTilesAround = getNumberOfWalkableTilesAround(newPositionInt, allTiles);
+                        System.out.println("areWalkableTilesAround: " + Arrays.toString(areWalkableTilesAround));
+                        for (int i = 0; i < areWalkableTilesAround.length; i++) {
+                            if (areWalkableTilesAround[i]) {
+                                tileIndex += Math.pow(2, i);
+                            }
+                        }
+                        System.out.println("tileIndex: " + tileIndex);
+                        Tile newTile = new Tile(newPosition, tileIndex, false);
+
+                        toBeChecked.add(newTile);
+                        allTiles.put(name, newTile);
+                    }
+                }
+            }
+        }
+
+        tiles.addAll(toBeChecked);
+
+    }
+
     void buildObjectsList() {
         objects = new ArrayList<GameObject>();
+        buildDecorationTiles();
         if (start != null) {objects.add(start);}
         if (goal != null) {objects.add(goal);}
         for (Tile tile : tiles) {

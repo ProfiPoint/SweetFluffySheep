@@ -318,8 +318,8 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         double[] textureSizeRatio = object.getScaledTextureSizePercentage(gameLoop.getLevel());
         int[] textureSize = new int[2];
         // multiply by scene height and width to get the size in pixels
-        textureSize[0] = (int) (canvas.getWidth() * textureSizeRatio[0]);
-        textureSize[1] = (int) (canvas.getHeight() * textureSizeRatio[1]);
+        textureSize[0] = (int) Math.ceil(canvas.getWidth() * textureSizeRatio[0]);
+        textureSize[1] = (int) Math.ceil(canvas.getHeight() * textureSizeRatio[1]);
 
         double x = position[0];
         double y = position[1];

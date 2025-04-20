@@ -38,8 +38,8 @@ public class LevelEditorUtils {
     public static void addTile(double[] position) {
         List<Tile> tiles = level.getTiles();
         List<Tile> objectsInPosition = checkPosition(position, tiles);
-        if (objectsInPosition.isEmpty()) {
-            Tile tile = new Tile(position, (int)(position[0] + position[1]) % 2 + 1);
+        if (!isTileAtPosition(position)) {
+            Tile tile = new Tile(position, (int)((position[0] + position[1]) % 2 + 1) * 16, true);
             tiles.add(tile);
         }
     }
@@ -47,7 +47,7 @@ public class LevelEditorUtils {
     private static boolean isTileAtPosition(double[] position) {
         List<Tile> tiles = level.getTiles();
         for (Tile tile : tiles) {
-            if (tile.getPosition()[0] == position[0] && tile.getPosition()[1] == position[1]) {
+            if (tile.isWalkable() && tile.getPosition()[0] == position[0] && tile.getPosition()[1] == position[1]) {
                 return true;
             }
         }
@@ -58,8 +58,10 @@ public class LevelEditorUtils {
         List<Tile> tiles = level.getTiles();
         List<Tile> objectsInPosition = checkPosition(position, tiles);
         for (Tile object : objectsInPosition) {
-            tiles.remove(object);
-            destroyObject(position);
+            if (object.isWalkable()) {
+                tiles.remove(object);
+                destroyObject(position);
+            }
         }
     }
 

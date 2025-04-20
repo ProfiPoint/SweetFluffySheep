@@ -18,6 +18,8 @@ public class GameLoop {
     private final int[] speedOptions = {1, 2, 4, 8, 16, 32, 64, 128}; // default speed is 2x, but is presented to user
     // as 1x
     private int currentSpeedIndex = 1; // index of speedOptions
+    private boolean isLoopRunning = false;
+
 
     public GameLoop(ILevelFrame levelFrame, Level level) {
         this.levelFrame = levelFrame;
@@ -26,6 +28,7 @@ public class GameLoop {
 
     void run() {
         Thread gameLoopThread = new Thread(() -> {
+            isLoopRunning = true;
             final int fps = GameObject.getFPS();
             final long frameDuration = 1000 / fps;
             currentFrame = 0;
@@ -61,7 +64,9 @@ public class GameLoop {
                     }
                 }
             }
+            isLoopRunning = false;
         });
+
 
         gameLoopThread.setDaemon(true);
         gameLoopThread.start();
@@ -130,6 +135,17 @@ public class GameLoop {
             return;
         }
         currentSpeedIndex = 1;
+
+        // wait for the loop to finish
+        while (isLoopRunning){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+
         level.Play();
         resume();
     }

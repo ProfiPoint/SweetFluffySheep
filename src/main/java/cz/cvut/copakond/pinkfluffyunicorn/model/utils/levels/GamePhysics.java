@@ -57,7 +57,9 @@ public class GamePhysics {
 
         GamePhysics.tileMap = new HashMap<int[], Tile>();
         for (Tile tile : tiles) {
-            GamePhysics.tileMap.put(new int[]{(int) tile.getX(), (int) tile.getY()}, tile);
+            if (tile.isWalkable()){
+                GamePhysics.tileMap.put(new int[]{(int) tile.getX(), (int) tile.getY()}, tile);
+            }
         }
     }
 

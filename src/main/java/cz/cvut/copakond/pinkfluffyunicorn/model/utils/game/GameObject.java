@@ -127,11 +127,4 @@ public class GameObject implements IGameObject {
         this.textures = textures;
         this.textureSizes = textureSizes;
     }
-
-    protected void loadTextures(String textureName, int[] textureSelection) {
-        List<Image> textures = textureManager.getTexture(textureName, textureSelection);
-        List<int[]> textureSizes = textureManager.getTextureSizes(textures, textureName);
-        this.textures = textures;
-        this.textureSizes = textureSizes;
-    }
 }
