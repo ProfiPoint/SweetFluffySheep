@@ -97,6 +97,10 @@ public class GamePhysics {
         return getDistanceOnePoint(currentTilePos, characterPos) <= collisionLimit && !tileExists(targetTilePos);
     }
 
+    static boolean isCollidingWithWall(int currentTilePos, double characterPos, int[] targetTilePos, int hitboxMultiplier) {
+        return getDistanceOnePoint(currentTilePos, characterPos) <= collisionLimit * hitboxMultiplier && !tileExists(targetTilePos);
+    }
+
     static double getDistance(double[] position1, double[] position2) {
         return Math.sqrt(Math.pow(position2[0] - position1[0], 2) + Math.pow(position2[1] - position1[1], 2));
     }
@@ -131,13 +135,13 @@ public class GamePhysics {
 
     static boolean isItWall(DirectionEnum playerDirection, int[] currentTilePos, Character character, int[] targetTilePos) {
         if (playerDirection == DirectionEnum.UP) {
-            return (isCollidingWithWall(currentTilePos[1]-1, character.getY() - 1, targetTilePos));
+            return (isCollidingWithWall(currentTilePos[1]-1, character.getY() - 1, targetTilePos, 2));
         } else if (playerDirection == DirectionEnum.DOWN) {
-            return (isCollidingWithWall(currentTilePos[1]+1, character.getY() + 1, targetTilePos));
+            return (isCollidingWithWall(currentTilePos[1]+1, character.getY() + 1, targetTilePos, 2));
         } else if (playerDirection == DirectionEnum.LEFT) {
-            return (isCollidingWithWall(currentTilePos[0]-1, character.getX() - 1, targetTilePos));
+            return (isCollidingWithWall(currentTilePos[0]-1, character.getX() - 1, targetTilePos, 2));
         } else if (playerDirection == DirectionEnum.RIGHT) {
-            return (isCollidingWithWall(currentTilePos[0]+1, character.getX() + 1, targetTilePos));
+            return (isCollidingWithWall(currentTilePos[0]+1, character.getX() + 1, targetTilePos, 2));
         } else {
             return false;
         }
@@ -197,10 +201,10 @@ public class GamePhysics {
 
     public static PhisicsEventsEnum checkCollision(Character character) {
         if (!character.isEnemy()){
-            if (character.getPreviousEvent() == PhisicsEventsEnum.BEFORE_START && !isColliding(character, start)) {
+            if (character.getPreviousEvent() == PhisicsEventsEnum.BEFORE_START && !isColliding(character, start, 2)) {
                 return PhisicsEventsEnum.BEFORE_START;
             }
-            if (character.getPreviousEvent() == PhisicsEventsEnum.IN_GOAL || (isColliding(character, goal) && !goal.isLocked())) {
+            if (character.getPreviousEvent() == PhisicsEventsEnum.IN_GOAL || (isColliding(character, goal, 2) && !goal.isLocked())) {
                 return PhisicsEventsEnum.IN_GOAL;
             }
             if (!FireItem.isActive() && !RainbowItem.isActive()) {
@@ -220,7 +224,7 @@ public class GamePhysics {
             }
 
             for (IItem item : items) {
-                if (item.isVisible() && isColliding(character, (Item) item)) {
+                if (item.isVisible() && isColliding(character, (Item) item, 2)) {
                     boolean used = item.use();
                     if (used) {
                         System.out.println("Item used: " + item.getItemEffect());
@@ -231,7 +235,7 @@ public class GamePhysics {
 
         DirectionEnum arrowDirectionChange = null;
         for (Arrow arrow : arrows) {
-            if (isColliding(character, arrow)) {
+            if (isColliding(character, arrow, 2)) {
                 DirectionEnum arrowDirection = arrow.getDirection();
                 arrowDirectionChange = arrowDirection;
                 break;

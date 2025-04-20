@@ -7,7 +7,7 @@ import java.util.List;
 public enum TextureListEnum {
     CLOUD("cloud", "characters/clouds/cloud_{i}.png",100),
     UNICORN("unicorn", "characters/unicorns/unicorn_{i}.png", 100),
-    TILE("tile", "tiles/tile_{i}.png",2), // tile_001, tile_002
+    TILE("tile", "tiles/tile_{i}.png",32), // tile_001, tile_002
     START("start", "objects/start/start_{b}.png",2), // start_true - unlocked, start_false - locked
     GOAL("goal", "objects/goal/goal_{i}.png",256), // 1,128 - unlocked, 129,256 - locked
     EMPTY("empty", "missing_texture.png",1, false),

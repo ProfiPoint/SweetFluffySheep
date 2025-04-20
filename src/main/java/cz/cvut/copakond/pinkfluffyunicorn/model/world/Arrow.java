@@ -12,16 +12,16 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 public class Arrow extends GameObject {
-    private final int maxArrows = 10;
+    private int maxArrows = 10;
     private static final int textureRotationSpeed = 10;
-
     private static int arrowCount = 0;
     private int textureRotation = 0;
     private DirectionEnum direction;
 
-    public Arrow(double[] position) {
+    public Arrow(double[] position, int maxArrows) {
         super("arrow", position, RenderPriorityEnums.ARROW.getValue());
         arrowCount++;
+        this.maxArrows = maxArrows;
         if (arrowCount > maxArrows) {
             destroy();
             System.out.println("Too many arrows! Limit is " + maxArrows);

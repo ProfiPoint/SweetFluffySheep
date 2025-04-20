@@ -123,14 +123,14 @@ public class GameObject implements IGameObject {
 
     protected void loadTextures(String textureName) {
         List<Image> textures = textureManager.getTexture(textureName);
-        List<int[]> textureSizes = textureManager.getTextureSizes(textures);
+        List<int[]> textureSizes = textureManager.getTextureSizes(textures, textureName);
         this.textures = textures;
         this.textureSizes = textureSizes;
     }
 
     protected void loadTextures(String textureName, int[] textureSelection) {
         List<Image> textures = textureManager.getTexture(textureName, textureSelection);
-        List<int[]> textureSizes = textureManager.getTextureSizes(textures);
+        List<int[]> textureSizes = textureManager.getTextureSizes(textures, textureName);
         this.textures = textures;
         this.textureSizes = textureSizes;
     }

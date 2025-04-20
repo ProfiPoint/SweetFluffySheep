@@ -157,11 +157,12 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             // set the limits for the values
             Spinner<Integer> timeLimitSpinner = new Spinner<>(10, Integer.MAX_VALUE, levelInfo.get("timeLimit"));
             Spinner<Integer> unicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("unicorns"));
-            Spinner<Integer> goalUnicornsSpinner = new Spinner<>(1, unicornsSpinner.getValue(), levelInfo.get("goalUnicorns"));
-            Spinner<Integer> maxArrowsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("maxArrows"));
+            Spinner<Integer> goalUnicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("goalUnicorns"));
+            Spinner<Integer> maxArrowsSpinner = new Spinner<>(1, mapSize[0] * mapSize[1], levelInfo.get("maxArrows"));
             Spinner<Integer> mapSizeXSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[0]);
             Spinner<Integer> mapSizeYSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[1]);
             Spinner<Integer> itemDurationSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("deafultItemDuration"));
+
 
             // user can edit the values with keyboard
             timeLimitSpinner.setEditable(true);

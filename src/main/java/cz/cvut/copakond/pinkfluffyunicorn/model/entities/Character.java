@@ -93,7 +93,7 @@ public class Character extends GameObject implements ICharacter {
                 tilesSpeed = tilesSpeed / 2;
                 previousSpeedEvent = PhisicsEventsEnum.SLOWDOWN;
             }
-        } else if (!event.isRotation()) {
+        } else if (!event.isRotation() && event != PhisicsEventsEnum.SLOWDOWN) {
             // the character must always end up in the same tileSpeed offset, so if the speed is halved, it will be
             // halved also in the next frame, to get to the same tileSpeed offset to prevent weird collisions behavior
             tilesSpeed = tilesSpeed / 2;

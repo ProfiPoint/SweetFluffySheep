@@ -12,6 +12,9 @@ import java.util.Map;
 
 public class TextureManager {
     private final static Map<String, Image> loadedTextures = new HashMap<String, Image>();
+    private final static Map<String, List<Image>> loadedTexturesList = new HashMap<String, List<Image>>();
+    private final static Map<String, List<int[]>> loadedTexturesSizes = new HashMap<String, List<int[]>>();
+
     private static String texturesPath;
 
     List<Image> loadTexture(List<String> textureNames) {
@@ -47,19 +50,25 @@ public class TextureManager {
     }
     
     public List<Image> getTexture(String objectName) {
+        if (loadedTexturesList.containsKey(objectName)) {
+            return loadedTexturesList.get(objectName);
+        }
+
         TextureListEnum textureListEnum = TextureListEnum.fromValue(objectName);
         String[] textureNames = textureListEnum.getTextures();
         List<Image> textures = new ArrayList<Image>();
         for (String textureName : textureNames) {
             textures.add(getLoadedTexture(textureName));
-            // print the w,h of the previously loaded texture
-             //System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size: " +
-             //textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
         }
+        loadedTexturesList.put(objectName, textures);
         return textures;
     }
 
     public List<Image> getTexture(String objectName, int[] textureSelections) {
+        if (loadedTexturesList.containsKey(objectName)) {
+            return loadedTexturesList.get(objectName);
+        }
+
         TextureListEnum textureListEnum = TextureListEnum.fromValue(objectName);
         String[] textureNames = textureListEnum.getTextures();
         List<Image> textures = new ArrayList<Image>();
@@ -67,21 +76,25 @@ public class TextureManager {
             if (index >= 0 && index < textureNames.length + 1) {
                 String textureName = textureNames[index-1];
                 textures.add(getLoadedTexture(textureName));
-                // print the w,h of the previously loaded texture
-                 //System.out.println("Texture name: " + textures.get(textures.size() - 1).getUrl() + " Texture size:
-                // " +  textures.get(textures.size() - 1).getWidth() + "x" + textures.get(textures.size() - 1).getHeight());
             } else {
                 System.err.println("Texture index out of range: " + index);
             }
         }
+        loadedTexturesList.put(objectName, textures);
         return textures;
     }
 
-    public List<int[]> getTextureSizes(List<Image> textures) {
+    public List<int[]> getTextureSizes(List<Image> textures, String textureName) {
+        if (loadedTexturesSizes.containsKey(textureName)) {
+            return loadedTexturesSizes.get(textureName);
+        }
+
         List<int[]> sizes = new ArrayList<int[]>();
         for (Image texture : textures) {
             sizes.add(new int[] { (int) texture.getWidth(), (int) texture.getHeight() });
         }
+
+        loadedTexturesSizes.put(textureName, sizes);
         return sizes;
     }
 }

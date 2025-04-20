@@ -179,7 +179,7 @@ public class Level {
 
         levelInfo.put("timeLimit", lm.getIntLimit("timeLimit", 60*60*24));
         levelInfo.put("unicorns", lm.getIntLimit("unicorns", 1000));
-        levelInfo.put("maxArrows", lm.getIntLimit("maxArrows", mapSize[0]*mapSize[1]));
+        levelInfo.put("maxArrows", Math.min(lm.getInt("maxArrows"), mapSize[0]*mapSize[1]));
         levelInfo.put("creationTime", lm.getInt("creationTime"));
         levelInfo.put("updatedTime", lm.getInt("updatedTime"));
         levelInfo.put("deafultItemDuration", 10); // default item duration in seconds
@@ -243,7 +243,7 @@ public class Level {
                 }
             }
             // no arrow found, create new one
-            arrow = new Arrow(new double[]{tileClick[0], tileClick[1]});
+            arrow = new Arrow(new double[]{tileClick[0], tileClick[1]}, levelInfo.get("maxArrows"));
             if (arrow.isVisible()) {
                 arrows.add(arrow);
                 SoundManager.playSound(SoundListEnum.ARROW);
