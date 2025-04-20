@@ -48,7 +48,7 @@ public class Start extends GameObject {
             // Draw rotated image onto transparent canvas
             gc.save();
             gc.translate(width / 2, height / 2);
-            gc.rotate(this.direction.getValue());
+            gc.rotate(this.direction.getOppositeDirection().getValue());
             gc.translate(-width / 2, -height / 2);
             gc.drawImage(img, 0, 0);
             gc.restore();
