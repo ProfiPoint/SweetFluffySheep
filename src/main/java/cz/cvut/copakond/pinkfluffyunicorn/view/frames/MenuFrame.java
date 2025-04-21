@@ -2,6 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
@@ -31,8 +32,6 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
     private final Button profileButton = new Button("SWITCH PROFILE");
     private final Button settingsButton = new Button("SETTINGS");
     private final Button exitButton = new Button("EXIT");
-
-    private static String profilesPath;
 
     public MenuFrame() {
         setAlignment(Pos.CENTER);
@@ -67,9 +66,8 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
         exitButton.setOnAction(e -> System.exit(0));
 
         settingsButton.setOnAction(event -> {
-            openSettings();
+            AppViewManager.get().openSettings();
         });
-
 
         logo.setTextFill(Color.HOTPINK);
         creator.setTextFill(Color.DARKORANGE);
@@ -77,84 +75,6 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
                 exitButton, creator);
 
         SoundManager.playSound(SoundListEnum.MENU_THEME);
-    }
-
-    public static void setProfilesPath(String path) {
-        profilesPath = path;
-    }
-
-    private void openSettings() {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Settings");
-        dialog.initOwner(AppViewManager.get().getStage());
-        dialog.initModality(Modality.APPLICATION_MODAL);
-
-        ButtonType confirmButtonType = new ButtonType("Confirm");
-        ButtonType cancelButtonType = new ButtonType("Cancel");
-        dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, cancelButtonType);
-
-        int musicVolume = SoundManager.getMusicVolume();
-        int sfxVolume = SoundManager.getSfxVolume();
-
-        Slider musicVolumeSlider = new Slider(0, 100, musicVolume);
-        musicVolumeSlider.setShowTickLabels(true);
-        musicVolumeSlider.setShowTickMarks(true);
-        musicVolumeSlider.setMajorTickUnit(25);
-        musicVolumeSlider.setBlockIncrement(1);
-        musicVolumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("Music Volume: " + newVal.intValue());
-            SoundManager.setMusicVolume(newVal.intValue());
-        });
-
-        long[] lastTimeSFXPlayed = {0}; // used array to allow modification in lambda, because reference as pointer.
-
-        Slider sfxVolumeSlider = new Slider(0, 100, sfxVolume);
-        sfxVolumeSlider.setShowTickLabels(true);
-        sfxVolumeSlider.setShowTickMarks(true);
-        sfxVolumeSlider.setMajorTickUnit(25);
-        sfxVolumeSlider.setBlockIncrement(1);
-        sfxVolumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("SFX Volume: " + newVal.intValue());
-            SoundManager.setSfxVolume(newVal.intValue());
-            // avoid playing sample sfx too fast.
-            if (System.currentTimeMillis() - lastTimeSFXPlayed[0] > 200) {
-                lastTimeSFXPlayed[0] = System.currentTimeMillis();
-                SoundManager.playSound(SoundListEnum.ENEMY_DOWN);
-            }
-        });
-
-        CheckBox fullscreenCheckBox = new CheckBox("Enable Fullscreen");
-        fullscreenCheckBox.setSelected(AppViewManager.get().getStage().isFullScreen());
-        fullscreenCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("Fullscreen: " + newVal);
-            AppViewManager.get().getStage().setFullScreen(newVal);
-        });
-
-        GridPane grid = new GridPane();
-        grid.setHgap(15);
-        grid.setVgap(15);
-        grid.setPadding(new Insets(30, 50, 30, 50));
-        grid.setAlignment(Pos.CENTER); // center the grid
-
-        grid.add(new Label("Music Volume:"), 0, 0);
-        grid.add(musicVolumeSlider, 1, 0);
-
-        grid.add(new Label("SFX Volume:"), 0, 1);
-        grid.add(sfxVolumeSlider, 1, 1);
-
-        grid.add(fullscreenCheckBox, 1, 2);
-
-        dialog.getDialogPane().setContent(grid);
-        dialog.getDialogPane().setMinWidth(400);
-
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == confirmButtonType) {
-            musicVolume = (int) musicVolumeSlider.getValue();
-            sfxVolume = (int) sfxVolumeSlider.getValue();
-            boolean isFullscreen = fullscreenCheckBox.isSelected();
-            String path = profilesPath + "/" + ProfileManager.getCurrentProfile() + "/_SETTINGS.json";
-            JsonFileManager.writeSettingsToJson(path, musicVolume, sfxVolume, isFullscreen);
-        }
     }
 
     @Override

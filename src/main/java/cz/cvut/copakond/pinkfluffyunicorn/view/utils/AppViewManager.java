@@ -1,21 +1,27 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IClickListener;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IDrawableFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.IResizableFrame;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AppViewManager {
     private static AppViewManager instance;
@@ -28,6 +34,11 @@ public class AppViewManager {
     private final Stage stage;
 
     private Pane currentFrame; // currently visible frame
+    private static String profilesPath;
+
+    public static void setProfilesPath(String path) {
+        profilesPath = path;
+    }
 
     public static void init(Stage stage) {
         if (instance == null) {
@@ -75,6 +86,119 @@ public class AppViewManager {
         updateCanvasSize();
     }
 
+    public void openSettings() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Settings");
+        dialog.initOwner(AppViewManager.get().getStage());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        ButtonType confirmButtonType = new ButtonType("Confirm");
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType);
+
+        int musicVolume = SoundManager.getMusicVolume();
+        int sfxVolume = SoundManager.getSfxVolume();
+        int[] fps = {GameObject.getFPS()}; // used array to allow modification in lambda, because reference as pointer.
+
+        Label musicVolumeLabel = new Label("Music Volume (" + musicVolume + "): ");
+        Label sfxVolumeLabel = new Label("SFX Volume (" + sfxVolume + "): ");
+        Label fpsLabel = new Label("FPS (" + fps[0] + "): ");
+
+        Slider musicVolumeSlider = new Slider(0, 100, musicVolume);
+        musicVolumeSlider.setPrefWidth(300);
+        musicVolumeSlider.setShowTickLabels(true);
+        musicVolumeSlider.setShowTickMarks(true);
+        musicVolumeSlider.setMajorTickUnit(25);
+        musicVolumeSlider.setBlockIncrement(1);
+        musicVolumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Music Volume: " + newVal.intValue());
+            musicVolumeLabel.setText("Music Volume (" + newVal.intValue() + "): ");
+            SoundManager.setMusicVolume(newVal.intValue());
+        });
+
+        long[] lastTimeSFXPlayed = {0}; // used array to allow modification in lambda, because reference as pointer.
+
+        Slider sfxVolumeSlider = new Slider(0, 100, sfxVolume);
+        sfxVolumeSlider.setPrefWidth(300);
+        sfxVolumeSlider.setShowTickLabels(true);
+        sfxVolumeSlider.setShowTickMarks(true);
+        sfxVolumeSlider.setMajorTickUnit(25);
+        sfxVolumeSlider.setBlockIncrement(1);
+        sfxVolumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("SFX Volume: " + newVal.intValue());
+            sfxVolumeLabel.setText("SFX Volume (" + newVal.intValue() + "): ");
+            SoundManager.setSfxVolume(newVal.intValue());
+            // avoid playing sample sfx too fast.
+            if (System.currentTimeMillis() - lastTimeSFXPlayed[0] > 200) {
+                lastTimeSFXPlayed[0] = System.currentTimeMillis();
+                SoundManager.playSound(SoundListEnum.ENEMY_DOWN);
+            }
+        });
+
+        Slider fpsSlider = new Slider(0, 240, GameObject.getFPS());
+        fpsSlider.setPrefWidth(300);
+        fpsSlider.setShowTickLabels(true);
+        fpsSlider.setShowTickMarks(true);
+        fpsSlider.setMajorTickUnit(60);
+        fpsSlider.setBlockIncrement(5);
+
+        CheckBox fullscreenCheckBox = new CheckBox("Enable Fullscreen");
+        fullscreenCheckBox.setSelected(AppViewManager.get().getStage().isFullScreen());
+        fullscreenCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Fullscreen: " + newVal);
+            AppViewManager.get().getStage().setFullScreen(newVal);
+        });
+
+        GridPane grid = new GridPane();
+        grid.setHgap(15);
+        grid.setVgap(15);
+        grid.setPadding(new Insets(30, 50, 30, 50));
+        grid.setAlignment(Pos.CENTER); // center the grid
+
+        grid.add(musicVolumeLabel, 0, 0);
+        grid.add(musicVolumeSlider, 1, 0);
+
+        grid.add(sfxVolumeLabel, 0, 1);
+        grid.add(sfxVolumeSlider, 1, 1);
+
+        grid.add(fpsLabel, 0, 2);
+        grid.add(fpsSlider, 1, 2);
+
+        Label restartWarning = new Label("Game NEEDS to RESTART to apply FPS changes.");
+        restartWarning.setTextFill(Color.WHITE);
+
+        grid.add(restartWarning, 0, 3);
+        grid.add(fullscreenCheckBox, 1, 4);
+
+        fpsSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("FPS: " + Math.max(newVal.intValue(), 1));
+            fpsLabel.setText("FPS (" + Math.max(newVal.intValue(), 1) + "): ");
+            if (newVal.intValue() != fps[0]) {
+                restartWarning.setTextFill(Color.RED);
+            } else {
+                restartWarning.setTextFill(Color.WHITE);
+            }
+        });
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().setMinWidth(700);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == confirmButtonType) {
+            musicVolume = (int) musicVolumeSlider.getValue();
+            sfxVolume = (int) sfxVolumeSlider.getValue();
+            boolean hasFpsChanged = fps[0] != (int) fpsSlider.getValue();
+            fps[0] = (int) fpsSlider.getValue();
+            boolean isFullscreen = fullscreenCheckBox.isSelected();
+            String path = profilesPath + "/" + ProfileManager.getCurrentProfile() + "/_SETTINGS.json";
+            JsonFileManager.writeSettingsToJson(path, musicVolume, sfxVolume, Math.max(fps[0], 1), isFullscreen);
+            if (hasFpsChanged) {
+                GameObject.setFPS(Math.max(fps[0], 1));
+                System.out.println("Game is going to close, because FPS changed.");
+                System.exit(0);
+            }
+        }
+    }
+
     public static boolean initSettings(String profilesPath) {
         String profile = ProfileManager.getCurrentProfile();
         if (profile == null || profile.isBlank()) {
@@ -86,10 +210,12 @@ public class AppViewManager {
         if (settings != null) {
             int musicVolume = settings.get(0);
             int sfxVolume = settings.get(1);
-            boolean isFullscreen = settings.get(2) == 1;
+            int fps = settings.get(2);
+            boolean isFullscreen = settings.get(3) == 1;
             SoundManager.setMusicVolume(musicVolume);
             SoundManager.setSfxVolume(sfxVolume);
             AppViewManager.get().setFullScreen(isFullscreen);
+            GameObject.setFPS(fps);
             return true;
         } else {
             System.out.println("Settings not found, using default values.");

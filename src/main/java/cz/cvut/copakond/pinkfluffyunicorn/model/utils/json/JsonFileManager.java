@@ -107,29 +107,25 @@ public class JsonFileManager {
         return writeJsonToFile(filePath, jsonObject);
     }
 
-    /*{
-      "music": 50,
-      "sfx": 50,
-      "fullScreen": false
-    }*/
-
     public static List<Integer> readSettingsFromJson(String filePath) {
         JSONObject jsonObject = readJsonFromFile(filePath);
 
         if (jsonObject != null) {
             int musicVolume = jsonObject.optInt("music", 50);
             int sfxVolume = jsonObject.optInt("sfx", 50);
+            int fps = jsonObject.optInt("fps", 60);
             int fullScreen = jsonObject.optBoolean("fullScreen", false) ? 1 : 0;
 
-            return List.of(musicVolume, sfxVolume, fullScreen);
+            return List.of(musicVolume, sfxVolume, fps, fullScreen);
         }
         return null;
     }
 
-    public static boolean writeSettingsToJson(String filePath, int musicVolume, int sfxVolume, boolean fullScreen) {
+    public static boolean writeSettingsToJson(String filePath, int musicVolume, int sfxVolume, int fps, boolean fullScreen) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("music", musicVolume);
         jsonObject.put("sfx", sfxVolume);
+        jsonObject.put("fps", fps);
         jsonObject.put("fullScreen", fullScreen);
         return writeJsonToFile(filePath, jsonObject);
     }

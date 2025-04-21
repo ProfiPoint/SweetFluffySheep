@@ -375,13 +375,11 @@ public class Level {
                     if (!allTiles.containsKey(name)) {
                         int tileIndex = 16 * ((newPositionInt[0] + newPositionInt[1] + 1) % 2);
                         boolean[] areWalkableTilesAround = getNumberOfWalkableTilesAround(newPositionInt, allTiles);
-                        System.out.println("areWalkableTilesAround: " + Arrays.toString(areWalkableTilesAround));
                         for (int i = 0; i < areWalkableTilesAround.length; i++) {
                             if (areWalkableTilesAround[i]) {
                                 tileIndex += Math.pow(2, i);
                             }
                         }
-                        System.out.println("tileIndex: " + tileIndex);
                         Tile newTile = new Tile(newPosition, tileIndex, false);
 
                         toBeChecked.add(newTile);

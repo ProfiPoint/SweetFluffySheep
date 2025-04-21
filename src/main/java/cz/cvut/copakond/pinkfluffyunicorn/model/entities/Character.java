@@ -15,6 +15,9 @@ import javafx.scene.paint.Color;
 
 public class Character extends GameObject implements ICharacter {
     private static final int textureRotationSpeed = 10;
+    // 15x per second it will update the anim texture
+    private static final int textureChangeFrameCoefficient = (int) Math.ceil((double) GameObject.getFPS() / 15);
+    // update the anim texture
 
     private DirectionEnum direction;
     private PhisicsEventsEnum previousEvent = PhisicsEventsEnum.NO_COLLISION;
@@ -159,7 +162,7 @@ public class Character extends GameObject implements ICharacter {
             return (25 * ((orientation+2) % 4)) + 16 + ((this.textureRotation)/textureRotationSpeed + 9) % 9;
         } else {
             // in movement animation
-            return (25 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/4) % 16) + 1;
+            return (25 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/textureChangeFrameCoefficient) % 16) + 1;
         }
     }
 

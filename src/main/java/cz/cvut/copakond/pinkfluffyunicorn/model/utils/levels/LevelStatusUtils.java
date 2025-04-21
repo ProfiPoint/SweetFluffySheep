@@ -22,6 +22,8 @@ public class LevelStatusUtils {
     }
 
     public static boolean markLevelAsCompleted(Level level){
+        if (level.isLevelEditor()) return true;
+
         currentProfileName = ProfileManager.getCurrentProfile();
         List<List<Integer>> original = JsonFileManager.getProfileLFromJsonFile(
                 profilesPath + "/" + currentProfileName + "/_DATA.json"
@@ -33,11 +35,9 @@ public class LevelStatusUtils {
         levelData.add(new ArrayList<>(original.get(0))); // normal levels
         levelData.add(new ArrayList<>(original.get(1))); // editor levels
 
-
-
         try {
             int levelNumber = Integer.parseInt(level.getLevelData()[0]);
-            if (level.isLevelEditor()) {
+            if (!level.isStoryLevel()) {
                 List<Integer> editorLevels = levelData.get(1);
                 for (int i = 0; i < editorLevels.size(); i++) {
                     if (editorLevels.get(i) == levelNumber) {

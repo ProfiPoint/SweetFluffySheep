@@ -67,15 +67,6 @@ public class SaveManager {
         data.put("enemies", enemiesObj);
     }
 
-    public void addCoinsData(List<Coin> coins) {
-        JSONArray coinsArray = new JSONArray();
-        for (Coin coin : coins) {
-            coinsArray.put(new JSONArray(new int[]{(int)Math.round(coin.getPosition()[0]),
-                    (int)Math.round(coin.getPosition()[1])}));
-        }
-        data.put("coins", coinsArray);
-    }
-
     public void addItemsData(List<Item> items) {
         JSONArray itemsArray = new JSONArray();
         for (Item item : items) {

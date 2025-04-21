@@ -36,9 +36,10 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
     private final GridPane hudBar;
     private LevelEditorObjectsEnum selectedObject = LevelEditorObjectsEnum.EMPTY;
 
-    private final Button playButton =     new Button("   Play   ");
-    private final Button settingsButton = new Button("Settings");
-    private final Button menuButton =     new Button("  Menu  ");
+    private final Button playButton =      new Button("   [Play]   ");
+    private final Button variablesButton = new Button("Variables");
+    private final Button settingsButton =  new Button("Settings ");
+    private final Button menuButton =      new Button("   Menu   ");
 
     private static String texturePath;
 
@@ -141,7 +142,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             AppViewManager.get().switchTo(new LevelFrame(newLevel, true));
         });
 
-        settingsButton.setOnAction(event -> {
+        variablesButton.setOnAction(event -> {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setTitle("Level Settings");
             dialog.initOwner(AppViewManager.get().getStage());
@@ -232,12 +233,17 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             }
         });
 
+        settingsButton.setOnAction(e -> {
+            AppViewManager.get().openSettings();
+        });
+
         menuButton.setOnAction(e -> {
             gameLoop.unload();
             AppViewManager.get().switchTo(new LevelSelectionFrame(true));
         });
 
         bar.add(playButton, col++, 0);
+        bar.add(variablesButton, col++, 0);
         bar.add(settingsButton, col++, 0);
         bar.add(menuButton, col++, 0);
 
@@ -251,7 +257,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
     }
 
     private void adjustFontSize(double width) {
-        double fontSize = width / 75;
+        double fontSize = width / 90;
 
         for (Node node : hudBar.getChildrenUnmodifiable()) {
             if (node instanceof Button button) {

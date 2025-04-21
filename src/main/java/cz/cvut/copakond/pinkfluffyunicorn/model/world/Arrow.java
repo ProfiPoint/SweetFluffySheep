@@ -48,7 +48,7 @@ public class Arrow extends GameObject {
     @Override // tick
     public void tick(boolean doesTimeFlow) {
         super.tick(doesTimeFlow);
-        if (textureRotation % 90 != 0) {
+        if (textureRotation != direction.getValue()) {
             textureRotation = (textureRotation + textureRotationSpeed) % 360;
         }
     }

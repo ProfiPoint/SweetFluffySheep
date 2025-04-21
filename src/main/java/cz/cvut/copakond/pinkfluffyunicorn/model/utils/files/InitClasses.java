@@ -7,6 +7,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.frames.LevelEditorFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.frames.MenuFrame;
+import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
 
 public class InitClasses {
     public InitClasses(String texturesPath, String levelsPath, String profilesPath, String soundsPath) {
@@ -18,7 +19,7 @@ public class InitClasses {
         ProfileManager.setProfileFolderPath(profilesPath);
         LevelStatusUtils.setLevelPath(levelsPath);
         Level.setLevelPath(levelsPath);
-        MenuFrame.setProfilesPath(profilesPath);
+        AppViewManager.setProfilesPath(profilesPath);
         FolderUtils.setProfilesPath(profilesPath);
         LevelStatusUtils.setProfilesPath(profilesPath);
         Level.setProfilesPath(profilesPath);

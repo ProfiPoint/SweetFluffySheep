@@ -1,6 +1,7 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
@@ -14,6 +15,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 public class Goal extends GameObject {
+    // 10x per second it will update the anim texture
+    private static final int textureChangeFrameCoefficient = (int) Math.ceil((double) GameObject.getFPS() / 10);
     private boolean locked = true;
     private DirectionEnum direction;
 
@@ -46,7 +49,7 @@ public class Goal extends GameObject {
     @Override
     public Image getTexture() {
         int orientation = (this.direction.getValue() / 90);
-        this.textureIdNow = (32 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/6) % 32);
+        this.textureIdNow = (32 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/textureChangeFrameCoefficient) % 32);
         if (this.locked) {
             this.textureIdNow += 32*4;
 

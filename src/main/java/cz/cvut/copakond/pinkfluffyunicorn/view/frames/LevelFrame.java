@@ -39,6 +39,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
     private final Label timeLabel = new Label("180s");
     private final Button pauseButton = new Button("Pause");
     private final Button retryButton = new Button("Retry");
+    private final Button settingsButton = new Button("Settings");
     private final Button menuButton = new Button("Menu");
 
     private boolean popupShown = false;
@@ -269,7 +270,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
     }
 
     private void adjustFontSize(double width) {
-        double fontSize = width / 50;
+        double fontSize = width / 60;
 
         // loop through all children of the hudBar and set the font size
         for (javafx.scene.Node node : hudBar.getChildrenUnmodifiable()) {
@@ -339,6 +340,10 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
             resetLevel();
         });
 
+        settingsButton.setOnAction(e -> {
+            AppViewManager.get().openSettings();
+        });
+
         speedButton.setOnAction(e -> {
             double newSpeed = gameLoop.getAndChangeSpeed()/2.0;
             speedButton.setText(String.valueOf(newSpeed).replace(".0", "") + "x");
@@ -352,7 +357,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
 
         javafx.scene.Node[] nodes = {
                 speedButton, coinsLabel, lifesLabel, timeLabel,
-                pauseButton, retryButton, menuButton
+                pauseButton, retryButton, settingsButton, menuButton
         };
 
         for (javafx.scene.Node node : nodes) {

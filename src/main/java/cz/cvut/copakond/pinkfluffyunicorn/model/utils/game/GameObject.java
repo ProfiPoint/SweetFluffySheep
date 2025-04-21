@@ -9,8 +9,8 @@ import java.util.List;
 
 public class GameObject implements IGameObject {
     // Constants
-    private final static int FPS = 60; // 60 ticks per second
-    public final static double colisionHitboxPrecision = 0.1; // 0.1/fps tiles precision
+    private static int FPS = 60; // 60 ticks per second
+    private final static double colisionHitboxPrecision = 0.1; // 0.1/fps tiles precision
 
     protected boolean visible;
     protected int renderPriority;
@@ -38,6 +38,10 @@ public class GameObject implements IGameObject {
 
     public static int getFPS() {
         return FPS;
+    }
+
+    public static void setFPS(int fps) {
+        FPS = fps;
     }
 
     public static double getCollisionLimit() {

@@ -9,6 +9,8 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import javafx.scene.image.Image;
 
 public class Item extends GameObject implements IItem {
+    // 10x per second it will update the anim texture
+    private static final int textureChangeFrameCoefficient = (int) Math.ceil((double) GameObject.getFPS() / 10);
     public static ItemEnum ItemEffect;
     protected int duration_ticks;
     private ItemEnum itemEffect;
@@ -46,7 +48,7 @@ public class Item extends GameObject implements IItem {
 
     @Override
     public Image getTexture() {
-        this.textureIdNow = (int)((Level.getCurrentCalculatedFrame()/6) % 32);
+        this.textureIdNow = (int)((Level.getCurrentCalculatedFrame()/textureChangeFrameCoefficient) % 32);
         return this.textures.get(this.textureIdNow);
     }
 }

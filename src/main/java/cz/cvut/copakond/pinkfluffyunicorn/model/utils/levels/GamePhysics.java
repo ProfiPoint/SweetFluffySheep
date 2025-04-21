@@ -108,6 +108,9 @@ public class GamePhysics {
     }
 
     static double distanceBetweenObjects(GameObject gameObject1, GameObject gameObject2) {
+        if (gameObject1 == null || gameObject2 == null) {
+            return Double.MAX_VALUE;
+        }
         double x1 = gameObject1.getX();
         double y1 = gameObject1.getY();
         double x2 = gameObject2.getX();
@@ -285,7 +288,6 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection().next(), character);
         if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // on right side from characters perspective is a tile, not a wall -> rotate right
-            System.out.println("EVENT 1");
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().next());
         }
 
@@ -293,7 +295,6 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection().next().getOppositeDirection(), character);
         if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // on left side from characters perspective is a tile, not a wall -> rotate left
-            System.out.println("EVENT 2");
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().next().getOppositeDirection());
         }
 
@@ -315,7 +316,6 @@ public class GamePhysics {
         // "thank you for your understanding" - the creator of the game
 
         // just rotate to the right,
-        System.out.println("EVENT 4");
         return PhisicsEventsEnum.ROTATION_STUCK_4WALLS;
     }
 
