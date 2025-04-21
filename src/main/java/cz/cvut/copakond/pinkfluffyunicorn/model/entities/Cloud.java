@@ -48,7 +48,7 @@ public class Cloud extends Character {
         if (canMove) {
             return super.getTexture();
         }
-        return this.textures.get(this.textureIdNow);
+        return this.textures.get(this.textureIdNow + 100);
     }
 
     @Override

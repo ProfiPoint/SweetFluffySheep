@@ -152,17 +152,20 @@ public class Character extends GameObject implements ICharacter {
         move((double)1/GameObject.getFPS(), doesTimeFlow);
     }
 
-    @Override
-    public Image getTexture() {
+    protected int getTextureNumber() {
         int orientation = (this.textureRotation / 90);
         if (this.textureRotation % 90 != 0) {
             // in rotation animation
-            this.textureIdNow = (25 * ((orientation+2) % 4)) + 16 + ((this.textureRotation)/textureRotationSpeed + 9) % 9;
-            return this.textures.get(this.textureIdNow);
+            return (25 * ((orientation+2) % 4)) + 16 + ((this.textureRotation)/textureRotationSpeed + 9) % 9;
         } else {
             // in movement animation
-            this.textureIdNow = (25 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/4) % 16) + 1;
-            return this.textures.get(this.textureIdNow);
+            return (25 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/4) % 16) + 1;
         }
+    }
+
+    @Override
+    public Image getTexture() {
+        this.textureIdNow = getTextureNumber();
+        return this.textures.get(this.textureIdNow);
     }
 }

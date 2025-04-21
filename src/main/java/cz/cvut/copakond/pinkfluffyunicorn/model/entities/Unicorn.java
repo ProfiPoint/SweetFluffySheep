@@ -1,10 +1,12 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.items.RainbowItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.PhisicsEventsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
+import javafx.scene.image.Image;
 
 public class Unicorn extends Character {
     private static int counter = 0;
@@ -48,6 +50,15 @@ public class Unicorn extends Character {
         counter = 0;
         unicornsInGoal = 0;
         gameStatus = GameStatusEnum.RUNNING;
+    }
+
+    @Override
+    public Image getTexture() {
+        if (RainbowItem.isActive()) {
+            this.textureIdNow = getTextureNumber() + 100;
+            return this.textures.get(this.textureIdNow);
+        }
+        return super.getTexture();
     }
 
     public static int getGoalUnicorns() {

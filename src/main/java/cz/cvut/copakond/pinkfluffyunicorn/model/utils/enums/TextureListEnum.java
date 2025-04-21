@@ -5,16 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum TextureListEnum {
-    CLOUD("cloud", "characters/clouds/cloud_{i}.png",100),
-    UNICORN("unicorn", "characters/unicorns/unicorn_{i}.png", 100),
+    CLOUD("cloud", "characters/clouds/cloud_{i}.png",(16+9)*4*2),
+    UNICORN("unicorn", "characters/unicorns/unicorn_{i}.png", (16+9)*4*2),
     TILE("tile", "tiles/tile_{i}.png",32), // tile_001, tile_002
     START("start", "objects/start/start_{b}.png",2), // start_true - unlocked, start_false - locked
-    GOAL("goal", "objects/goal/goal_{i}.png",256), // 1,128 - unlocked, 129,256 - locked
+    GOAL("goal", "objects/goal/goal_{i}.png",32*4*2), // 1,128 - unlocked, 129,256 - locked
     EMPTY("empty", "missing_texture.png",1, false),
     COIN("coin", "items/coin/coin_{i}.png", 32),
     FIRE("fire", "items/fire/fire_{i}.png", 32),
     RAINBOW("rainbow", "items/rainbow/rainbow_{i}.png", 32),
-    ARROW("arrow", "arrows/arrow_{i}.png", 36);
+    ARROW("arrow", "arrows/arrow_{i}.png", 9*4);
 
     private final String name;
     private String fileName;
