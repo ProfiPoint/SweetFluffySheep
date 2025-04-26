@@ -8,7 +8,7 @@ public enum TextureListEnum {
     CLOUD("cloud", "characters/clouds/cloud_{i}.png",(16+9)*4*2),
     UNICORN("unicorn", "characters/unicorns/unicorn_{i}.png", (16+9)*4*2),
     TILE("tile", "tiles/tile_{i}.png",32), // tile_001, tile_002
-    START("start", "objects/start/start_{b}.png",2), // start_true - unlocked, start_false - locked
+    START("start", "objects/start/start_{i}.png",5), // 1,2,3,4 rotation, 5 - invisible
     GOAL("goal", "objects/goal/goal_{i}.png",32*4*2), // 1,128 - unlocked, 129,256 - locked
     EMPTY("empty", "missing_texture.png",1, false),
     COIN("coin", "items/coin/coin_{i}.png", 32),

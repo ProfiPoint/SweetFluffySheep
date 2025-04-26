@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 
 public class Start extends GameObject {
     private DirectionEnum direction;
+    private boolean visible = true;
 
     public Start(double[] position, DirectionEnum orientation) {
         super("start", position, RenderPriorityEnums.ARROW.getValue());
@@ -27,43 +28,17 @@ public class Start extends GameObject {
     }
 
     public void setVisibility(boolean visibility) {
-        if (visibility) {
-            this.textureIdNow = 1;
-        } else {
-            this.textureIdNow = 0;
-        }
+        this.visible = visibility;
     }
 
     @Override
     public Image getTexture() {
-        Image img = this.textures.get(this.textureIdNow);
-
-        if (this.direction.getValue() != 0) {
-            double width = img.getWidth();
-            double height = img.getHeight();
-
-            Canvas canvas = new Canvas(width, height);
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-
-            // Draw rotated image onto transparent canvas
-            gc.save();
-            gc.translate(width / 2, height / 2);
-            gc.rotate(this.direction.getOppositeDirection().getValue());
-            gc.translate(-width / 2, -height / 2);
-            gc.drawImage(img, 0, 0);
-            gc.restore();
-
-            // Set up snapshot parameters with transparency
-            SnapshotParameters params = new SnapshotParameters();
-            params.setFill(Color.TRANSPARENT); // this is the key to keeping transparency
-
-            WritableImage rotatedImg = new WritableImage((int) width, (int) height);
-            canvas.snapshot(params, rotatedImg);
-
-            return rotatedImg;
+        if (visible) {
+            this.textureIdNow = (direction.getValue() / 90 + 1) % 4 + 1;
+        } else {
+            this.textureIdNow = 0;
         }
-
-        return img;
+        return this.textures.get(this.textureIdNow);
     }
 
 }

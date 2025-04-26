@@ -42,6 +42,8 @@ public class TextureManager {
                 result = new Image(new File(texturesPath+"/missing_texture.png").toURI().toURL().toExternalForm());
                 ErrorMsgsEnum.TEXTURE_MISSING.getValue(textureName, e);
             } catch (Exception e2) {
+                // print the full path of the file
+                System.out.println(new File(texturesPath+"/missing_texture.png").getAbsolutePath());
                 String e3 = ErrorMsgsEnum.TEXTURE_MISSING_IS_MISSING.getValue(textureName, e2);
                 throw new RuntimeException(e3);
             }
@@ -77,7 +79,7 @@ public class TextureManager {
                 String textureName = textureNames[index-1];
                 textures.add(getLoadedTexture(textureName));
             } else {
-                System.err.println("Texture index out of range: " + index);
+                ErrorMsgsEnum.TEXTURE_OUT_OF_INDEX.getValue(objectName + " " + index);
             }
         }
         loadedTexturesList.put(objectName, textures);
