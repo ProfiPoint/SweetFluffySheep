@@ -27,7 +27,7 @@ public class LoadManager {
 
     private JSONArray getJSONArray(String key) {
         if (!data.has(key)) {
-            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key));
             return null;
         }
         return data.optJSONArray(key);
@@ -35,7 +35,7 @@ public class LoadManager {
 
     public boolean getBoolean(String key) {
         if (!data.has(key)) {
-            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key));
             return false;
         }
         return data.optBoolean(key, false);
@@ -44,7 +44,7 @@ public class LoadManager {
     public int[] getList3(String key, int[] limit) {
         JSONArray arr = getJSONArray(key);
         if (arr == null || arr.length() != 3) {
-            ErrorMsgsEnum.LOAD_LIST_IntIntOrientation.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_LIST_IntIntOrientation.getValue("Key: "+key));
             return null;
         }
 
@@ -53,7 +53,7 @@ public class LoadManager {
         int z = arr.optInt(2, -1);
 
         if (!isValidCoordinate(x, y, limit) || !isValidRotation(z)) {
-            ErrorMsgsEnum.LOAD_VALUES3_LIMIT.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_VALUES3_LIMIT.getValue("Key: "+key));
             return null;
         }
         return new int[]{x, y, z};
@@ -62,7 +62,7 @@ public class LoadManager {
     public int[] getList2(String key, int[] limit) {
         JSONArray arr = getJSONArray(key);
         if (arr == null || arr.length() != 2) {
-            ErrorMsgsEnum.LOAD_LIST_IntInt.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_LIST_IntInt.getValue("Key: "+key));
             return null;
         }
 
@@ -70,7 +70,7 @@ public class LoadManager {
         int y = arr.optInt(1, -1);
 
         if (!isValidCoordinate(x, y, limit)) {
-            ErrorMsgsEnum.LOAD_VALUES2_LIMIT.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_VALUES2_LIMIT.getValue("Key: "+key));
             return null;
         }
         return new int[]{x, y};
@@ -79,7 +79,7 @@ public class LoadManager {
     public int[] getList2NoLimit (String key) {
         JSONArray arr = getJSONArray(key);
         if (arr == null || arr.length() != 2) {
-            ErrorMsgsEnum.LOAD_LIST_IntInt.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_LIST_IntInt.getValue("Key: "+key));
             return null;
         }
 
@@ -91,12 +91,12 @@ public class LoadManager {
 
     public Integer getIntLimit(String key, int limit) {
         if (!data.has(key)) {
-            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key));
             return null;
         }
         int value = data.optInt(key, -1);
         if (value < 0 || value > limit) {
-            ErrorMsgsEnum.LOAD_VALUE_OUT_OF_RANGE.getValue("Key: "+key + " Lower limit: 0, Upper limit: "+limit);
+            logger.severe(ErrorMsgsEnum.LOAD_VALUE_OUT_OF_RANGE.getValue("Key: "+key + " Lower limit: 0, Upper limit: "+limit));
             return null;
         }
         return value;
@@ -104,7 +104,7 @@ public class LoadManager {
 
     public Integer getInt(String key) {
         if (!data.has(key)) {
-            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key));
             return null;
         }
         return data.optInt(key, -1);
@@ -112,7 +112,7 @@ public class LoadManager {
 
     public String getString(String key) {
         if (!data.has(key)) {
-            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key));
             return null;
         }
         return data.optString(key, null);
@@ -120,7 +120,7 @@ public class LoadManager {
 
     public List<int[]> getEnemies(String key, int[] limit, int valueLimit) {
         if (!data.has(key)) {
-            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key));
             return null;
         }
         JSONObject obj = data.optJSONObject(key);
@@ -136,7 +136,7 @@ public class LoadManager {
             int v = obj.optInt(k, -1);
 
             if (!isValidCoordinate(x, y, limit) || v < 0 || v > valueLimit) {
-                ErrorMsgsEnum.LOAD_LIST_IntIntOrientation.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v);
+                logger.severe(ErrorMsgsEnum.LOAD_LIST_IntIntOrientation.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v));
             continue;
             }
             result.add(new int[]{x, y, v});
@@ -157,7 +157,7 @@ public class LoadManager {
             int y = subArr.optInt(1, -1);
 
             if (!isValidCoordinate(x, y, limit)) {
-                ErrorMsgsEnum.LOAD_VALUES2_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y);
+                logger.severe(ErrorMsgsEnum.LOAD_VALUES2_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y));
                 continue;
             }
             result.add(new int[]{x, y});
@@ -179,7 +179,7 @@ public class LoadManager {
             int d = subArr.optInt(3, -1);
 
             if (!isValidCoordinate(x, y, limit) || v < 0 || v > valueLimit || d < 0) {
-                ErrorMsgsEnum.LOAD_VALUES4_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v + " d: "+d);
+                logger.severe(ErrorMsgsEnum.LOAD_VALUES4_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v + " d: "+d));
                 continue;
             }
             result.add(new int[]{x, y, v, d});
@@ -190,7 +190,7 @@ public class LoadManager {
     // 3rd value is direction (0, 90, 180, 270)
     public List<int[]> getListOfListsWithDirFromDict(String key, int[] limit, boolean canBeEmpty) {
         if (!data.has(key)) {
-            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key));
             return null;
         }
         JSONObject obj = data.optJSONObject(key);
@@ -207,14 +207,14 @@ public class LoadManager {
             int v = obj.optInt(k, -1);
 
             if (!isValidCoordinate(x, y, limit) || !isValidRotation(v)) {
-                ErrorMsgsEnum.LOAD_VALUES3_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v);
+                logger.severe(ErrorMsgsEnum.LOAD_VALUES3_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v));
                 continue;
             }
             result.add(new int[]{x, y, v});
         }
 
         if (result.isEmpty() && !canBeEmpty) {
-            ErrorMsgsEnum.LOAD_EMPTY_LIST.getValue("dict Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_EMPTY_LIST.getValue("dict Key: "+key));
             return null;
         }
 
@@ -223,7 +223,7 @@ public class LoadManager {
 
     public List<int[]> getListOfListsWithLimitFromDict(String key, int[] limit, int valueLimit) {
         if (!data.has(key)) {
-            ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_KEY_NOT_FOUND.getValue("Key: "+key));
             return null;
         }
         JSONObject obj = data.optJSONObject(key);
@@ -239,14 +239,14 @@ public class LoadManager {
             int v = obj.optInt(k, -1);
 
             if (!isValidCoordinate(x, y, limit) || v < 0 || v > valueLimit) {
-                ErrorMsgsEnum.LOAD_VALUES3path_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v);
+                logger.severe(ErrorMsgsEnum.LOAD_VALUES3path_LIMIT.getValue("key: "+key + " x: "+x + " y: "+y + " v: "+v));
                 continue;
             }
             result.add(new int[]{x, y, v});
         }
 
         if (result.isEmpty()) {
-            ErrorMsgsEnum.LOAD_EMPTY_LIST.getValue("dict Key: "+key);
+            logger.severe(ErrorMsgsEnum.LOAD_EMPTY_LIST.getValue("dict Key: "+key));
             return null;
         }
 

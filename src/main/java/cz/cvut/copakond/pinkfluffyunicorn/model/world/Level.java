@@ -18,6 +18,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 public class Level {
@@ -25,7 +26,7 @@ public class Level {
     
     // for render purposes
     private static JSONObject levelData;
-    private static List<GameObject> objects;
+    private static CopyOnWriteArrayList<GameObject> objects; // CopyOnWriteArrayList is used to avoid thread issues
     private static String levelPath;
     private static String profilesPath;
     private static String path;
@@ -84,7 +85,7 @@ public class Level {
         }
 
         if (levelData == null) {
-            ErrorMsgsEnum.CUSTOM_ERROR.getValue("Error loading level data");
+            logger.severe(ErrorMsgsEnum.CUSTOM_ERROR.getValue("Error loading level data"));
         } else {
             logger.info("Level loaded");
         }
@@ -152,13 +153,14 @@ public class Level {
         }
         currentCalculatedFrame++;
 
-        // GameObjects are updated in another thread, so we need to catch the exception
+        // GameObjects are updated in another thread, so we need to catch the exception,
+        // But this should not happen because we are using CopyOnWriteArrayList
         try {
             for (GameObject object : objects) {
                 object.tick(doesTimeFlow);
             }
         } catch (ConcurrentModificationException e) {
-            logger.info("Frame skipped due to concurrent modification, if this happens often, consider lowering the FPS");
+            logger.warning("Frame skipped due to concurrent modification, if this happens often, consider lowering the FPS");
         }
     }
 
@@ -312,7 +314,7 @@ public class Level {
         for (GameObject object : objects) {
             object.resetLevel();
         }
-        objects = new ArrayList<>();
+        objects = new CopyOnWriteArrayList<>();
         GamePhysics.unloadMapObjects();
         levelIsCompleted = false;
     }
@@ -398,7 +400,7 @@ public class Level {
     }
 
     void buildObjectsList() {
-        objects = new ArrayList<GameObject>();
+        objects = new CopyOnWriteArrayList<GameObject>();
         buildDecorationTiles();
         if (start != null) {objects.add(start);}
         if (goal != null) {objects.add(goal);}

@@ -47,14 +47,10 @@ public enum ErrorMsgsEnum {
     }
 
     public String getValue(String info) {
-        String msg = value + " (" + info + ")\n\n";
-        System.err.println(msg);
-        return msg;
+        return value + " (" + info + ")\n\n";
     }
 
     public String getValue(String info, Exception error) {
-        String msg = value + " (" + info + ")\n" + error.toString() + "\n\n";
-        System.err.println(msg);
-        return msg;
+        return value + " (" + info + ")\n" + error.toString() + "\n\n";
     }
 }

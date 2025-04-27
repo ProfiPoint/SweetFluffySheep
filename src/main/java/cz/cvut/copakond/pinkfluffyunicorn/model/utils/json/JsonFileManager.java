@@ -20,9 +20,9 @@ public class JsonFileManager {
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
             return new JSONObject(content);
         } catch (IOException e) {
-           ErrorMsgsEnum.LOAD_JSON_FILE.getValue(filePath, e);
+           logger.severe(ErrorMsgsEnum.LOAD_JSON_FILE.getValue(filePath, e));
         } catch (JSONException e) {
-            ErrorMsgsEnum.LOAD_JSON_PARSE.getValue(filePath, e);
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_PARSE.getValue(filePath, e));
         }
         return null;
     }
@@ -36,7 +36,7 @@ public class JsonFileManager {
             Files.write(Paths.get(filePath), jsonString.getBytes());
             return true;
         } catch (IOException e) {
-            ErrorMsgsEnum.SAVE_JSON_FILE.getValue(filePath, e);
+            logger.severe(ErrorMsgsEnum.SAVE_JSON_FILE.getValue(filePath, e));
         }
         return false;
     }

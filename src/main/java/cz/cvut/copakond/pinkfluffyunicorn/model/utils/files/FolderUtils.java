@@ -45,7 +45,7 @@ public class FolderUtils {
                 }
             }
         } else {
-            ErrorMsgsEnum.UNKNOWN_FOLDER.getValue("Path: " + path);
+            logger.severe(ErrorMsgsEnum.UNKNOWN_FOLDER.getValue("Path: " + path));
         }
 
         return folders;
@@ -59,10 +59,10 @@ public class FolderUtils {
             if (success) {
                 logger.info("Folder created at: " + path);
             } else {
-                ErrorMsgsEnum.FOLDER_CREATE_ERROR.getValue(path);
+                logger.severe(ErrorMsgsEnum.FOLDER_CREATE_ERROR.getValue(path));
             }
         } else {
-            ErrorMsgsEnum.FOLDER_EXISTS.getValue(path);
+            logger.severe(ErrorMsgsEnum.FOLDER_EXISTS.getValue(path));
         }
 
         return folder.exists();
