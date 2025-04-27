@@ -41,6 +41,7 @@ public class Unicorn extends Character {
         if (entered) {
             unicornsInGoal++;
             SoundManager.playSound(SoundListEnum.HERO_FINISH);
+            logger.info("Unicorn entered goal");
         }
 
         if (counter - unicornsInGoal == 0 && unicornsInGoal >= goalUnicorns) {

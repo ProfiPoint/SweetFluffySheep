@@ -44,6 +44,7 @@ public class Goal extends GameObject {
         if (this.locked && Coin.getCoinsLeft() <= 0) {
             this.locked = false;
             SoundManager.playSound(SoundListEnum.GOAL_UNLOCKED);
+            logger.info("Goal unlocked!");
         }
     }
 

@@ -144,6 +144,7 @@ public class Level {
 
                 if (timeLeft <= 0) {
                     timeLeft = 0;
+                    GameObject.setGameStatusLose();
                 }
 
                 if (timeLeft/GameObject.getFPS() <= 6 && timeLeft % GameObject.getFPS() == 0 && timeLeft != 0) {
@@ -333,6 +334,10 @@ public class Level {
         String isLevelEditor = this.isLevelEditor ? "true" : "false";
         String isStoryLevel = this.isStoryLevel ? "true" : "false";
         return new String[]{levelName, isLevelEditor, isStoryLevel};
+    }
+
+    public int getTimeLimit() {
+        return levelInfo.get("timeLimit");
     }
 
     private boolean[] getNumberOfWalkableTilesAround(int[] position, Map<String, Tile> allTiles) {
