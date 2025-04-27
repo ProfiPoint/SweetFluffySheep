@@ -41,15 +41,18 @@ public class TextureManager {
         Image result;
         try {
             result = new Image(new File(textureName).toURI().toURL().toExternalForm());
+            if (result.getHeight() == 0 || result.getWidth() == 0) {
+                throw new RuntimeException("Texture not found: " + textureName);
+            }
         } catch (Exception e) {
             try {
                 result = new Image(new File(texturesPath+"/missing_texture.png").toURI().toURL().toExternalForm());
-                logger.severe(ErrorMsgsEnum.TEXTURE_MISSING.getValue(textureName, e));
+                logger.warning(ErrorMsgsEnum.TEXTURE_MISSING.getValue(textureName, e));
             } catch (Exception e2) {
                 // print the full path of the file
                 logger.info(new File(texturesPath+"/missing_texture.png").getAbsolutePath());
                 String e3 = ErrorMsgsEnum.TEXTURE_MISSING.getValue(textureName, e2);
-                logger.severe(e3);
+                logger.warning(e3);
                 throw new RuntimeException(e3);
             }
         }
