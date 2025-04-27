@@ -124,7 +124,9 @@ public class GameLoop {
     }
 
     public void renderScene() {
-        level.getGoal().unlockForLevelEditor(); // unlock goal for level editor
+        if (level.getGoal() != null) {
+            level.getGoal().unlockForLevelEditor(); // unlock goal for level editor
+        }
         javafx.application.Platform.runLater(levelFrame::drawLevelObjects);
     }
 

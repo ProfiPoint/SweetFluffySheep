@@ -124,7 +124,12 @@ public class LevelEditorUtils {
             start = new Start(position, DirectionEnum.RIGHT);
             level.setStart(start);
         } else {
-            start.setPosition(position);
+            if (start.getPosition()[0] == position[0] && start.getPosition()[1] == position[1]) {
+                rotateObject(position);
+            } else {
+                start.setPosition(position);
+            }
+
         }
     }
 
@@ -137,7 +142,11 @@ public class LevelEditorUtils {
             goal = new Goal(position, DirectionEnum.RIGHT);
             level.setGoal(goal);
         } else {
-            goal.setPosition(position);
+            if (goal.getPosition()[0] == position[0] && goal.getPosition()[1] == position[1]) {
+                rotateObject(position);
+            } else {
+                goal.setPosition(position);
+            }
         }
     }
 
