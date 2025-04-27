@@ -10,6 +10,7 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -44,6 +45,20 @@ public class PathFinder {
         Goal goal = level.getGoal();
         if (goal == null || goal.getPosition() == null) {
             reasonForFailure = "No goal point found";
+            return false;
+        }
+
+        // level must contain at least 1 coin
+        boolean containsCoin = false;
+        List<Item> items = level.getItems();
+        for (Item item : items) {
+            if (item.getItemEffect() == ItemEnum.COIN) {
+                containsCoin = true;
+                break;
+            }
+        }
+        if (!containsCoin) {
+            reasonForFailure = "No coins found";
             return false;
         }
 

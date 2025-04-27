@@ -8,8 +8,11 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import javafx.scene.image.Image;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Cloud extends Character {
+    private static final Logger logger = Logger.getLogger(Cloud.class.getName());
+
     private static int counter = 0;
     private boolean canMove = true;
 
@@ -30,6 +33,7 @@ public class Cloud extends Character {
         SoundManager.playSound(SoundListEnum.HERO_ENEMY_COLLISION);
         SoundManager.playSound(SoundListEnum.ENEMY_DOWN);
         counter--;
+        logger.info("Cloud killed");
     }
 
     @Override

@@ -30,6 +30,7 @@ public class Unicorn extends Character {
         counter--;
         SoundManager.playSound(SoundListEnum.HERO_DOWN);
         unicornEnteredGoal(false);
+        logger.info("Unicorn killed");
         if (counter < goalUnicorns && gameStatus != GameStatusEnum.WIN) {
             logger.info("Game Over");
             gameStatus = GameStatusEnum.LOSE;

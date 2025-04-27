@@ -218,6 +218,7 @@ public class Level {
         }
 
         buildObjectsList();
+        logger.info("Level " + levelName + " stored in " + path + levelName + ".json editor " + isLevelEditor + " story " + isStoryLevel + " loaded");
         return true; // level is loaded successfully, without any errors :D
     }
 
@@ -308,6 +309,7 @@ public class Level {
 
         GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, unicorns, items, arrows);
         buildObjectsList();
+        logger.info("Level Played");
     }
 
     public void Unload() {

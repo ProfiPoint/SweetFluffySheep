@@ -294,6 +294,7 @@ public class AppViewManager {
         overlay.getChildren().add(newFrame);
         updateCanvasSize();
         ButtonSoundInjector.injectToAllButtons(newFrame);
+        logger.info("Switched to " + newFrame.getClass().getSimpleName());
     }
 
     public Scene getScene() {

@@ -1,4 +1,4 @@
-package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
+package cz.cvut.copakond.pinkfluffyunicorn.model.utils.logging;
 
 import java.util.logging.*;
 

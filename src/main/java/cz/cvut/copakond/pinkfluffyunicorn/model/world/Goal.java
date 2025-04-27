@@ -51,6 +51,10 @@ public class Goal extends GameObject {
         return locked;
     }
 
+    public void unlockForLevelEditor() {
+        this.locked = false;
+    }
+
     @Override
     public Image getTexture() {
         int orientation = (this.direction.getValue() / 90);

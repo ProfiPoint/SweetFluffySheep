@@ -20,7 +20,7 @@ public class GameLoop {
     private Level level;
     private List<GameObject> objects;
     private long currentFrame = 0;
-    private final int[] speedOptions = {1, 2, 4, 8, 16, 32, 64, 128}; // default speed is 2x, but is presented to user
+    private final int[] speedOptions = {1, 2, 4, 8}; // default speed is 2x, but is presented to user
     // as 1x
     private int currentSpeedIndex = 1; // index of speedOptions
     private boolean isLoopRunning = false;
@@ -39,7 +39,6 @@ public class GameLoop {
             currentFrame = 0;
 
             while (isRunning) {
-                //logger.info("--- New frame ---");
                 long startTime = System.currentTimeMillis();
                 currentFrame++;
 
@@ -81,6 +80,7 @@ public class GameLoop {
 
     public int getAndChangeSpeed() {
         currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
+        logger.info("Game speed changed to " + speedOptions[currentSpeedIndex]/2 + "x (" + speedOptions[currentSpeedIndex] + "x)");
         return speedOptions[currentSpeedIndex];
     }
 
@@ -105,6 +105,10 @@ public class GameLoop {
     }
 
     public void pause() {
+        if (!isRunning) {
+            return;
+        }
+        logger.info("Game Paused");
         isRunning = false;
     }
 
@@ -112,6 +116,7 @@ public class GameLoop {
         if (isRunning) {
             return;
         }
+        logger.info("Game Resumed");
         objects = level.getListOfObjects();
         objects.sort(Comparator.comparingInt(GameObject::getRenderPriority));
         isRunning = true;
@@ -119,6 +124,7 @@ public class GameLoop {
     }
 
     public void renderScene() {
+        level.getGoal().unlockForLevelEditor(); // unlock goal for level editor
         javafx.application.Platform.runLater(levelFrame::drawLevelObjects);
     }
 

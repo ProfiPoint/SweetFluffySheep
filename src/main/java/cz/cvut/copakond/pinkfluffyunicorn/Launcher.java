@@ -3,6 +3,7 @@ package cz.cvut.copakond.pinkfluffyunicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.InitClasses;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.logging.LoggerConfig;
 import cz.cvut.copakond.pinkfluffyunicorn.view.utils.AppViewManager;
 import cz.cvut.copakond.pinkfluffyunicorn.view.frames.MenuFrame;
 import cz.cvut.copakond.pinkfluffyunicorn.view.frames.ProfileFrame;
@@ -40,6 +41,17 @@ public class Launcher extends Application {
     }
 
     public static void main(String[] args) {
+        boolean loggerEnabled = false;
+
+        for (String arg : args) {
+            if (arg.equals("-logger") || arg.equals("--logger") || arg.equals("logger=true")) {
+                loggerEnabled = true;
+                System.out.println("Logger is enabled");
+                break;
+            }
+        }
+
+        LoggerConfig.configureLoggers(loggerEnabled);
         launch(args);
     }
 }

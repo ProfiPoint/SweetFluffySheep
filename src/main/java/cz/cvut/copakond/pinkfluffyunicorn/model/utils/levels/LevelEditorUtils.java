@@ -71,6 +71,7 @@ public class LevelEditorUtils {
 
     public static void addCloud(double[] position) {
         if (!isTileAtPosition(position)) {
+            logger.info("Position is not a tile: " + position[0] + ", " + position[1]);
             return;
         }
         List<Cloud> clouds = level.getEnemies();
@@ -78,17 +79,22 @@ public class LevelEditorUtils {
         if (objectsInPosition.isEmpty()) {
             Cloud cloud = new Cloud(position, DirectionEnum.LEFT);
             clouds.add(cloud);
+            logger.info("Adding cloud at position: " + position[0] + ", " + position[1]);
+        } else {
+            logger.info("Cloud already exists at position: " + position[0] + ", " + position[1]);
         }
     }
 
     private static void addItem(double[] position, ItemEnum itemEffect) {
         if (!isTileAtPosition(position)) {
+            logger.info("Position is not a tile: " + position[0] + ", " + position[1]);
             return;
         }
         List<Item> items = level.getItems();
         List<Item> objectsInPosition = checkPosition(position, items);
         for (Item object : objectsInPosition) {
-            if (object.getItemEffect() == itemEffect) {
+            if (object.getItemEffect() == itemEffect && itemEffect != ItemEnum.COIN) {
+                logger.info("Item " + itemEffect + " already exists at position: " + position[0] + ", " + position[1]);
                 return; // item already exists
             }
         }
@@ -143,14 +149,17 @@ public class LevelEditorUtils {
         List<Cloud> objectsInPosition = checkPosition(position, clouds);
         for (Cloud object : objectsInPosition) {
             object.rotateCharacterLE();
+            logger.info("Rotating cloud to " + object.getDirection());
         }
 
         if (start != null && start.getPosition()[0] == position[0] && start.getPosition()[1] == position[1]) {
             start.rotateCharacterLE();
+            logger.info("Rotating start to " + start.getDirection());
         }
 
         if (goal != null && goal.getPosition()[0] == position[0] && goal.getPosition()[1] == position[1]) {
             goal.rotateCharacterLE();
+            logger.info("Rotating goal to " + goal.getDirection());
         }
     }
 
@@ -164,14 +173,17 @@ public class LevelEditorUtils {
         List<Item> objectsInPosition2 = checkPosition(position, items);
         for (Item object : objectsInPosition2) {
             items.remove(object);
+            logger.info("Removing item: " + object.getItemEffect());
         }
         Start start = level.getStart();
         if (start != null && start.getPosition()[0] == position[0] && start.getPosition()[1] == position[1]) {
             level.setStart(null);
+            logger.info("Removing start");
         }
         Goal goal = level.getGoal();
         if (goal != null && goal.getPosition()[0] == position[0] && goal.getPosition()[1] == position[1]) {
             level.setGoal(null);
+            logger.info("Removing goal");
         }
     }
 
