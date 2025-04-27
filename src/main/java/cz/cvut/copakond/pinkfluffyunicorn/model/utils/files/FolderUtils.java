@@ -55,10 +55,10 @@ public class FolderUtils {
             if (success) {
                 System.out.println("Folder created at: " + path);
             } else {
-                System.out.println("Failed to create folder at: " + path);
+                ErrorMsgsEnum.FOLDER_CREATE_ERROR.getValue(path);
             }
         } else {
-            System.out.println("Folder already exists at: " + path);
+            ErrorMsgsEnum.FOLDER_EXISTS.getValue(path);
         }
 
         return folder.exists();

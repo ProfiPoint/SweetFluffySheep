@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
@@ -131,7 +132,7 @@ public class GameLoop {
         level.Unload();
         level = new Level(levelData[0], isEditor, isStory);
         if (!level.loadLevel()) {
-            System.out.println("Level not loaded successfully");
+            ErrorMsgsEnum.LOAD_ERROR.getValue();
             return;
         }
         currentSpeedIndex = 1;

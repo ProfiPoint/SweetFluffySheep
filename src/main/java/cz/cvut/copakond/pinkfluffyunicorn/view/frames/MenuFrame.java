@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
@@ -55,7 +56,7 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
             Integer levelNum = continueLevel[0];
             Level level = new Level(Integer.toString(levelNum), false, continueLevel[1] == 0);
             if (!level.loadLevel()) {
-                System.out.println("Level not loaded successfully");
+                ErrorMsgsEnum.LOAD_ERROR.getValue();
                 return;
             }
             AppViewManager.get().switchTo(new LevelFrame(level, false));

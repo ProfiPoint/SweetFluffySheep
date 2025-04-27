@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
@@ -119,7 +120,7 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
                         levelButton.getText().equals("+"));
 
                 if (!level.loadLevel()) {
-                    System.out.println("Level not loaded successfully");
+                    ErrorMsgsEnum.LOAD_ERROR.getValue();
                     return;
                 }
                 if (editorMode) {
@@ -172,14 +173,15 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
         for (int i = 0; i < levelData.size(); i++) {
             int levelNumber = levelData.get(i) - 1;
             if (levelNumber < 0 || levelNumber >= buttons.size()) {
-                System.out.println("Invalid level number: " + levelNumber);
+                ErrorMsgsEnum.LOAD_INVALID_LEVEL_NAME.getValue(String.valueOf(levelNumber));
                 continue;
             }
             Button button = buttons.get(levelNumber);
             if (button != null) {
                 button.setStyle("-fx-background-color: green; -fx-text-fill: white;");
             } else {
-                System.out.println("Button not found for " + prefix + " level " + (levelNumber + 1));
+                System.out.println(prefix + " level " + (levelNumber + 1));
+                ErrorMsgsEnum.LOAD_BUTTON_NOT_FOUND.getValue(prefix + " level " + (levelNumber + 1));
             }
         }
     }
@@ -189,7 +191,7 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
                 FolderUtils.getProfilesPath() + "/" + profileName + "/_DATA.json"
         );
         if (completedLevels == null) {
-            System.out.println("Error loading completed levels");
+            ErrorMsgsEnum.LOAD_COMPLETED_LEVELS.getValue();
             return;
         }
 

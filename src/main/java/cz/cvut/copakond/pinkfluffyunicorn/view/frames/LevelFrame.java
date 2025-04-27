@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
@@ -155,7 +156,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
                     Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
                     gameLoop.unload();
                     if (!level.loadLevel()) {
-                        System.out.println("Level not loaded successfully");
+                        ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue();
                         return;
                     }
                     popupStage.close();
@@ -183,7 +184,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
                     Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
                     gameLoop.unload();
                     if (!level.loadLevel()) {
-                        System.out.println("Level not loaded successfully");
+                        ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue();
                         return;
                     }
                     popupStage.close();
@@ -326,7 +327,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
                 Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
                 gameLoop.unload();
                 if (!level.loadLevel()) {
-                    System.out.println("Level not loaded successfully");
+                    ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue();
                     return;
                 }
                 AppViewManager.get().switchTo(new LevelEditorFrame(level));

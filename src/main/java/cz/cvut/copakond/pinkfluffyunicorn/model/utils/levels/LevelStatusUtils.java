@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
+import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.json.JsonFileManager;
@@ -59,7 +60,7 @@ public class LevelStatusUtils {
 
             }
         } catch (NumberFormatException e) {
-            System.out.println("Error parsing level number: " + e.getMessage());
+            ErrorMsgsEnum.LOAD_JSON_PARSE.getValue("Error parsing level number: " + e.getMessage());
             return false;
         }
 
@@ -113,7 +114,7 @@ public class LevelStatusUtils {
                 return new Level(String.valueOf(levelNumber + 1), false, false);
             }
         } catch (NumberFormatException e) {
-            System.err.println("Error parsing level number: " + e.getMessage());
+            ErrorMsgsEnum.LOAD_JSON_PARSE.getValue(e.getMessage());
         }
         return null;
     }
