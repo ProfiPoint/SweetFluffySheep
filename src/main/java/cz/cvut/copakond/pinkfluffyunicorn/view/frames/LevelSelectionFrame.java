@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
@@ -22,8 +23,11 @@ import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawableFrame {
+    private static final Logger logger = Logger.getLogger(LevelSelectionFrame.class.getName());
+
     private static String profileName;
     private static int storyLevelsCount;
     private static int customLevelsCount;
@@ -114,7 +118,7 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
             }
 
             levelButton.setOnAction(e -> {
-                System.out.println(prefix + " Level " + levelNumber + " clicked");
+                logger.info(prefix + " Level " + levelNumber + " clicked");
                 Integer levelNum = levelNumber;
                 Level level = new Level(Integer.toString(levelNum), editorMode, prefix.equals("Story"),
                         levelButton.getText().equals("+"));
@@ -180,7 +184,7 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
             if (button != null) {
                 button.setStyle("-fx-background-color: green; -fx-text-fill: white;");
             } else {
-                System.out.println(prefix + " level " + (levelNumber + 1));
+                logger.info(prefix + " level " + (levelNumber + 1));
                 ErrorMsgsEnum.LOAD_BUTTON_NOT_FOUND.getValue(prefix + " level " + (levelNumber + 1));
             }
         }

@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
@@ -28,8 +29,11 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.util.Comparator;
+import java.util.logging.Logger;
 
 public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, IDrawableFrame, IClickListener {
+    private static final Logger logger = Logger.getLogger(LevelFrame.class.getName());
+
     private final GameLoop gameLoop;
     private final Canvas canvas;
     private final Region hudBar;

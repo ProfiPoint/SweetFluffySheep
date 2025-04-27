@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
@@ -14,7 +15,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import java.util.logging.Logger;
+
 public class Goal extends GameObject {
+    private static final Logger logger = Logger.getLogger(Goal.class.getName());
+    
     // 10x per second it will update the anim texture
     private static final int textureChangeFrameCoefficient = (int) Math.ceil((double) GameObject.getFPS() / 10);
     private boolean locked = true;

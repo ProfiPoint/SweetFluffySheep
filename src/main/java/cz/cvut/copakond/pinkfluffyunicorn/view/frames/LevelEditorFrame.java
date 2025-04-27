@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.LevelEditorObjectsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
@@ -30,8 +31,11 @@ import javafx.stage.Modality;
 
 import java.io.File;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFrame, IDrawableFrame, IClickListener {
+    private static final Logger logger = Logger.getLogger(LevelEditorFrame.class.getName());
+
     private final GameLoop gameLoop;
     private final Canvas canvas;
     private final GridPane hudBar;
@@ -210,12 +214,12 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
                 levelInfo.put("goalUnicorns", goalUnicornsSpinner.getValue());
                 levelInfo.put("maxArrows", maxArrowsSpinner.getValue());
                 levelInfo.put("deafultItemDuration", itemDurationSpinner.getValue());
-                System.out.println("Level settings updated: " + levelInfo);
+                logger.info("Level settings updated: " + levelInfo);
                 // check if the map size is updated
                 if (mapSize[0] != mapSizeXSpinner.getValue() || mapSize[1] != mapSizeYSpinner.getValue()) {
                     mapSize[0] = mapSizeXSpinner.getValue();
                     mapSize[1] = mapSizeYSpinner.getValue();
-                    System.out.println("Map size updated: " + Arrays.toString(mapSize));
+                    logger.info("Map size updated: " + Arrays.toString(mapSize));
 
                     // now reload the level
                     if (!saveLevel("Level can not be resized")) {

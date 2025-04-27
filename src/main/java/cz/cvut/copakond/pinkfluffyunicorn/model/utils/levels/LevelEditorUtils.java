@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.IItem;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
@@ -16,8 +17,11 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class LevelEditorUtils {
+    private static final Logger logger = Logger.getLogger(LevelEditorUtils.class.getName());
+    
     private static Level level;
 
     public static void setLevel(Level level) {
@@ -172,7 +176,7 @@ public class LevelEditorUtils {
     }
 
     public static void addObjectToLevel(double[] position, LevelEditorObjectsEnum objectType) {
-        System.out.println("Adding object: " + objectType);
+        logger.info("Adding object: " + objectType);
         switch (objectType) {
             case TILE -> addTile(position);
             case REMOVETILE -> removeTile(position);

@@ -8,7 +8,11 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import javafx.scene.image.Image;
 
+import java.util.logging.Logger;
+
 public class Unicorn extends Character {
+    private static final Logger logger = Logger.getLogger(Unicorn.class.getName());
+
     private static int counter = 0;
     private static int goalUnicorns = 1;
     private static int unicornsInGoal = 0;
@@ -27,7 +31,7 @@ public class Unicorn extends Character {
         SoundManager.playSound(SoundListEnum.HERO_DOWN);
         unicornEnteredGoal(false);
         if (counter < goalUnicorns && gameStatus != GameStatusEnum.WIN) {
-            System.out.println("Game Over");
+            logger.info("Game Over");
             gameStatus = GameStatusEnum.LOSE;
         }
     }
@@ -39,7 +43,7 @@ public class Unicorn extends Character {
         }
 
         if (counter - unicornsInGoal == 0 && unicornsInGoal >= goalUnicorns) {
-            System.out.println("You win!");
+            logger.info("You win!");
             gameStatus = GameStatusEnum.WIN;
         }
     }

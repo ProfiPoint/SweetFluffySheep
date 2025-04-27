@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
@@ -11,7 +12,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import java.util.logging.Logger;
+
 public class Arrow extends GameObject {
+    private static final Logger logger = Logger.getLogger(Arrow.class.getName());
+    
     private int maxArrows = 10;
     private static final int textureRotationSpeed = 10;
     private static int arrowCount = 0;
@@ -24,7 +29,7 @@ public class Arrow extends GameObject {
         this.maxArrows = maxArrows;
         if (arrowCount > maxArrows) {
             destroy();
-            System.out.println("Too many arrows! Limit is " + maxArrows);
+            logger.info("Too many arrows! Limit is " + maxArrows);
         }
         this.direction = DirectionEnum.UP;
         this.textureRotation = this.direction.getValue();

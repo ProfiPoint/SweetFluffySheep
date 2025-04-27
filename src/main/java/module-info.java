@@ -5,9 +5,9 @@ module cz.cvut.copakond.pfu.pinkfluffyunicorn {
     requires jdk.compiler;
     requires java.desktop;
     requires javafx.media;
-
+    requires java.logging;
 
     opens cz.cvut.copakond.pinkfluffyunicorn to javafx.fxml;
     exports cz.cvut.copakond.pinkfluffyunicorn;
-    //opens cz.cvut.copakond.pinkfluffyunicorn to javafx.fxml;
+    exports cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 }

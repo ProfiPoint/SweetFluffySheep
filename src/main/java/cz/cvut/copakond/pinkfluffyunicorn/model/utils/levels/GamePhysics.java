@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Character;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
@@ -15,9 +16,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 // "public static class GamePhysics"
 public class GamePhysics {
+    private static final Logger logger = Logger.getLogger(GamePhysics.class.getName());
+    
     private static final double collisionLimit = (1 / (double) GameObject.getFPS()) * GameObject.getCollisionLimit() * 1 / 2 * 1.1;
     // dynamically calculated limit for collision detection, so even in max speed the collision will be detected
     // for normal settings it is 0.0367, and the max speed per tick is 0.0667, so because the collision is checked
@@ -232,7 +236,7 @@ public class GamePhysics {
                 if (item.isVisible() && isColliding(character, (Item) item, 2)) {
                     boolean used = item.use();
                     if (used) {
-                        System.out.println("Item used: " + item.getItemEffect());
+                        logger.info("Item used: " + item.getItemEffect());
                     }
                 }
             }
@@ -303,9 +307,9 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection().getOppositeDirection(), character);
         if (!isItWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // behind the character is a tile, not a wall -> rotate opposite
-            System.out.println("EVENT 3");
-            System.out.println("current direction: " + character.getDirection());
-            System.out.println("opposite direction: " + character.getDirection().getOppositeDirection());
+            logger.info("EVENT 3");
+            logger.info("current direction: " + character.getDirection());
+            logger.info("opposite direction: " + character.getDirection().getOppositeDirection());
             return PhisicsEventsEnum.convertDirectionToPhisicsEvent(character.getDirection().getOppositeDirection());
         }
 

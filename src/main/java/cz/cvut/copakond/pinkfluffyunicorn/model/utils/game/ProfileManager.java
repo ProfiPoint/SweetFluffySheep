@@ -1,9 +1,14 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.game;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
 
+import java.util.logging.Logger;
+
 public class ProfileManager {
+    private static final Logger logger = Logger.getLogger(ProfileManager.class.getName());
+    
     protected static String currentProfile = "";
     protected static String profileFolderPath = "";
 

@@ -1,9 +1,14 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
 
+import java.util.logging.Logger;
+
 public class Tile extends GameObject {
+    private static final Logger logger = Logger.getLogger(Tile.class.getName());
+
     private final int textureType;
     private final boolean isWalkable;
 

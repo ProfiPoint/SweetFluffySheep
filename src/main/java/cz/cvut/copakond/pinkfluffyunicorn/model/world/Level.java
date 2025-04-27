@@ -1,4 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
@@ -17,8 +18,11 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Level {
+    private static final Logger logger = Logger.getLogger(Level.class.getName());
+    
     // for render purposes
     private static JSONObject levelData;
     private static List<GameObject> objects;
@@ -73,7 +77,7 @@ public class Level {
             if (levelData == null) {
                 ErrorMsgsEnum.LOAD_DEFAULT.getValue();
             } else {
-                System.out.println("Default Level loaded");
+                logger.info("Default Level loaded");
             }
         } else {
             levelData = JsonFileManager.readJsonFromFile(path + level + ".json");
@@ -82,7 +86,7 @@ public class Level {
         if (levelData == null) {
             ErrorMsgsEnum.CUSTOM_ERROR.getValue("Error loading level data");
         } else {
-            System.out.println("Level loaded");
+            logger.info("Level loaded");
         }
     }
 
@@ -154,7 +158,7 @@ public class Level {
                 object.tick(doesTimeFlow);
             }
         } catch (ConcurrentModificationException e) {
-            System.out.println("Frame skipped due to concurrent modification, if this happens often, consider lowering the FPS");
+            logger.info("Frame skipped due to concurrent modification, if this happens often, consider lowering the FPS");
         }
     }
 
@@ -254,7 +258,7 @@ public class Level {
                 arrows.add(arrow);
                 SoundManager.playSound(SoundListEnum.ARROW);
             } else {
-                System.out.println("Arrow not created");
+                logger.info("Arrow not created");
             }
 
         } else if (button == 2) {
@@ -293,7 +297,7 @@ public class Level {
             unitDirection[1] = 1;
         }
 
-        System.out.println("number of unicorns: " + levelInfo.get("unicorns"));
+        logger.info("number of unicorns: " + levelInfo.get("unicorns"));
         for (int i = 0; i < levelInfo.get("unicorns"); i++) {
             unicorns.add(new Unicorn(new double[]{coords[0], coords[1]}, unicornDirection));
             coords[0] += unitDirection[0];

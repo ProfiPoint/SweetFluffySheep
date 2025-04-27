@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
@@ -10,8 +11,11 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Tile;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class PathFinder {
+    private static final Logger logger = Logger.getLogger(PathFinder.class.getName());
+    
     private Level level;
     private PathFinderEnum[][] tileMap;
     private int[] mapSize;

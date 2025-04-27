@@ -1,12 +1,16 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class FolderUtils {
+    private static final Logger logger = Logger.getLogger(FolderUtils.class.getName());
+    
     private static String levelsPath;
     private static String profilesPath;
 
@@ -53,7 +57,7 @@ public class FolderUtils {
         if (!folder.exists()) {
             boolean success = folder.mkdirs();
             if (success) {
-                System.out.println("Folder created at: " + path);
+                logger.info("Folder created at: " + path);
             } else {
                 ErrorMsgsEnum.FOLDER_CREATE_ERROR.getValue(path);
             }

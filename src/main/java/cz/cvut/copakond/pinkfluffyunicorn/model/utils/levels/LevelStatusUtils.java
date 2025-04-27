@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
@@ -8,8 +9,11 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LevelStatusUtils {
+    private static final Logger logger = Logger.getLogger(LevelStatusUtils.class.getName());
+    
     private static String levelPath;
     private static String profilesPath;
     private static String currentProfileName;

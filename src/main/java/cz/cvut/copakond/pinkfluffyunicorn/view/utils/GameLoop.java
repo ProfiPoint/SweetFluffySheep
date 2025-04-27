@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
@@ -8,9 +9,12 @@ import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.ILevelFrame;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class GameLoop {
+    private static final Logger logger = Logger.getLogger(GameLoop.class.getName());
+
     ILevelFrame levelFrame;
     private boolean isRunning = false;
     private Level level;
@@ -35,7 +39,7 @@ public class GameLoop {
             currentFrame = 0;
 
             while (isRunning) {
-                //System.out.println("--- New frame ---");
+                //logger.info("--- New frame ---");
                 long startTime = System.currentTimeMillis();
                 currentFrame++;
 

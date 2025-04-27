@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -8,8 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class SoundManager {
+    private static final Logger logger = Logger.getLogger(SoundManager.class.getName());
+    
     private static final Map<String, Media> mediaCache = new HashMap<>();
     private static final Map<String, List<MediaPlayer>> loopedSfxPlayers = new HashMap<>();
     private static final Map<MediaPlayer, SoundListEnum> sfxToSoundMap = new HashMap<>();

@@ -1,13 +1,17 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.game;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.TextureManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
 import javafx.scene.image.Image;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class GameObject implements IGameObject {
+    private static final Logger logger = Logger.getLogger(GameObject.class.getName());
+    
     // Constants
     private static int FPS = 60; // 60 ticks per second
     private final static double colisionHitboxPrecision = 0.1; // 0.1/fps tiles precision

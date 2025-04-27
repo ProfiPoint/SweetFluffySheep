@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
@@ -17,8 +18,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFrame {
+    private static final Logger logger = Logger.getLogger(ProfileFrame.class.getName());
+
     private final Label titleLabel = new Label("Select Profile");
     private final ScrollPane scrollPane = new ScrollPane();
     private final VBox profileListBox = new VBox();
@@ -48,7 +52,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
         confirmButton.setOnAction(e -> {
             String newName = nameField.getText();
             if (!newName.isBlank()) {
-                System.out.println("Confirmed new profile: " + newName);
+                logger.info("Confirmed new profile: " + newName);
                 if (!ProfileManager.addNewProfile(newName)) {
                     return;
                 }
@@ -61,7 +65,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
         getChildren().add(backButton);
 
         backButton.setOnAction(e -> {
-            System.out.println("Back to menu");
+            logger.info("Back to menu");
             AppViewManager.get().switchTo(new MenuFrame()); // Switch back to menu
         });
 
@@ -105,7 +109,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
             }
 
             profileBtn.setOnAction(e -> {
-                System.out.println("Selected profile: " + profile);
+                logger.info("Selected profile: " + profile);
                 ProfileManager.switchProfile(profile);
                 drawProfileButtons();
                 AppViewManager.get().update();

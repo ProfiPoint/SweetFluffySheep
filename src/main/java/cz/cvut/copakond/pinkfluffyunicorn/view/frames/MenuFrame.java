@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
@@ -23,8 +24,11 @@ import javafx.stage.Modality;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
+    private static final Logger logger = Logger.getLogger(MenuFrame.class.getName());
+
     private final Label logo = new Label("PINK FLUFFY UNICORN");
     private final Label creator = new Label("Created by: Ondřej Čopák, ProfiPoint 2025");
     private final Button playButton = new Button("PLAY");
@@ -39,7 +43,7 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
         setSpacing(20);
 
         int[] continueLevel = LevelStatusUtils.getNextUncompletedLevel();
-        System.out.println("Continue level: " + continueLevel[0] + " " + continueLevel[1]);
+        logger.info("Continue level: " + continueLevel[0] + " " + continueLevel[1]);
         if (continueLevel[0] == 1 && continueLevel[1] == 0) {
             continueButton.setDisable(true);
         } else {
@@ -52,7 +56,7 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
 
         playButton.setOnAction(e -> AppViewManager.get().switchTo(new LevelSelectionFrame(false)));
         continueButton.setOnAction(e -> {
-            System.out.println(" Level continued" + continueLevel[0] + " clicked");
+            logger.info(" Level continued" + continueLevel[0] + " clicked");
             Integer levelNum = continueLevel[0];
             Level level = new Level(Integer.toString(levelNum), false, continueLevel[1] == 0);
             if (!level.loadLevel()) {

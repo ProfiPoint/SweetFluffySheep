@@ -1,10 +1,15 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 
+import java.util.logging.Logger;
+
 public class RainbowItem extends Item {
+    private static final Logger logger = Logger.getLogger(RainbowItem.class.getName());
+    
     private static RainbowItem active = null; // only one fire item can be active at a time
 
     public RainbowItem(double[] position, int duration) {
@@ -32,7 +37,7 @@ public class RainbowItem extends Item {
             duration_ticks--;
             if (duration_ticks == 0) {
                 active = null;
-                System.out.println("Rainbow item expired");
+                logger.info("Rainbow item expired");
                 SoundManager.stopSfx(SoundListEnum.IMMORTAL);
             }
         }

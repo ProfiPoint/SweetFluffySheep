@@ -4,7 +4,11 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 
+import java.util.logging.Logger;
+
 public class FireItem extends Item {
+    private static final Logger logger = Logger.getLogger(FireItem.class.getName());
+
     private static FireItem active = null; // only one fire item can be active at a time
 
     public FireItem(double[] position, int duration) {
@@ -32,7 +36,7 @@ public class FireItem extends Item {
             duration_ticks--;
             if (duration_ticks == 0) {
                 active = null;
-                System.out.println("Fire item expired");
+                logger.info("Fire item expired");
                 SoundManager.stopSfx(SoundListEnum.HOLD);
             }
         }

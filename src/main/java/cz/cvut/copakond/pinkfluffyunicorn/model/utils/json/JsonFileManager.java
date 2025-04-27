@@ -2,6 +2,7 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.utils.json;
 
 import java.io.IOException;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,8 +10,11 @@ import org.json.JSONException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class JsonFileManager {
+    private static final Logger logger = Logger.getLogger(JsonFileManager.class.getName());
+    
     public static JSONObject readJsonFromFile(String filePath) {
         try {
             String content = new String(Files.readAllBytes(Paths.get(filePath)));

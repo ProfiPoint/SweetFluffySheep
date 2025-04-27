@@ -1,12 +1,16 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.json;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LoadManager {
+    private static final Logger logger = Logger.getLogger(LoadManager.class.getName());
+    
     private JSONObject data;
 
     public LoadManager(JSONObject data) {

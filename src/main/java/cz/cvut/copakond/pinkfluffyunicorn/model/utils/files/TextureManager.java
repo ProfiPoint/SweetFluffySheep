@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.TextureListEnum;
 import javafx.scene.image.Image;
@@ -9,8 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class TextureManager {
+    private static final Logger logger = Logger.getLogger(TextureManager.class.getName());
+    
     private final static Map<String, Image> loadedTextures = new HashMap<String, Image>();
     private final static Map<String, List<Image>> loadedTexturesList = new HashMap<String, List<Image>>();
     private final static Map<String, List<int[]>> loadedTexturesSizes = new HashMap<String, List<int[]>>();
@@ -43,7 +47,7 @@ public class TextureManager {
                 ErrorMsgsEnum.TEXTURE_MISSING.getValue(textureName, e);
             } catch (Exception e2) {
                 // print the full path of the file
-                System.out.println(new File(texturesPath+"/missing_texture.png").getAbsolutePath());
+                logger.info(new File(texturesPath+"/missing_texture.png").getAbsolutePath());
                 String e3 = ErrorMsgsEnum.TEXTURE_MISSING_IS_MISSING.getValue(textureName, e2);
                 throw new RuntimeException(e3);
             }

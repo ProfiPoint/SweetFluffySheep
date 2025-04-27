@@ -1,10 +1,15 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 
 public class FileUtils {
+    private static final Logger logger = Logger.getLogger(FileUtils.class.getName());
+    
     public static String readFile(String filePath) {
         try {
             return Files.readString(Path.of(filePath));

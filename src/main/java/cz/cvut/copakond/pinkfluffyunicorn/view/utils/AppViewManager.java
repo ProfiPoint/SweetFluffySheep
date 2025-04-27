@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
@@ -22,8 +23,11 @@ import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class AppViewManager {
+    private static final Logger logger = Logger.getLogger(AppViewManager.class.getName());
+
     private static AppViewManager instance;
 
     private IClickListener clickListener;
@@ -110,7 +114,7 @@ public class AppViewManager {
         musicVolumeSlider.setMajorTickUnit(25);
         musicVolumeSlider.setBlockIncrement(1);
         musicVolumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("Music Volume: " + newVal.intValue());
+            logger.info("Music Volume: " + newVal.intValue());
             musicVolumeLabel.setText("Music Volume (" + newVal.intValue() + "): ");
             SoundManager.setMusicVolume(newVal.intValue());
         });
@@ -124,7 +128,7 @@ public class AppViewManager {
         sfxVolumeSlider.setMajorTickUnit(25);
         sfxVolumeSlider.setBlockIncrement(1);
         sfxVolumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("SFX Volume: " + newVal.intValue());
+            logger.info("SFX Volume: " + newVal.intValue());
             sfxVolumeLabel.setText("SFX Volume (" + newVal.intValue() + "): ");
             SoundManager.setSfxVolume(newVal.intValue());
             // avoid playing sample sfx too fast.
@@ -144,7 +148,7 @@ public class AppViewManager {
         CheckBox fullscreenCheckBox = new CheckBox("Enable Fullscreen");
         fullscreenCheckBox.setSelected(AppViewManager.get().getStage().isFullScreen());
         fullscreenCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("Fullscreen: " + newVal);
+            logger.info("Fullscreen: " + newVal);
             AppViewManager.get().getStage().setFullScreen(newVal);
         });
 
@@ -170,7 +174,7 @@ public class AppViewManager {
         grid.add(fullscreenCheckBox, 1, 4);
 
         fpsSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("FPS: " + Math.max(newVal.intValue(), 1));
+            logger.info("FPS: " + Math.max(newVal.intValue(), 1));
             fpsLabel.setText("FPS (" + Math.max(newVal.intValue(), 1) + "): ");
             if (newVal.intValue() != fps[0]) {
                 restartWarning.setTextFill(Color.RED);
@@ -193,7 +197,7 @@ public class AppViewManager {
             JsonFileManager.writeSettingsToJson(path, musicVolume, sfxVolume, Math.max(fps[0], 1), isFullscreen);
             if (hasFpsChanged) {
                 GameObject.setFPS(Math.max(fps[0], 1));
-                System.out.println("Game is going to close, because FPS changed.");
+                logger.info("Game is going to close, because FPS changed.");
                 System.exit(0);
             }
         }
@@ -202,7 +206,7 @@ public class AppViewManager {
     public static boolean initSettings(String profilesPath) {
         String profile = ProfileManager.getCurrentProfile();
         if (profile == null || profile.isBlank()) {
-            System.out.println("No profile selected, using default settings.");
+            logger.info("No profile selected, using default settings.");
             return true;
         }
         String path = profilesPath + "/" + profile + "/_SETTINGS.json";
@@ -218,7 +222,7 @@ public class AppViewManager {
             GameObject.setFPS(fps);
             return true;
         } else {
-            System.out.println("Settings not found, using default values.");
+            logger.info("Settings not found, using default values.");
             return false;
         }
     }

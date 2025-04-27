@@ -1,5 +1,6 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
@@ -10,7 +11,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import java.util.logging.Logger;
+
 public class Start extends GameObject {
+    private static final Logger logger = Logger.getLogger(Start.class.getName());
+
     private DirectionEnum direction;
     private boolean visible = true;
 

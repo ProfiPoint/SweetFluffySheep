@@ -1,8 +1,13 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
+import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 
+import java.util.logging.Logger;
+
 public class LevelFrameUtils {
+    private static final Logger logger = Logger.getLogger(LevelFrameUtils.class.getName());
+    
     private final static double levelBoxHeightCoeff = (1 - 11.111 / 100);
     
     public static int[] getTileClicked(int x, int y, int[] appCanvasSize, int[] sceneSize, Level level) {
