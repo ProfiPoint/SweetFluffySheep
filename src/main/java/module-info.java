@@ -1,4 +1,4 @@
-module cz.cvut.copakond.pfu.pinkfluffyunicorn {
+module cz.cvut.copakond.sweetfluffysheep {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.json;
@@ -7,9 +7,9 @@ module cz.cvut.copakond.pfu.pinkfluffyunicorn {
     requires javafx.media;
     requires java.logging;
 
-    opens cz.cvut.copakond.pinkfluffyunicorn to javafx.fxml;
-    exports cz.cvut.copakond.pinkfluffyunicorn;
-    exports cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
-    exports cz.cvut.copakond.pinkfluffyunicorn.model.utils.logging;
-    exports cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
+    opens cz.cvut.copakond.sweetfluffysheep to javafx.fxml;
+    exports cz.cvut.copakond.sweetfluffysheep;
+    exports cz.cvut.copakond.sweetfluffysheep.model.utils.files;
+    exports cz.cvut.copakond.sweetfluffysheep.model.utils.logging;
+    exports cz.cvut.copakond.sweetfluffysheep.model.utils.enums;
 }

@@ -11,7 +11,7 @@
     "5-2": 270
   },
   "timeLimit": 180,
-  "unicorns": 8,
+  "sheep": 8,
   "tiles": {
     "0-1": 2,
     "1-1": 1,
@@ -31,7 +31,7 @@
     "5-2": 2,
     "5-3": 1
   },
-  "goalUnicorns": 8,
+  "goalSheep": 8,
   "creatorUpdated": "ProfiPoint",
   "items": [
     [5,3,0,15],

@@ -1,0 +1,79 @@
+package cz.cvut.copakond.sweetfluffysheep.model.utils.json;
+
+import cz.cvut.copakond.sweetfluffysheep.model.entities.Wolf;
+import cz.cvut.copakond.sweetfluffysheep.model.world.Goal;
+import cz.cvut.copakond.sweetfluffysheep.model.world.Start;
+import cz.cvut.copakond.sweetfluffysheep.model.world.Tile;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import cz.cvut.copakond.sweetfluffysheep.model.items.*;
+
+import java.util.List;
+import java.util.Map;
+
+public class SaveManager {
+    private final JSONObject data;
+
+    public SaveManager(JSONObject data) {
+        this.data = data;
+    }
+
+    public void addDefaultLevelData(boolean isDefaultLevel) {
+        data.put("defaultLevel", isDefaultLevel);
+    }
+
+    public void addStartGoalData(Start start, Goal goal) {
+        data.put("start", new JSONArray(new int[]{(int)Math.round(start.getPosition()[0]),
+                (int)Math.round(start.getPosition()[1]),
+                start.getDirection().getValue()}));
+        data.put("goal", new JSONArray(new int[]{(int)Math.round(goal.getPosition()[0]),
+                (int)Math.round(goal.getPosition()[1]), goal.getDirection().getValue()}));
+    }
+
+    public void addMapSizeData(int[] mapSize) {
+        data.put("mapSize", new JSONArray(mapSize));
+    }
+
+    public void addLevelInfo(Map<String, Integer> levelInfo) {
+        int currentTimeInMinutes = (int) (System.currentTimeMillis() / (1000 * 60));
+        data.put("timeLimit", levelInfo.get("timeLimit"));
+        data.put("sheep", levelInfo.get("sheep"));
+        data.put("goalSheep", levelInfo.get("goalSheep"));
+        data.put("maxArrows", levelInfo.get("maxArrows"));
+        data.put("creationTime", levelInfo.get("creationTime"));
+        data.put("updatedTime", currentTimeInMinutes); // in minutes
+    }
+
+    public void addPlayerInfo(Map<String, String> playerInfo) {
+        data.put("creator", playerInfo.get("creator"));
+        data.put("creatorUpdated", playerInfo.get("creatorUpdated"));
+    }
+
+    public void addTilesData(List<Tile> tiles) {
+        JSONObject tilesObj = new JSONObject();
+        for (Tile tile : tiles) {
+            String key = (int)Math.round(tile.getPosition()[0]) + "-" + (int)Math.round(tile.getPosition()[1]);
+            tilesObj.put(key, tile.getTextureType());
+        }
+        data.put("tiles", tilesObj);
+    }
+
+    public void addEnemiesData(List<Wolf> enemies) {
+        JSONObject enemiesObj = new JSONObject();
+        for (Wolf enemy : enemies) {
+            String key = (int)Math.round(enemy.getPosition()[0]) + "-" + (int)Math.round(enemy.getPosition()[1]);
+            enemiesObj.put(key, enemy.getDirection().getValue());
+        }
+        data.put("enemies", enemiesObj);
+    }
+
+    public void addItemsData(List<Item> items) {
+        JSONArray itemsArray = new JSONArray();
+        for (Item item : items) {
+            double[] itemPos = item.getPosition();
+            itemsArray.put(new JSONArray(new int[]{(int)Math.round(itemPos[0]), (int)Math.round(itemPos[1]),
+                    item.getItemEffect().ordinal(), item.getDurationTicks()}));
+        }
+        data.put("items", itemsArray);
+    }
+}
