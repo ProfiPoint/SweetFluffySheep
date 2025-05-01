@@ -1,11 +1,14 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.items;
-import cz.cvut.copakond.pinkfluffyunicorn.model.items.*;
+
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class ItemFactory {
+    private static final Logger logger = Logger.getLogger(ItemFactory.class.getName());
+
     private static final Map<ItemEnum, Class<? extends Item>> itemMap = new HashMap<>();
 
     // item register of types and their corresponding classes
@@ -24,9 +27,10 @@ public class ItemFactory {
 
         try {
             // dynamically create the instance using the constructor that accepts position and duration
+            // used for the creation of the item
             return itemClass.getConstructor(double[].class, int.class).newInstance(position, duration);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.severe("Failed to create item of type: " + itemEnum + " - " + e.getMessage());
             throw new RuntimeException("Failed to create item of type: " + itemEnum, e);
         }
     }

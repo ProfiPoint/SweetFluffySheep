@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.json;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Goal;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Start;
@@ -11,12 +10,9 @@ import cz.cvut.copakond.pinkfluffyunicorn.model.items.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class SaveManager {
-    private static final Logger logger = Logger.getLogger(SaveManager.class.getName());
-    
-    private JSONObject data;
+    private final JSONObject data;
 
     public SaveManager(JSONObject data) {
         this.data = data;
@@ -76,7 +72,7 @@ public class SaveManager {
         for (Item item : items) {
             double[] itemPos = item.getPosition();
             itemsArray.put(new JSONArray(new int[]{(int)Math.round(itemPos[0]), (int)Math.round(itemPos[1]),
-                    item.getItemEffect().ordinal(), 15})); // Assuming duration is 15
+                    item.getItemEffect().ordinal(), item.getDurationTicks()}));
         }
         data.put("items", itemsArray);
     }

@@ -11,16 +11,20 @@ import javafx.scene.image.Image;
 public class Item extends GameObject implements IItem {
     // 10x per second it will update the anim texture
     private static final int textureChangeFrameCoefficient = (int) Math.ceil((double) GameObject.getFPS() / 10);
-    public static ItemEnum ItemEffect;
-    protected int duration_ticks;
-    private ItemEnum itemEffect;
+
+    protected int durationTicks;
+    private final ItemEnum itemEffect;
     private boolean pickable;
 
     public Item(String textureName, double[] position, int duration, ItemEnum itemEffect) {
         super(textureName, position, RenderPriorityEnums.ITEM.getValue());
-        this.duration_ticks = duration * 60;
+        this.durationTicks = duration * getFPS();
         this.itemEffect = itemEffect;
         this.pickable = true;
+    }
+
+    public int getDurationTicks() {
+        return durationTicks;
     }
 
     @Override

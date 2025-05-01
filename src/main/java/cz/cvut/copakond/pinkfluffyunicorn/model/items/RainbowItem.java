@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.items;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
@@ -33,9 +32,9 @@ public class RainbowItem extends Item {
     @Override
     public void tick(boolean doesTimeFlow) {
         super.tick(doesTimeFlow);
-        if (duration_ticks > 0 && active == this && doesTimeFlow) {
-            duration_ticks--;
-            if (duration_ticks == 0) {
+        if (durationTicks > 0 && active == this && doesTimeFlow) {
+            durationTicks--;
+            if (durationTicks == 0) {
                 active = null;
                 logger.info("Rainbow item expired");
                 SoundManager.stopSfx(SoundListEnum.IMMORTAL);

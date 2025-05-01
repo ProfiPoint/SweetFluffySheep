@@ -1,14 +1,12 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.logging.Logger;
 
 public enum TextureListEnum {
     CLOUD("cloud", "characters/clouds/cloud_{i}.png",(16+9)*4*2),
     UNICORN("unicorn", "characters/unicorns/unicorn_{i}.png", (16+9)*4*2),
     TILE("tile", "tiles/tile_{i}.png",32), // tile_001, tile_002
-    START("start", "objects/start/start_{i}.png",5), // 1,2,3,4 rotation, 5 - invisible
+    START("start", "objects/start/start_{i}.png",5), // 1,2,3,4 rotations, 5 - invisible
     GOAL("goal", "objects/goal/goal_{i}.png",32*4*2), // 1,128 - unlocked, 129,256 - locked
     EMPTY("empty", "missing_texture.png",1, false),
     COIN("coin", "items/coin/coin_{i}.png", 32),
@@ -16,24 +14,18 @@ public enum TextureListEnum {
     RAINBOW("rainbow", "items/rainbow/rainbow_{i}.png", 32),
     ARROW("arrow", "arrows/arrow_{i}.png", 9*4);
 
+    private static final Logger logger = Logger.getLogger(TextureListEnum.class.getName());
+
     private final String name;
-    private String fileName;
-    private int count;
-    private boolean returnList;
-    private boolean returnAuto; // automatically return
+    private final String fileName;
+    private final int count;
+    private final boolean returnList;
+    private final boolean returnAuto; // automatically return
 
     private static String levelsPath;
 
     public static void setLevelsPath(String path) {
         levelsPath = path;
-    }
-
-    TextureListEnum(String name, String fileName) {
-        this.name = name;
-        this.fileName = fileName;
-        this.count = 1;
-        this.returnAuto = true;
-        this.returnList = true;
     }
 
     TextureListEnum(String name, String fileName, int count) {
@@ -54,27 +46,27 @@ public enum TextureListEnum {
 
     public String[] getTextures() {
         if (!returnAuto && !returnList) {
-            return new String[]{getName()[0]};
+            return getSingleTexture();
         }
-        return getNames();
+        return getTexturesList();
     }
 
-    private String[] getName() {
-        String[] names = new String[count];
-        names[0] = levelsPath + "/level/" + fileName.replace("{i}", String.format("%03d",
-                1));
-        names[0] = names[0].replace("{b}", "false");
+    private String[] getSingleTexture() {
+        String[] names = new String[1];
+        names[0] = generateTexturePath(1);
         return names;
     }
 
-    private String[] getNames() {
+    private String[] getTexturesList() {
         String[] names = new String[count];
         for (int i = 0; i < count; i++) {
-            names[i] = levelsPath + "/level/" + fileName.replace("{i}", String.format("%03d"
-                , i + 1));
-            names[i] = names[i].replace("{b}", i == 0 ? "false" : "true");
+            names[i] = generateTexturePath(i + 1);
         }
         return names;
+    }
+
+    private String generateTexturePath(int index) {
+        return levelsPath + "/level/" + fileName.replace("{i}", String.format("%03d", index));
     }
 
     public String getValue() {
@@ -85,28 +77,23 @@ public enum TextureListEnum {
         return count;
     }
 
-    public List<String> getTextureByOrder(int order) {
-        if (order < 0 || order >= count) {
-            return new ArrayList<>();
-        }
-        return Arrays.asList(getNames()[order]);
-    }
-
     public static TextureListEnum fromValue(String value) {
         for (TextureListEnum texture : TextureListEnum.values()) {
             if (texture.getValue().equals(value)) {
                 return texture;
             }
         }
-        String allPaths = "";
+
+        // for debugging purposes
+        StringBuilder allPaths = new StringBuilder();
         for (TextureListEnum texture : TextureListEnum.values()) {
             for (String path : texture.getTextures()) {
-                allPaths += " - " + path + "; CODE NAME: [" + texture.getValue() + "]\n ";
+                allPaths.append(" - ").append(path).append("; CODE NAME: [").append(texture.getValue()).append("]\n ");
             }
         }
 
-        ErrorMsgsEnum.TEXTURE_UNKNOWN_NAME.getValue("Texture name: " + value + ")\n [List of all defined textures] " +
-                "\n " + allPaths);
+        logger.severe(ErrorMsgsEnum.TEXTURE_UNKNOWN_NAME.getValue("Texture name: " + value + ")\n [List of all " +
+                "defined textures] " + "\n " + allPaths));
         return TextureListEnum.EMPTY;
     }
 }

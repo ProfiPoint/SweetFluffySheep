@@ -297,7 +297,7 @@ class LevelTest {
 
     private void placeAndRotateArrow(Level level, int[] position, int rotations) {
         for (int i = 0; i < rotations; i++) {
-            level.PlaceRotateRemoveArrow(position, 1);
+            level.placeRotateRemoveArrow(position, 1);
         }
     }
 }

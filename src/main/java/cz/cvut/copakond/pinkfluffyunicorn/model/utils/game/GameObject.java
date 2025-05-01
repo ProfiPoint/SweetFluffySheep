@@ -1,20 +1,16 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.game;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.TextureManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
-import javafx.scene.image.Image;
 
+import javafx.scene.image.Image;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class GameObject implements IGameObject {
-    private static final Logger logger = Logger.getLogger(GameObject.class.getName());
-    
     // Constants
     private static int FPS = 60; // 60 ticks per second
-    private final static double colisionHitboxPrecision = 0.1; // 0.1/fps tiles precision
+    private static final double COLLISION_HITBOX_PRECISION = 0.1; // 0.1/fps tiles precision
 
     protected boolean visible;
     protected int renderPriority;
@@ -24,8 +20,6 @@ public class GameObject implements IGameObject {
     protected List<int[]> textureSizes;
     protected int textureIdNow;
     protected static GameStatusEnum gameStatus = GameStatusEnum.RUNNING;
-
-    // static to share the same texture manager (avoid loading the same textures multiple times)
     protected static TextureManager textureManager = new TextureManager();
 
     public GameObject(String textureName, double[] position, int renderPriority) {
@@ -53,27 +47,19 @@ public class GameObject implements IGameObject {
     }
 
     public static double getCollisionLimit() {
-        return colisionHitboxPrecision;
+        return COLLISION_HITBOX_PRECISION;
     }
 
     public boolean isVisible() {
         return this.visible;
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public void tick(boolean doesTimeFlow) {};
+    public void tick(boolean doesTimeFlow) {}
 
     public void resetLevel() {}
 
     public int getRenderPriority() {
         return this.renderPriority;
-    }
-
-    public void setRenderPriority(int renderPriority) {
-        this.renderPriority = renderPriority;
     }
 
     public double[] getPosition() {
@@ -83,12 +69,9 @@ public class GameObject implements IGameObject {
     public double getX() {
         return this.position[0];
     }
+
     public double getY() {
         return this.position[1];
-    }
-
-    public void setPosition(double[] position) {
-        this.position = position;
     }
 
     public Image getTexture() {
@@ -99,14 +82,23 @@ public class GameObject implements IGameObject {
         return this.textureSizes.get(this.textureIdNow);
     }
 
+    public void setPosition(double[] position) {
+        this.position = position;
+    }
+
+    public void setTexture(int textureId) {
+        this.textureIdNow = textureId;
+    }
+
     // gets the size in percentage 0 to 1 of the texture size relative to the map size
     public double[] getScaledTextureSizePercentage(Level level) {
         int[] textureSize = this.getTextureSize();
         int[] mapSize = level.getMapSize();
+
         // for instance mapSize = 24, 12 that is x = 24, y = 12
         // texture size for instance 64, 22 that is x = 66, y = 22
         // calculate percentage for one tile for x, y so x = 1/24, y = 1/12
-        // rescale the texture size to the map size, keep the aspect ratio, fit the texture to the tile, so do min,
+        // rescale the texture size to the map size, keep the aspect ratio, fit the texture to the tile, so does min,
         double ratioTextureSize = ((double) textureSize[0] / (double) textureSize[1]);
         double[] mapTileRatio = {((double) 1 / (double) mapSize[0]), ((double) 1 / (double) mapSize[1])};
         double[] result = new double[2];
@@ -114,7 +106,7 @@ public class GameObject implements IGameObject {
         result[1] = mapTileRatio[1];
 
         if (ratioTextureSize >= 1) {
-            result[1] *= 1/ratioTextureSize;
+            result[1] *= 1 / ratioTextureSize;
         } else {
             result[0] *= ratioTextureSize;
         }
@@ -127,10 +119,6 @@ public class GameObject implements IGameObject {
         scaledPosition[0] = this.position[0] * scaledTextureSize[0];
         scaledPosition[1] = this.position[1] * scaledTextureSize[1];
         return scaledPosition;
-    }
-
-    public void setTexture(int textureId) {
-        this.textureIdNow = textureId;
     }
 
     protected void loadTextures(String textureName) {

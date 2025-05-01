@@ -11,4 +11,5 @@ module cz.cvut.copakond.pfu.pinkfluffyunicorn {
     exports cz.cvut.copakond.pinkfluffyunicorn;
     exports cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
     exports cz.cvut.copakond.pinkfluffyunicorn.model.utils.logging;
+    exports cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
 }

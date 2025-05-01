@@ -1,5 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
+
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Cloud;
 import cz.cvut.copakond.pinkfluffyunicorn.model.entities.Unicorn;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
@@ -32,9 +32,9 @@ public class Level {
     private static String path;
 
     // 10 seconds with 60 FPS and 2x speed => currentRenderedFrame = 600, currentCalculatedFrame = 1200
-    private static long currentRenderedFrame = 0;
     private static long currentCalculatedFrame = 0;
 
+    // level info
     private final String levelName;
     private boolean isLevelEditor = false;
     private boolean isStoryLevel = false; // false = custom level, true = non deletable default level
@@ -44,52 +44,22 @@ public class Level {
     private boolean defaultLevel = false;
     private boolean levelIsCompleted = false;
 
+    // level objects
     private Start start;
     private Goal goal;
-    private List<Tile> tiles = new ArrayList<Tile>();
-    private List<Cloud> enemies = new ArrayList<Cloud>();
-    private List<Unicorn> unicorns = new ArrayList<Unicorn>();
-    private List<Item> items = new ArrayList<Item>();
-    private List<Arrow> arrows = new ArrayList<Arrow>();
-    // creator, creatorUpdated
-    private Map<String, String> playerInfo = new HashMap<String, String>();
-    // timeLimit, unicorns, goalUnicorns, maxArrows, creationTime, updatedTime
-    private Map<String, Integer> levelInfo = new HashMap<String, Integer>();
+    private List<Tile> tiles = new ArrayList<>();
+    private final List<Cloud> enemies = new ArrayList<>();
+    private final List<Unicorn> unicorns = new ArrayList<>();
+    private final List<Item> items = new ArrayList<>();
+    private final List<Arrow> arrows = new ArrayList<>();
 
-    private Map<int[], Integer> tileMap = new HashMap<int[], Integer>();
+    // creator, creatorUpdated
+    private final Map<String, String> playerInfo = new HashMap<>();
+
+    // timeLimit, unicorns, goalUnicorns, maxArrows, creationTime, updatedTime
+    private final Map<String, Integer> levelInfo = new HashMap<>();
 
     private double timeLeft;
-
-
-
-
-    private void initLevel(String level, boolean isLevelEditor, boolean storyLevel, boolean newLevel) {
-        if (storyLevel) {
-            path = levelPath + "/";
-        } else {
-            path = profilesPath + "/" + ProfileManager.getCurrentProfile() + "/";
-        }
-
-        this.isLevelEditor = isLevelEditor;
-        this.isStoryLevel = storyLevel;
-
-        if (newLevel) {
-            levelData = JsonFileManager.readJsonFromFile(levelPath + "/_TEMPLATE.json");
-            if (levelData == null) {
-                ErrorMsgsEnum.LOAD_DEFAULT.getValue();
-            } else {
-                logger.info("Default Level loaded");
-            }
-        } else {
-            levelData = JsonFileManager.readJsonFromFile(path + level + ".json");
-        }
-
-        if (levelData == null) {
-            logger.severe(ErrorMsgsEnum.CUSTOM_ERROR.getValue("Error loading level data"));
-        } else {
-            logger.info("Level loaded");
-        }
-    }
 
     public Level(String level, boolean isLevelEditor, boolean storyLevel, boolean newLevel) {
         this.levelName = level;
@@ -119,317 +89,12 @@ public class Level {
         return isStoryLevel;
     }
 
-    public static void setLevelPath(String p) {
-        levelPath = p;
-    }
-
-    public static void setProfilesPath(String p) {
-       profilesPath = p;
-    }
-
-    public static long getCurrentRenderedFrame() {
-        return currentRenderedFrame;
-    }
-
     public static long getCurrentCalculatedFrame() {
         return currentCalculatedFrame;
     }
 
-    // used to update the level by the game loop
-    public void tick(boolean doesTimeFlow) {
-        if (doesTimeFlow){
-            currentRenderedFrame++;
-            if (timeLeft > 0 && GameObject.getGameStatus() == GameStatusEnum.RUNNING) {
-                timeLeft--;
-
-                if (timeLeft <= 0) {
-                    timeLeft = 0;
-                    GameObject.setGameStatusLose();
-                }
-
-                if (timeLeft/GameObject.getFPS() <= 6 && timeLeft % GameObject.getFPS() == 0 && timeLeft != 0) {
-                    SoundManager.playSound(SoundListEnum.TIME_OUT);
-                }
-            }
-        }
-        currentCalculatedFrame++;
-
-        // GameObjects are updated in another thread, so we need to catch the exception,
-        // But this should not happen because we are using CopyOnWriteArrayList
-        try {
-            for (GameObject object : objects) {
-                object.tick(doesTimeFlow);
-            }
-        } catch (ConcurrentModificationException e) {
-            logger.warning("Frame skipped due to concurrent modification, if this happens often, consider lowering the FPS");
-        }
-    }
-
-    // main function to load the level
-    public boolean loadLevel() {
-        if (levelData == null) {return false;}
-
-        LoadManager lm = new LoadManager(levelData);
-        mapSize = lm.getList2NoLimit("mapSize");
-        defaultLevel = lm.getBoolean("defaultLevel");
-        if (mapSize == null) {return false;}
-
-        int[] startCoords = lm.getList3("start", mapSize);
-        int[] endCoords = lm.getList3("goal", mapSize);
-        if (startCoords == null || endCoords == null) {return false;}
-        start = new Start(new double[]{startCoords[0], startCoords[1]}, DirectionEnum.fromValue(startCoords[2]));
-        goal = new Goal(new double[]{endCoords[0], endCoords[1]}, DirectionEnum.fromValue(endCoords[2]));
-
-        playerInfo.put("creator", lm.getString("creator"));
-        playerInfo.put("creatorUpdated", lm.getString("creatorUpdated"));
-        if (playerInfo.get("creator") == null || playerInfo.get("creatorUpdated") == null) {return false;}
-
-        levelInfo.put("timeLimit", lm.getIntLimit("timeLimit", 60*60*24));
-        levelInfo.put("unicorns", lm.getIntLimit("unicorns", 1000));
-        levelInfo.put("maxArrows", Math.min(lm.getInt("maxArrows"), mapSize[0]*mapSize[1]));
-        levelInfo.put("creationTime", lm.getInt("creationTime"));
-        levelInfo.put("updatedTime", lm.getInt("updatedTime"));
-        levelInfo.put("deafultItemDuration", 10); // default item duration in seconds
-        if (levelInfo.get("updatedTime") == 0) {levelInfo.put("updatedTime",(int) (System.currentTimeMillis() / (1000 * 60)));}
-        if (levelInfo.get("timeLimit") == null || levelInfo.get("unicorns") == null || levelInfo.get("maxArrows") == null ||
-                levelInfo.get("creationTime") == null || levelInfo.get("updatedTime") == null) {return false;}
-        levelInfo.put("goalUnicorns", lm.getIntLimit("goalUnicorns", levelData.getInt("unicorns")));
-        if (levelInfo.get("goalUnicorns") == null) {return false;}
-        Unicorn.setGoalUnicorns(levelData.getInt("goalUnicorns"));
-
-        List<int[]> tilesCoords = lm.getListOfListsWithLimitFromDict("tiles", mapSize, TextureListEnum.TILE.getCount());
-        if (tilesCoords == null) {return false;}
-        for (int[] tileCoords : tilesCoords) {
-            tiles.add(new Tile(new double[]{tileCoords[0], tileCoords[1]}, tileCoords[2] * 16, true));
-        }
-
-        List<int[]> enemiesCoords = lm.getListOfListsWithDirFromDict("enemies", mapSize, true);
-        if (enemiesCoords == null) {return false;}
-        for (int[] enemiesCoord : enemiesCoords) {
-            enemies.add(new Cloud(new double[]{enemiesCoord[0], enemiesCoord[1]},
-                    DirectionEnum.fromValue(enemiesCoord[2]), tileMap));
-        }
-
-        List<int[]> itemsCoords = lm.getListOfListsWithLimit("items", mapSize, ItemEnum.getNumberOfItems());
-        if (itemsCoords == null) {return false;}
-        for (int[] itemCoord : itemsCoords) {
-            ItemEnum itemEnum = ItemEnum.values()[itemCoord[2]]; // Get the ItemEnum from the coordinate
-            IItem iitem = ItemFactory.createItem(itemEnum, new double[]{itemCoord[0], itemCoord[1]}, itemCoord[3]);
-            items.add((Item)iitem);
-        }
-
-        buildObjectsList();
-        logger.info("Level " + levelName + " stored in " + path + levelName + ".json editor " + isLevelEditor + " story " + isStoryLevel + " loaded");
-        return true; // level is loaded successfully, without any errors :D
-    }
-
-    public boolean saveLevel() {
-        JSONObject levelData = new JSONObject();
-        SaveManager sm = new SaveManager(levelData);
-        List<Tile> tilesFiltered = new ArrayList<Tile>();
-
-        for (Tile tile : tiles) {
-            if (tile.isWalkable()) {
-                tilesFiltered.add(tile);
-            }
-        }
-        sm.addDefaultLevelData(defaultLevel);
-        sm.addStartGoalData(start, goal);
-        sm.addMapSizeData(mapSize);
-        sm.addLevelInfo(levelInfo);
-        sm.addPlayerInfo(playerInfo);
-        sm.addTilesData(tilesFiltered);
-        sm.addEnemiesData(enemies);
-        sm.addItemsData(items);
-
-        return JsonFileManager.writeJsonToFile(path + levelName + ".json", levelData);
-    }
-
-    public void PlaceRotateRemoveArrow(int[] tileClick, int button) {
-        if (button == 1) {
-            Arrow arrow;
-            for (int i = 0; i < arrows.size(); i++) {
-                arrow = arrows.get(i);
-                if (arrow.getPosition()[0] == tileClick[0] && arrow.getPosition()[1] == tileClick[1]) {
-                    arrow.rotate();
-                    SoundManager.playSound(SoundListEnum.ARROW);
-                    return;
-                }
-            }
-            // no arrow found, create new one
-            arrow = new Arrow(new double[]{tileClick[0], tileClick[1]}, levelInfo.get("maxArrows"));
-            if (arrow.isVisible()) {
-                arrows.add(arrow);
-                SoundManager.playSound(SoundListEnum.ARROW);
-            } else {
-                logger.info("Arrow not created");
-            }
-
-        } else if (button == 2) {
-            // remove arrow
-            for (int i = 0; i < arrows.size(); i++) {
-                Arrow arrow = arrows.get(i);
-                if (arrow.getPosition()[0] == tileClick[0] && arrow.getPosition()[1] == tileClick[1]) {
-                    arrow.destroy();
-                    arrows.remove(i);
-                    SoundManager.playSound(SoundListEnum.ARROW_DEL);
-                    return;
-                }
-            }
-        }
-    }
-
-    public void Play() {
-        timeLeft = (double) levelInfo.get("timeLimit") * GameObject.getFPS();
-        start.setVisibility(isLevelEditor);
-        // init unicorns
-        DirectionEnum direction = start.getDirection();
-        double[] coords;
-        DirectionEnum unicornDirection = direction.getOppositeDirection();
-        double[] unitDirection = new double[]{0, 0};
-        if (start.getDirection() == DirectionEnum.LEFT) {
-            coords = new double[]{-1, start.getPosition()[1]};
-            unitDirection[0] = -1;
-        } else if (start.getDirection() == DirectionEnum.RIGHT) {
-            coords = new double[]{mapSize[0], start.getPosition()[1]};
-            unitDirection[0] = 1;
-        } else if (start.getDirection() == DirectionEnum.UP) {
-            coords = new double[]{start.getPosition()[0], -1};
-            unitDirection[1] = -1;
-        } else {
-            coords = new double[]{start.getPosition()[0], mapSize[1]};
-            unitDirection[1] = 1;
-        }
-
-        logger.info("number of unicorns: " + levelInfo.get("unicorns"));
-        for (int i = 0; i < levelInfo.get("unicorns"); i++) {
-            unicorns.add(new Unicorn(new double[]{coords[0], coords[1]}, unicornDirection));
-            coords[0] += unitDirection[0];
-            coords[1] += unitDirection[1];
-        }
-
-        GamePhysics.loadMapObjects(mapSize, start, goal, tiles, enemies, unicorns, items, arrows);
-        buildObjectsList();
-        logger.info("Level Played");
-    }
-
-    public void Unload() {
-        for (GameObject object : objects) {
-            object.resetLevel();
-        }
-        objects = new CopyOnWriteArrayList<>();
-        GamePhysics.unloadMapObjects();
-        levelIsCompleted = false;
-    }
-
-    public void Completed() {
-        if (levelIsCompleted) {
-            return;
-        }
-        LevelStatusUtils.markLevelAsCompleted(this);
-        levelIsCompleted = true;
-    }
-
-    public String[] getLevelData() {
-        String isLevelEditor = this.isLevelEditor ? "true" : "false";
-        String isStoryLevel = this.isStoryLevel ? "true" : "false";
-        return new String[]{levelName, isLevelEditor, isStoryLevel};
-    }
-
     public int getTimeLimit() {
         return levelInfo.get("timeLimit");
-    }
-
-    private boolean[] getNumberOfWalkableTilesAround(int[] position, Map<String, Tile> allTiles) {
-        boolean[] walkableTiles = new boolean[4];
-        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // left, down, right, up
-        for (int i = 0; i < directions.length; i++) {
-            int[] direction = directions[i];
-            int[] newPosition = {position[0] + direction[0], position[1] + direction[1]};
-            String name = newPosition[0] + "-" + newPosition[1];
-            if (allTiles.containsKey(name)) {
-                Tile tile = allTiles.get(name);
-                walkableTiles[i] = tile.isWalkable();
-            } else {
-                walkableTiles[i] = false;
-            }
-        }
-        return walkableTiles;
-    }
-
-    void buildDecorationTiles() {
-        Map<String, Tile> allTiles = new HashMap<String, Tile>();
-
-        List<Tile> newTiles = new ArrayList<Tile>();
-        for (Tile tile : tiles) {
-            if (tile.isWalkable())  {
-                newTiles.add(tile);
-                allTiles.put(tile.getTileName(), tile);
-            }
-        }
-        tiles = newTiles;
-
-        // get all the border tiles
-        List<Tile> toBeChecked = new ArrayList<Tile>();
-        for (Tile tile : tiles) {
-            if (!tile.isWalkable()) {
-                continue;
-            }
-
-            int[] position = new int[]{(int) tile.getPosition()[0], (int) tile.getPosition()[1]};
-            int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // left, down, right, up
-            for (int[] direction : directions) {
-                double[] newPosition = new double[]{position[0] + direction[0], position[1] + direction[1]};
-                int[] newPositionInt = new int[]{(int) newPosition[0], (int) newPosition[1]};
-
-                // check if the newPosition is in the map
-                if (newPositionInt[0] >= 0 && newPositionInt[0] < mapSize[0] && newPositionInt[1] >= 0 && newPositionInt[1] < mapSize[1]) {
-                    String name = newPositionInt[0] + "-" + newPositionInt[1];
-                    if (!allTiles.containsKey(name)) {
-                        int tileIndex = 16 * ((newPositionInt[0] + newPositionInt[1] + 1) % 2);
-                        boolean[] areWalkableTilesAround = getNumberOfWalkableTilesAround(newPositionInt, allTiles);
-                        for (int i = 0; i < areWalkableTilesAround.length; i++) {
-                            if (areWalkableTilesAround[i]) {
-                                tileIndex += Math.pow(2, i);
-                            }
-                        }
-                        Tile newTile = new Tile(newPosition, tileIndex, false);
-
-                        toBeChecked.add(newTile);
-                        allTiles.put(name, newTile);
-                    }
-                }
-            }
-        }
-
-        tiles.addAll(toBeChecked);
-
-    }
-
-    void buildObjectsList() {
-        objects = new CopyOnWriteArrayList<GameObject>();
-        buildDecorationTiles();
-        if (start != null) {objects.add(start);}
-        if (goal != null) {objects.add(goal);}
-        for (Tile tile : tiles) {
-            objects.add(tile);
-        }
-        for (Cloud enemy : enemies) {
-            objects.add(enemy);
-        }
-        for (IItem item : items) {
-            objects.add((GameObject)item);
-        }
-        for (Unicorn unicorn : unicorns) {
-            objects.add(unicorn);
-        }
-        for (Arrow arrow : arrows) {
-            objects.add(arrow);
-        }
-    }
-
-    public int getLifes() {
-        return Unicorn.getUnicornsAlive() - levelInfo.get("goalUnicorns") + 1;
     }
 
     public int getTimeLeft() {
@@ -468,12 +133,321 @@ public class Level {
         return levelInfo;
     }
 
+    public int getLives() {
+        return Unicorn.getUnicornsAlive() - levelInfo.get("goalUnicorns") + 1;
+    }
+
+    public String[] getLevelData() {
+        String isLevelEditor = this.isLevelEditor ? "true" : "false";
+        String isStoryLevel = this.isStoryLevel ? "true" : "false";
+        return new String[]{levelName, isLevelEditor, isStoryLevel};
+    }
+
+    public static void setLevelPath(String p) {
+        levelPath = p;
+    }
+
+    public static void setProfilesPath(String p) {
+        profilesPath = p;
+    }
+
     public void setStart(Start start) {
         this.start = start;
     }
 
     public void setGoal(Goal goal) {
         this.goal = goal;
+    }
+
+    private void initLevel(String level, boolean isLevelEditor, boolean storyLevel, boolean newLevel) {
+        path = storyLevel ? levelPath + "/" : profilesPath + "/" + ProfileManager.getCurrentProfile() + "/";
+        this.isLevelEditor = isLevelEditor;
+        this.isStoryLevel = storyLevel;
+
+        if (newLevel) {
+            levelData = JsonFileManager.readJsonFromFile(levelPath + "/_TEMPLATE.json");
+            if (levelData == null) {
+                logger.severe(ErrorMsgsEnum.LOAD_DEFAULT.getValue());
+            } else {
+                logger.info("Default Level loaded");
+            }
+        } else {
+            levelData = JsonFileManager.readJsonFromFile(path + level + ".json");
+        }
+
+        if (levelData == null) {
+            logger.severe(ErrorMsgsEnum.CUSTOM_ERROR.getValue("Error loading level data"));
+        } else {
+            logger.info("Level loaded");
+        }
+    }
+
+    // main function to load the level
+    public boolean loadLevel() {
+        if (levelData == null) return false;
+
+        LoadManager lm = new LoadManager(levelData);
+
+        mapSize = lm.getList2NoLimit("mapSize");
+        defaultLevel = lm.getBoolean("defaultLevel");
+        if (mapSize == null) return false;
+
+        int[] startCoords = lm.getList3("start", mapSize);
+        int[] endCoords = lm.getList3("goal", mapSize);
+        if (startCoords == null || endCoords == null) return false;
+
+        start = new Start(new double[]{startCoords[0], startCoords[1]}, DirectionEnum.fromValue(startCoords[2]));
+        goal = new Goal(new double[]{endCoords[0], endCoords[1]}, DirectionEnum.fromValue(endCoords[2]));
+
+        playerInfo.put("creator", lm.getString("creator"));
+        playerInfo.put("creatorUpdated", lm.getString("creatorUpdated"));
+        if (playerInfo.get("creator") == null || playerInfo.get("creatorUpdated") == null) return false;
+
+        levelInfo.put("timeLimit", lm.getIntLimit("timeLimit", 60 * 60 * 24));
+        levelInfo.put("unicorns", lm.getIntLimit("unicorns", 1000));
+        levelInfo.put("maxArrows", Math.min(lm.getInt("maxArrows"), mapSize[0] * mapSize[1]));
+        levelInfo.put("creationTime", lm.getInt("creationTime"));
+        levelInfo.put("updatedTime", lm.getInt("updatedTime"));
+        levelInfo.put("goalUnicorns", lm.getIntLimit("goalUnicorns", levelData.getInt("unicorns")));
+        levelInfo.put("defaultItemDuration", 10);
+        if (levelInfo.get("updatedTime") == 0) {
+            levelInfo.put("updatedTime", (int) (System.currentTimeMillis() / (1000 * 60)));
+        }
+
+        Unicorn.setGoalUnicorns(levelData.getInt("goalUnicorns"));
+
+        List<int[]> tileCoords = lm.getListOfListsWithLimitFromDict("tiles", mapSize, TextureListEnum.TILE.getCount());
+        if (tileCoords == null) return false;
+        for (int[] coord : tileCoords) {
+            tiles.add(new Tile(new double[]{coord[0], coord[1]}, coord[2] * 16, true));
+        }
+
+        List<int[]> enemyCoords = lm.getListOfListsWithDirFromDict("enemies", mapSize, true);
+        if (enemyCoords == null) return false;
+        for (int[] coord : enemyCoords) {
+            enemies.add(new Cloud(new double[]{coord[0], coord[1]}, DirectionEnum.fromValue(coord[2])));
+        }
+
+        List<int[]> itemCoords = lm.getListOfListsWithLimit("items", mapSize, ItemEnum.getNumberOfItems());
+        if (itemCoords == null) return false;
+        for (int[] coord : itemCoords) {
+            ItemEnum itemEnum = ItemEnum.values()[coord[2]];
+            IItem iitem = ItemFactory.createItem(itemEnum, new double[]{coord[0], coord[1]}, coord[3]);
+            items.add((Item) iitem);
+        }
+
+        buildObjectsList();
+        logger.info("Level " + levelName + " loaded");
+        return true; // level is loaded successfully, without any errors :D
+    }
+
+    public boolean saveLevel() {
+        JSONObject levelData = new JSONObject();
+        SaveManager sm = new SaveManager(levelData);
+        List<Tile> tilesFiltered = new ArrayList<>();
+
+        for (Tile tile : tiles) {
+            if (tile.isWalkable()) {
+                tilesFiltered.add(tile);
+            }
+        }
+
+        sm.addDefaultLevelData(defaultLevel);
+        sm.addStartGoalData(start, goal);
+        sm.addMapSizeData(mapSize);
+        sm.addLevelInfo(levelInfo);
+        sm.addPlayerInfo(playerInfo);
+        sm.addTilesData(tilesFiltered);
+        sm.addEnemiesData(enemies);
+        sm.addItemsData(items);
+
+        return JsonFileManager.writeJsonToFile(path + levelName + ".json", levelData);
+    }
+
+    // used to update the level by the game loop
+    public void tick(boolean doesTimeFlow) {
+        if (doesTimeFlow){
+            if (timeLeft > 0 && GameObject.getGameStatus() == GameStatusEnum.RUNNING) {
+                timeLeft--;
+
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                    GameObject.setGameStatusLose();
+                }
+
+                if (timeLeft/GameObject.getFPS() <= 6 && timeLeft % GameObject.getFPS() == 0 && timeLeft != 0) {
+                    SoundManager.playSound(SoundListEnum.TIME_OUT);
+                }
+            }
+        }
+        currentCalculatedFrame++;
+
+        // GameObjects are updated in another thread, so we need to catch the exception,
+        // But this should not happen because we are using CopyOnWriteArrayList
+        try {
+            for (GameObject object : objects) {
+                object.tick(doesTimeFlow);
+            }
+        } catch (ConcurrentModificationException e) {
+            logger.warning("Frame skipped due to concurrent modification, if this happens often, consider lowering the FPS");
+        }
+    }
+
+    public void placeRotateRemoveArrow(int[] tileClick, int button) {
+        if (button == 1) {
+            for (Arrow arrow : arrows) {
+                if (arrow.getPosition()[0] == tileClick[0] && arrow.getPosition()[1] == tileClick[1]) {
+                    arrow.rotate();
+                    SoundManager.playSound(SoundListEnum.ARROW);
+                    return;
+                }
+            }
+
+            // no arrow found, create a new one
+            Arrow arrow = new Arrow(new double[]{tileClick[0], tileClick[1]}, levelInfo.get("maxArrows"));
+            if (arrow.isVisible()) {
+                arrows.add(arrow);
+                SoundManager.playSound(SoundListEnum.ARROW);
+            } else {
+                logger.info("Arrow not created");
+            }
+        } else if (button == 2) {
+            // remove arrow
+            for (int i = 0; i < arrows.size(); i++) {
+                Arrow arrow = arrows.get(i);
+                if (arrow.getPosition()[0] == tileClick[0] && arrow.getPosition()[1] == tileClick[1]) {
+                    arrow.destroy();
+                    arrows.remove(i);
+                    SoundManager.playSound(SoundListEnum.ARROW_DEL);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void buildObjectsList() {
+        objects = new CopyOnWriteArrayList<>();
+        buildDecorationTiles();
+        if (start != null) {objects.add(start);}
+        if (goal != null) {objects.add(goal);}
+        objects.addAll(tiles);
+        objects.addAll(enemies);
+        objects.addAll(unicorns);
+        objects.addAll(arrows);
+        for (IItem item : items) {
+            objects.add((GameObject)item);
+        }
+    }
+
+    public void Play() {
+        timeLeft = (double) levelInfo.get("timeLimit") * GameObject.getFPS();
+        start.setVisibility(isLevelEditor);
+
+        // init unicorns
+        DirectionEnum direction = start.getDirection();
+        double[] coords;
+        DirectionEnum unicornDirection = direction.getOppositeDirection();
+        double[] unitDirection = new double[]{0, 0};
+
+        switch (direction) {
+            case LEFT -> { coords = new double[]{-1, start.getPosition()[1]}; unitDirection[0] = -1; }
+            case RIGHT -> { coords = new double[]{mapSize[0], start.getPosition()[1]}; unitDirection[0] = 1; }
+            case UP -> { coords = new double[]{start.getPosition()[0], -1}; unitDirection[1] = -1; }
+            default -> { coords = new double[]{start.getPosition()[0], mapSize[1]}; unitDirection[1] = 1; }
+        }
+
+        logger.info("number of unicorns: " + levelInfo.get("unicorns"));
+        for (int i = 0; i < levelInfo.get("unicorns"); i++) {
+            unicorns.add(new Unicorn(new double[]{coords[0], coords[1]}, unicornDirection));
+            coords[0] += unitDirection[0];
+            coords[1] += unitDirection[1];
+        }
+
+        GamePhysics.loadMapObjects(start, goal, tiles, enemies, unicorns, items, arrows);
+        buildObjectsList();
+        logger.info("Level Played");
+    }
+
+    public void Unload() {
+        for (GameObject object : objects) {
+            object.resetLevel();
+        }
+
+        objects = new CopyOnWriteArrayList<>();
+        GamePhysics.unloadMapObjects();
+        levelIsCompleted = false;
+    }
+
+    public void Completed() {
+        if (levelIsCompleted) { return; }
+        if (!LevelStatusUtils.markLevelAsCompleted(this)) {
+            logger.severe(ErrorMsgsEnum.SAVE_JSON_FILE.getValue("Error saving level status"));
+        }
+        levelIsCompleted = true;
+    }
+
+    private void buildDecorationTiles() {
+        Map<String, Tile> allTiles = new HashMap<>();
+        List<Tile> newTiles = new ArrayList<>();
+
+        for (Tile tile : tiles) {
+            if (tile.isWalkable())  {
+                newTiles.add(tile);
+                allTiles.put(tile.getTileName(), tile);
+            }
+        }
+        tiles = newTiles;
+
+        // get all the border tiles
+        List<Tile> toBeChecked = new ArrayList<>();
+        for (Tile tile : tiles) {
+            if (!tile.isWalkable()) {
+                continue;
+            }
+
+            int[] position = new int[]{(int) tile.getPosition()[0], (int) tile.getPosition()[1]};
+            int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // left, down, right, up
+            for (int[] direction : directions) {
+                double[] newPosition = new double[]{position[0] + direction[0], position[1] + direction[1]};
+                int[] newPositionInt = new int[]{(int) newPosition[0], (int) newPosition[1]};
+
+                // check if the newPosition is in the map
+                if (newPositionInt[0] >= 0 && newPositionInt[0] < mapSize[0] && newPositionInt[1] >= 0 && newPositionInt[1] < mapSize[1]) {
+                    String name = newPositionInt[0] + "-" + newPositionInt[1];
+                    if (!allTiles.containsKey(name)) {
+
+                        // calculate the texture index based on the surrounding tiles
+                        int tileIndex = 16 * ((newPositionInt[0] + newPositionInt[1] + 1) % 2);
+                        boolean[] areWalkableTilesAround = getNumberOfWalkableTilesAround(newPositionInt, allTiles);
+
+                        // check if the tile is walkable
+                        for (int i = 0; i < areWalkableTilesAround.length; i++) {
+                            if (areWalkableTilesAround[i]) {
+                                tileIndex += (int) Math.pow(2, i);
+                            }
+                        }
+
+                        // create the border decoration tile
+                        Tile newTile = new Tile(newPosition, tileIndex, false);
+                        toBeChecked.add(newTile);
+                        allTiles.put(name, newTile);
+                    }
+                }
+            }
+        }
+
+        tiles.addAll(toBeChecked);
+    }
+
+    private boolean[] getNumberOfWalkableTilesAround(int[] position, Map<String, Tile> allTiles) {
+        boolean[] walkableTiles = new boolean[4];
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        for (int i = 0; i < directions.length; i++) {
+            int[] newPosition = {position[0] + directions[i][0], position[1] + directions[i][1]};
+            Tile tile = allTiles.get(newPosition[0] + "-" + newPosition[1]);
+            walkableTiles[i] = tile != null && tile.isWalkable();
+        }
+        return walkableTiles;
     }
 }
 

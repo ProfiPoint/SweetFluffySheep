@@ -194,7 +194,10 @@ public class AppViewManager {
             fps[0] = (int) fpsSlider.getValue();
             boolean isFullscreen = fullscreenCheckBox.isSelected();
             String path = profilesPath + "/" + ProfileManager.getCurrentProfile() + "/_SETTINGS.json";
-            JsonFileManager.writeSettingsToJson(path, musicVolume, sfxVolume, Math.max(fps[0], 1), isFullscreen);
+            if (!JsonFileManager.writeSettingsToJson(path, musicVolume, sfxVolume, Math.max(fps[0], 1),
+                    isFullscreen)){
+                logger.severe("Failed to write settings to file " + path);
+            }
             if (hasFpsChanged) {
                 GameObject.setFPS(Math.max(fps[0], 1));
                 logger.info("Game is going to close, because FPS changed.");

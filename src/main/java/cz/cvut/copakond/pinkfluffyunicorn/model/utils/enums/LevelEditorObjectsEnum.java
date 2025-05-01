@@ -23,13 +23,5 @@ public enum LevelEditorObjectsEnum {
         return name;
     }
 
-    public LevelEditorObjectsEnum getLevelEditorObjectsEnum(String name) {
-        for (LevelEditorObjectsEnum object : LevelEditorObjectsEnum.values()) {
-            if (object.getName().equals(name)) {
-                return object;
-            }
-        }
-        return EMPTY;
-    }
 }
 

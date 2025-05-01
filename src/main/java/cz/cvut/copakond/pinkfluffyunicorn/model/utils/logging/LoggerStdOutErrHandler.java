@@ -2,9 +2,8 @@ package cz.cvut.copakond.pinkfluffyunicorn.model.utils.logging;
 
 import java.util.logging.*;
 
-// Purely based out of a template class from GitHub:
+// https://www.logicbig.com/tutorials/core-java-tutorial/logging/custom-handler.html
 public class LoggerStdOutErrHandler extends Handler {
-
     private final StreamHandler stdoutHandler;
     private final StreamHandler stderrHandler;
 

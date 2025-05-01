@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.GameStatusEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
@@ -97,11 +96,11 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
             return;
         }
 
-        if (!GamePhysics.tileExists(tileClick)) {
+        if (GamePhysics.tileNotExists(tileClick)) {
             return;
         }
 
-        gameLoop.getLevel().PlaceRotateRemoveArrow(tileClick, button);
+        gameLoop.getLevel().placeRotateRemoveArrow(tileClick, button);
 
         // update objects, to include the new arrows.
         gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
@@ -245,7 +244,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         // update the HUD
         int[] coinsInfo = gameLoop.getLevel().getCoinsLeftAndCoins();
         coinsLabel.setText(coinsInfo[1]-coinsInfo[0] + "/" + coinsInfo[1]);
-        lifesLabel.setText(gameLoop.getLevel().getLifes() + "♥");
+        lifesLabel.setText(gameLoop.getLevel().getLives() + "♥");
         timeLabel.setText(gameLoop.getLevel().getTimeLeft() + "s");
     }
 

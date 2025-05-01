@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.files;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 
 import java.io.File;

@@ -68,7 +68,10 @@ public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
 
         editorButton.setOnAction(e -> AppViewManager.get().switchTo(new LevelSelectionFrame(true)));
         profileButton.setOnAction(e -> AppViewManager.get().switchTo(new ProfileFrame()));
-        exitButton.setOnAction(e -> System.exit(0));
+        exitButton.setOnAction(e -> {
+            logger.info("Exited game");
+            System.exit(0);
+        });
 
         settingsButton.setOnAction(event -> {
             AppViewManager.get().openSettings();

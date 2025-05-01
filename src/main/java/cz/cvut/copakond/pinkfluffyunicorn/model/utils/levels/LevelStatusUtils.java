@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.ProfileManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
@@ -35,36 +34,24 @@ public class LevelStatusUtils {
         );
         if (original == null) return false;
 
-        // Create mutable copy of everything
+        // create a mutable copy of everything
         List<List<Integer>> levelData = new ArrayList<>();
         levelData.add(new ArrayList<>(original.get(0))); // normal levels
         levelData.add(new ArrayList<>(original.get(1))); // editor levels
 
         try {
             int levelNumber = Integer.parseInt(level.getLevelData()[0]);
-            if (!level.isStoryLevel()) {
-                List<Integer> editorLevels = levelData.get(1);
-                for (int i = 0; i < editorLevels.size(); i++) {
-                    if (editorLevels.get(i) == levelNumber) {
-                        editorLevels.remove(i);
-                        break;
-                    }
-                }
-                editorLevels.add(levelNumber);
-
-            } else {
-                List<Integer> normalLevels = levelData.get(0);
-                for (int i = 0; i < normalLevels.size(); i++) {
-                    if (normalLevels.get(i) == levelNumber) {
-                        normalLevels.remove(i);
-                        break;
-                    }
-                }
+            if (level.isStoryLevel()) {
+                List<Integer> normalLevels = levelData.getFirst();
+                normalLevels.removeIf(id -> id == levelNumber);
                 normalLevels.add(levelNumber);
-
+            } else {
+                List<Integer> editorLevels = levelData.get(1);
+                editorLevels.removeIf(id -> id == levelNumber);
+                editorLevels.add(levelNumber);
             }
         } catch (NumberFormatException e) {
-            ErrorMsgsEnum.LOAD_JSON_PARSE.getValue("Error parsing level number: " + e.getMessage());
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_PARSE.getValue("Error parsing level number: " + e.getMessage()));
             return false;
         }
 
@@ -74,7 +61,7 @@ public class LevelStatusUtils {
         );
     }
 
-    // [levelId,  customLevel] customLevel = 0 story mode, 1 custom level
+    // [levelId, customLevel] customLevel = 0-story mode, 1-custom level
     // [1,0] if all levels are completed
     public static int[] getNextUncompletedLevel(){
         currentProfileName = ProfileManager.getCurrentProfile();
@@ -82,28 +69,33 @@ public class LevelStatusUtils {
         if (levelData == null) {
             return new int[]{1, 0};
         }
+
         int numberOfStoryLevels = FileUtils.getNumberOfFilesInDirectory(levelPath);
         int numberOfCustomLevels = FileUtils.getNumberOfFilesInDirectory(profilesPath + "/" + currentProfileName);
+
         for (int i = 0; i < numberOfStoryLevels; i++) {
-            if (!levelData.get(0).contains(i+1)) {
+            if (!levelData.getFirst().contains(i+1)) {
                 return new int[]{i + 1, 0};
             }
         }
+
         for (int i = 0; i < numberOfCustomLevels; i++) {
             if (!levelData.get(1).contains(i+1)) {
                 return new int[]{i + 1, 1};
             }
         }
 
-        return new int[]{1, 0};
+        return new int[]{1, 0}; // all levels are completed, return first level
     }
 
-    // [levelId, customLevel] customLevel = 0 story mode, 1 custom level
+    // [levelId, customLevel] customLevel = 0-story mode, 1-custom level
     // [0,0] if this was the last level of story/custom level
     public static Level getNextLevel(Level level){
         currentProfileName = ProfileManager.getCurrentProfile();
+
         int numberOfStoryLevels = FileUtils.getNumberOfFilesInDirectory(levelPath);
         int numberOfCustomLevels = FileUtils.getNumberOfFilesInDirectory(profilesPath + "/" + currentProfileName);
+
         try {
             int levelNumber = Integer.parseInt(level.getLevelData()[0]);
             if (level.isStoryLevel()) {
@@ -118,8 +110,9 @@ public class LevelStatusUtils {
                 return new Level(String.valueOf(levelNumber + 1), false, false);
             }
         } catch (NumberFormatException e) {
-            ErrorMsgsEnum.LOAD_JSON_PARSE.getValue(e.getMessage());
+            logger.severe(ErrorMsgsEnum.LOAD_JSON_PARSE.getValue(e.getMessage()));
         }
+
         return null;
     }
 }

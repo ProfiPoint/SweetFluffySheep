@@ -6,26 +6,25 @@ public enum DirectionEnum {
     LEFT(180),
     UP(270);
 
-    // general formula for [x,y] is sin(-angle), cos(-angle)
-
-    public DirectionEnum next() {
-        DirectionEnum[] values = DirectionEnum.values();
-        return values[(this.ordinal() + 1) % values.length];
-    }
-
     private final int value;
 
     DirectionEnum(int value) {
         this.value = value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
+    public DirectionEnum next() {
+        DirectionEnum[] values = DirectionEnum.values();
+        return values[(this.ordinal() + 1) % values.length];
+    }
+
     public DirectionEnum getOppositeDirection() {
         return values()[(this.ordinal() + 2) % values().length];
     }
 
-    public int getValue() {
-        return value;
-    }
     public static DirectionEnum fromValue(int value) {
         for (DirectionEnum direction : DirectionEnum.values()) {
             if (direction.getValue() == value) {
@@ -35,4 +34,3 @@ public enum DirectionEnum {
         return null;
     }
 }
-

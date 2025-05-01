@@ -32,9 +32,9 @@ public class FireItem extends Item {
     @Override
     public void tick(boolean doesTimeFlow) {
         super.tick(doesTimeFlow);
-        if (duration_ticks > 0 && active == this && doesTimeFlow) {
-            duration_ticks--;
-            if (duration_ticks == 0) {
+        if (durationTicks > 0 && active == this && doesTimeFlow) {
+            durationTicks--;
+            if (durationTicks == 0) {
                 active = null;
                 logger.info("Fire item expired");
                 SoundManager.stopSfx(SoundListEnum.HOLD);

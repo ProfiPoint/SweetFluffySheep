@@ -10,39 +10,36 @@ public enum PhisicsEventsEnum {
     ROTATION_UP(true),
     ROTATION_DOWN(true),
     ROTATION_OPPOSITE(true),
-    ROTATION_STUCK_4WALLS(true), // stuck in 4 walls -> so it can not move, so it will only rotate :'(
-
-    // Used when multiple same characters get "compressed" into one tile, this makes them slow down to equally spread again
+    ROTATION_STUCK_4WALLS(true),
     SLOWDOWN(false);
 
-    // should character start to rotate?
     private final boolean rotation;
 
     PhisicsEventsEnum(boolean rotation) {
         this.rotation = rotation;
     }
     
-    public boolean isRotation() {
-        return rotation;
+    public boolean isNotRotation() {
+        return !rotation;
     }
 
-    public static PhisicsEventsEnum convertDirectionToPhisicsEvent(DirectionEnum direction) {
-        switch (direction) {
-            case RIGHT: return ROTATION_RIGHT;
-            case DOWN: return ROTATION_DOWN;
-            case LEFT: return ROTATION_LEFT;
-            case UP: return ROTATION_UP;
-            default: return NO_COLLISION;
-        }
+    public static PhisicsEventsEnum convertDirectionToPhysicsEvent(DirectionEnum direction) {
+        return switch (direction) {
+            case RIGHT -> ROTATION_RIGHT;
+            case DOWN -> ROTATION_DOWN;
+            case LEFT -> ROTATION_LEFT;
+            case UP -> ROTATION_UP;
+        };
     }
 
-    public static DirectionEnum convertPhisicsEvent(PhisicsEventsEnum phisicsEvent) {
-        switch (phisicsEvent) {
-            case ROTATION_RIGHT: return DirectionEnum.RIGHT;
-            case ROTATION_DOWN: return DirectionEnum.DOWN;
-            case ROTATION_LEFT: return DirectionEnum.LEFT;
-            case ROTATION_UP: return DirectionEnum.UP;
-            default: return DirectionEnum.UP; // this will never happen
-        }
+    public static DirectionEnum convertPhysicsEvent(PhisicsEventsEnum physicsEvent) {
+        return switch (physicsEvent) {
+            case ROTATION_RIGHT -> DirectionEnum.RIGHT;
+            case ROTATION_DOWN -> DirectionEnum.DOWN;
+            case ROTATION_LEFT -> DirectionEnum.LEFT;
+            case ROTATION_UP -> DirectionEnum.UP;
+            default -> throw new IllegalArgumentException("PhysicsEvent " + physicsEvent + " cannot be converted to a" +
+                    " DirectionEnum.");
+        };
     }
 }

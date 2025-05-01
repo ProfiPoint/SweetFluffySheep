@@ -1,24 +1,29 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums;
 
-import java.io.IOException;
-
 public enum ErrorMsgsEnum {
     CUSTOM_ERROR(""),
 
+    // Folders, files
     UNKNOWN_FOLDER("Folder does not exist."),
     FOLDER_CREATE_ERROR("Error creating folder at:"),
     FOLDER_EXISTS("Folder already exists at:"),
     LOAD_COMPLETED_LEVELS("Error loading completed levels."),
+    LOAD_BUTTON_NOT_FOUND("Button not found for: "),
+    SAVE_FILE("Error saving file."),
+    COPY_FILE("Error copying file."),
 
+    // Textures
     TEXTURE_MISSING("Texture missing or corrupted."),
     TEXTURE_MISSING_IS_MISSING("Missing texture of missing 'missing_texture.png' is missing or corrupted."),
     TEXTURE_UNKNOWN_NAME("Unknown texture name in classes"),
     TEXTURE_OUT_OF_INDEX("Texture out of index."),
 
-    PHISICS_ALREADY_INIT("PHISICS: Phisics already initialized."),
+    // Physics
+    PHYSICS_ALREADY_INIT("PHYSICS: Physics already initialized."),
 
-    LOAD_ERROR("LEVEL LOAD: Error loading level."),
+    // Load / Save JSON
     SAVE_JSON_FILE("LEVEL SAVE: Error saving JSON file."),
+    LOAD_ERROR("LEVEL LOAD: Error loading level."),
     LOAD_DEFAULT("LEVEL LOAD: Error loading default file _TEMPLATE.json"),
     LOAD_JSON_FILE("LEVEL LOAD: Error loading JSON file."),
     LOAD_JSON_PARSE("LEVEL LOAD: Error parsing JSON file."),
@@ -32,25 +37,23 @@ public enum ErrorMsgsEnum {
     LOAD_EMPTY_LIST("LEVEL LOAD: The given list/dictionary cannot be empty."),
     LOAD_VALUE_OUT_OF_RANGE("LEVEL LOAD: Value out of range."),
     LOAD_INVALID_LEVEL_NAME("LEVEL LOAD: Invalid level name."),
-    LOAD_PARSING_ERROR("LEVEL LOAD: Error parsing JSON file."),
+    LOAD_PARSING_ERROR("LEVEL LOAD: Error parsing JSON file.");
 
-    LOAD_BUTTON_NOT_FOUND("Button not found for: "),;
+    private final String message;
 
-    private final String value;
-
-    ErrorMsgsEnum(String value) {
-        this.value = value;
+    ErrorMsgsEnum(String message) {
+        this.message = message;
     }
 
     public String getValue() {
-        return value + "\n\n";
+        return message + "\n\n";
     }
 
     public String getValue(String info) {
-        return value + " (" + info + ")\n\n";
+        return message + " (" + info + ")\n\n";
     }
 
     public String getValue(String info, Exception error) {
-        return value + " (" + info + ")\n" + error.toString() + "\n\n";
+        return message + " (" + info + ")\n" + error + "\n\n";
     }
 }

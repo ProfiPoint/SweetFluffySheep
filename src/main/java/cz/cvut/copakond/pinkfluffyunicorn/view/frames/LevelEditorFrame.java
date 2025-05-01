@@ -76,8 +76,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         PathFinder pathFinder = new PathFinder(level);
         boolean valid = pathFinder.canLevelBeCompleted();
         if (valid) {
-            level.saveLevel();
-            return true;
+            return level.saveLevel();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Invalid Level");
@@ -167,7 +166,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             Spinner<Integer> maxArrowsSpinner = new Spinner<>(1, mapSize[0] * mapSize[1], levelInfo.get("maxArrows"));
             Spinner<Integer> mapSizeXSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[0]);
             Spinner<Integer> mapSizeYSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[1]);
-            Spinner<Integer> itemDurationSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("deafultItemDuration"));
+            Spinner<Integer> itemDurationSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("defaultItemDuration"));
 
 
             // user can edit the values with keyboard
@@ -213,7 +212,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
                 levelInfo.put("unicorns", unicornsSpinner.getValue());
                 levelInfo.put("goalUnicorns", goalUnicornsSpinner.getValue());
                 levelInfo.put("maxArrows", maxArrowsSpinner.getValue());
-                levelInfo.put("deafultItemDuration", itemDurationSpinner.getValue());
+                levelInfo.put("defaultItemDuration", itemDurationSpinner.getValue());
                 logger.info("Level settings updated: " + levelInfo);
                 // check if the map size is updated
                 if (mapSize[0] != mapSizeXSpinner.getValue() || mapSize[1] != mapSizeYSpinner.getValue()) {

@@ -1,19 +1,12 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.world;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.items.Coin;
-import cz.cvut.copakond.pinkfluffyunicorn.model.items.Item;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.SoundManager;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.RenderPriorityEnums;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 
 import java.util.logging.Logger;
 
@@ -23,6 +16,7 @@ public class Goal extends GameObject {
     // 10x per second it will update the anim texture
     private static final int textureChangeFrameCoefficient = (int) Math.ceil((double) GameObject.getFPS() / 10);
     private boolean locked = true;
+    private boolean lockedTexture = true;
     private DirectionEnum direction;
 
     public Goal(double[] position, DirectionEnum orientation) {
@@ -34,8 +28,17 @@ public class Goal extends GameObject {
         return this.direction;
     }
 
+    public boolean isLocked() {
+        return locked;
+    }
+
     public void rotateCharacterLE(){
         this.direction = this.direction.next();
+    }
+
+    // to show the unlocked goal texture in level editor
+    public void unlockForLevelEditor() {
+        this.lockedTexture = false;
     }
 
     @Override
@@ -43,24 +46,17 @@ public class Goal extends GameObject {
         super.tick(doesTimeFlow);
         if (this.locked && Coin.getCoinsLeft() <= 0) {
             this.locked = false;
+            this.lockedTexture = false;
             SoundManager.playSound(SoundListEnum.GOAL_UNLOCKED);
             logger.info("Goal unlocked!");
         }
-    }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void unlockForLevelEditor() {
-        this.locked = false;
     }
 
     @Override
     public Image getTexture() {
         int orientation = (this.direction.getValue() / 90);
         this.textureIdNow = (32 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/textureChangeFrameCoefficient) % 32);
-        if (this.locked) {
+        if (this.locked && this.lockedTexture) {
             this.textureIdNow += 32*4;
 
         }

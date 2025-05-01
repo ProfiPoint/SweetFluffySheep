@@ -45,7 +45,7 @@ public class Launcher extends Application {
         for (String arg : args) {
             if (arg.equals("-logger") || arg.equals("--logger") || arg.equals("logger=true")) {
                 loggerEnabled = true;
-                System.out.println("Logger is enabled");
+                logger.info("Logger enabled");
                 break;
             }
         }

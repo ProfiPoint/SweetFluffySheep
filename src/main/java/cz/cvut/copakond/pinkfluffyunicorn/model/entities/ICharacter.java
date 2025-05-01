@@ -1,15 +1,29 @@
 package cz.cvut.copakond.pinkfluffyunicorn.model.entities;
 
-import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.DirectionEnum;
+/**
+ * Interface representing a game character (e.g., Unicorn or Cloud).
+ */
+public interface ICharacter {
 
-public interface ICharacter  {
-    // moves the character by one step in the current direction
+    /**
+     * Moves the character by a given number of tiles in its current direction.
+     *
+     * @param tiles Number of tiles to move.
+     * @param doesTimeFlow Whether time is currently flowing (true for frame renderings + clock only moves with renders).
+     */
     void move(double tiles, boolean doesTimeFlow);
 
-    // changes the direction of the character
-    void changeDirection(DirectionEnum direction);
-
-    // manages the character's state
+    /**
+     * Checks if the character is still alive.
+     *
+     * @return true if alive, false otherwise.
+     */
     boolean isAlive();
+
+    /**
+     * Checks if the character is an enemy (e.g., a Cloud).
+     *
+     * @return true if enemy, false otherwise.
+     */
     boolean isEnemy();
 }

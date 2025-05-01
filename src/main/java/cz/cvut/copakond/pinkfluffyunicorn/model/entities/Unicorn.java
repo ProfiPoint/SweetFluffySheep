@@ -25,16 +25,12 @@ public class Unicorn extends Character {
 
     public static void setGoalUnicorns(int goal) {goalUnicorns = goal;}
 
-    public void kill() {
-        super.kill();
-        counter--;
-        SoundManager.playSound(SoundListEnum.HERO_DOWN);
-        unicornEnteredGoal(false);
-        logger.info("Unicorn killed");
-        if (counter < goalUnicorns && gameStatus != GameStatusEnum.WIN) {
-            logger.info("Game Over");
-            gameStatus = GameStatusEnum.LOSE;
-        }
+    public static int getGoalUnicorns() {
+        return goalUnicorns;
+    }
+
+    public static int getUnicornsAlive() {
+        return counter;
     }
 
     public static void unicornEnteredGoal(boolean entered) {
@@ -47,6 +43,18 @@ public class Unicorn extends Character {
         if (counter - unicornsInGoal == 0 && unicornsInGoal >= goalUnicorns) {
             logger.info("You win!");
             gameStatus = GameStatusEnum.WIN;
+        }
+    }
+
+    public void kill() {
+        super.kill();
+        counter--;
+        SoundManager.playSound(SoundListEnum.HERO_DOWN);
+        unicornEnteredGoal(false);
+        logger.info("Unicorn killed");
+        if (counter < goalUnicorns && gameStatus != GameStatusEnum.WIN) {
+            logger.info("Game Over");
+            gameStatus = GameStatusEnum.LOSE;
         }
     }
 
@@ -65,13 +73,5 @@ public class Unicorn extends Character {
             return this.textures.get(this.textureIdNow);
         }
         return super.getTexture();
-    }
-
-    public static int getGoalUnicorns() {
-        return goalUnicorns;
-    }
-
-    public static int getUnicornsAlive() {
-        return counter;
     }
 }
