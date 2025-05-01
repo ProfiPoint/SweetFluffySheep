@@ -21,6 +21,9 @@ public enum ErrorMsgsEnum {
     // Physics
     PHYSICS_ALREADY_INIT("PHYSICS: Physics already initialized."),
 
+    // Threads
+    THREAD_INTERRUPTED("THREAD: Thread interrupted."),
+
     // Load / Save JSON
     SAVE_JSON_FILE("LEVEL SAVE: Error saving JSON file."),
     LOAD_ERROR("LEVEL LOAD: Error loading level."),

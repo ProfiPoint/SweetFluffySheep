@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FolderUtils;
@@ -30,7 +29,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
     private final Button confirmButton = new Button("Add New Profile");
     private final Button backButton = new Button("Back");
 
-    private List<String> profiles = List.of();
+    private List<String> profiles;
 
     public ProfileFrame() {
         setAlignment(Pos.TOP_CENTER);
@@ -38,7 +37,6 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
         setFillWidth(true);
 
         titleLabel.setTextFill(Color.WHITE);
-        nameField.setAlignment(Pos.CENTER);
         getChildren().add(titleLabel);
 
         scrollPane.setContent(profileListBox);
@@ -47,6 +45,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
         getChildren().add(scrollPane);
 
         nameField.setPromptText("Enter new profile name...");
+        nameField.setAlignment(Pos.CENTER);
         getChildren().add(nameField);
 
         confirmButton.setOnAction(e -> {
@@ -62,15 +61,17 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
             }
         });
         getChildren().add(confirmButton);
-        getChildren().add(backButton);
+
 
         backButton.setOnAction(e -> {
             logger.info("Back to menu");
-            AppViewManager.get().switchTo(new MenuFrame()); // Switch back to menu
+            AppViewManager.get().switchTo(new MenuFrame());
         });
+        getChildren().add(backButton);
 
+        profiles = FolderUtils.getAllFolders(ProfileManager.getProfileFolderPath());
         drawProfileButtons();
-        show(); // Initial draw
+        show();
     }
 
     private void addNewProfile(String name) {
@@ -90,34 +91,44 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
 
         for (String profile : profiles) {
             String text = "[" + profile + "]";
-            List<List<Integer>> completedLevels =
-                    JsonFileManager.getProfileLFromJsonFile(FolderUtils.getProfilesPath() + "/" + profile + "/_DATA.json");
+            List<List<Integer>> completedLevels = JsonFileManager.getProfileLFromJsonFile(FolderUtils.getProfilesPath() + "/" + profile + "/_DATA.json");
             int totalStoryLevels = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getLevelsPath());
             int totalCustomLevels = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getProfilesPath() + "/" + profile);
 
             if (completedLevels != null && !completedLevels.isEmpty() && totalCustomLevels >= 0 && totalStoryLevels >= 0) {
                 if (totalCustomLevels > 0) {
-                    text += " | (Story: " + completedLevels.get(0).size() + "/" + totalStoryLevels + " Custom: " + totalCustomLevels + ")";
+                    text += " | (Story: " + completedLevels.getFirst().size() + "/" + totalStoryLevels + " Custom: " + totalCustomLevels + ")";
                 } else {
-                    text += " | (Story: " + completedLevels.get(0).size() + "/" + totalStoryLevels + ")";
+                    text += " | (Story: " + completedLevels.getFirst().size() + "/" + totalStoryLevels + ")";
                 }
             }
 
-            Button profileBtn = new Button(text);
-            if (ProfileManager.getCurrentProfile().equals(profile)) {
-                profileBtn.setStyle("-fx-background-color: green; -fx-text-fill: white;");
-            }
-
-            profileBtn.setOnAction(e -> {
-                logger.info("Selected profile: " + profile);
-                ProfileManager.switchProfile(profile);
-                drawProfileButtons();
-                AppViewManager.get().update();
-            });
-
-            profileBtn.setMaxWidth(Double.MAX_VALUE);
+            Button profileBtn = getButton(profile, text);
             profileListBox.getChildren().add(profileBtn);
         }
+    }
+
+    private Button getButton(String profile, String text) {
+        Button profileBtn = new Button(text);
+        if (ProfileManager.getCurrentProfile().equals(profile)) {
+            profileBtn.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+        }
+
+        profileBtn.setOnAction(e -> {
+            logger.info("Selected profile: " + profile);
+            ProfileManager.switchProfile(profile);
+            drawProfileButtons();
+            AppViewManager.get().update();
+        });
+
+        profileBtn.setMaxWidth(Double.MAX_VALUE);
+        return profileBtn;
+    }
+
+    public void show() {
+        profiles = FolderUtils.getAllFolders(ProfileManager.getProfileFolderPath());
+        drawProfileButtons();
+        AppViewManager.get().update();
     }
 
     @Override
@@ -142,9 +153,8 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
 
         backButton.setPrefWidth(fieldWidth / 2);
         backButton.setPrefHeight(fieldHeight / 2);
-        backButton.setStyle("-fx-font-size: " + (fontSize * 0.8) + "px;");
-        backButton.setAlignment(Pos.CENTER);
         backButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-size: " + (fontSize * 0.8) + "px;");
+        backButton.setAlignment(Pos.CENTER);
 
         setSpacing(height / 30);
 
@@ -155,7 +165,7 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
             if (node instanceof Button btn) {
                 btn.setPrefWidth(buttonWidth);
                 btn.setPrefHeight(buttonHeight);
-                String currentStyle = btn.getStyle(); // Keep existing styles
+                String currentStyle = btn.getStyle();
                 String fontSizeStyle = "-fx-font-size: " + (fontSize * 0.8) + "px;";
                 btn.setStyle(currentStyle + fontSizeStyle);
             }
@@ -166,11 +176,5 @@ public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFram
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-    }
-
-    public void show() {
-        profiles = FolderUtils.getAllFolders(ProfileManager.getProfileFolderPath());
-        drawProfileButtons();
-        AppViewManager.get().update();
     }
 }

@@ -19,7 +19,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -50,27 +49,26 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
     private final boolean isEditor;
 
     public LevelFrame(Level level, boolean isEditor) {
-        gameLoop = new GameLoop(this, level);
         this.isEditor = isEditor;
         this.canvas = new Canvas();
-        this.gameLoop.getLevel().Play();
+        this.gameLoop = new GameLoop(this, level);
 
+        gameLoop.getLevel().Play();
         setAlignment(Pos.CENTER);
-
         getChildren().add(canvas);
 
-        // Create the HUD bar and add it
         hudBar = createHudBar();
-        getChildren().add(hudBar); // HUD bar is added after canvas to place it below
+        getChildren().add(hudBar);
 
         AppViewManager.get().setClickListener(this);
-        gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
+        gameLoop.setObjects(level.getListOfObjects());
         gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
         gameLoop.resume();
 
         if (isEditor) {
             menuButton.setText("Edit");
         }
+
         SoundManager.playSound(SoundListEnum.GAME_THEME);
     }
 
@@ -82,11 +80,10 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         }
         int button = event.getButton().name().equals("PRIMARY") ? 1 :
                 event.getButton().name().equals("SECONDARY") ? 2 : 0;
+
         // status (-1 = invalid tile, 0 = remove, 1 = place), tile x (0 - mapSizeX-1), tile y (0 - mapSizeY-1)
-        // init and set canvas size
         int[] canvasSize = {(int) canvas.getWidth(), (int) canvas.getHeight()};
 
-        //get the size of AppViewManagers canvas
         int[] appCanvasSize = {(int) AppViewManager.get().getScene().getWidth(),
                 (int) AppViewManager.get().getScene().getHeight()};
 
@@ -102,121 +99,33 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
 
         gameLoop.getLevel().placeRotateRemoveArrow(tileClick, button);
 
-        // update objects, to include the new arrows.
+        // update objects to include the new arrows.
         gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
         gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
     }
 
-    private void showPopup(String message, boolean isWin) {
-        if (popupShown) {
-            return;
-        }
+    @Override
+    public void onResizeCanvas(double width, double height) {
+        double canvasHeight = height * (1 - 11.111 / 100);
+        canvas.setWidth(width);
+        canvas.setHeight(canvasHeight);
 
-        SoundManager.stopMusic();
-        if (isWin){
-            SoundManager.playSound(SoundListEnum.FINISH);
-        } else {
-            SoundManager.playSound(SoundListEnum.GAME_OVER);
-        }
+        double hudHeight = height * 11.111 / 100;
+        hudBar.setMinHeight(hudHeight);
+        hudBar.setMaxHeight(hudHeight);
+        hudBar.setPrefHeight(hudHeight);
+        hudBar.setPrefWidth(width);
 
-        popupShown = true;
-        Stage popupStage = new Stage();
-        popupStage.setTitle("Game Result");
+        hudBar.setLayoutX(0);
+        hudBar.setLayoutY(canvasHeight);
 
-        // make the popup modal
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.initOwner(this.getScene().getWindow());
+        adjustFontSize(width);
+    }
 
-        Label messageLabel = new Label(message);
-        messageLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;");
-
-        Button backToMenuButton = new Button("Back to Menu");
-        if (isEditor) {
-            backToMenuButton.setText("Retry");
-            backToMenuButton.setOnAction(e -> {
-                popupStage.close();
-                resetLevel();
-            });
-        } else {
-            backToMenuButton.setOnAction(e -> {
-                popupStage.close();
-                gameLoop.unload();
-                AppViewManager.get().switchTo(new LevelSelectionFrame(false));
-            });
-        }
-
-
-        VBox buttonBox = new VBox(10);
-        buttonBox.setAlignment(Pos.CENTER);
-
-        if (isWin) {
-            Button nextLevelButton = new Button("Next Level");
-            if (isEditor) {
-                messageLabel.setText("Level Accepted!");
-                nextLevelButton.setText("Edit");
-                nextLevelButton.setOnAction(e -> {
-                    String[] levelData = gameLoop.getLevel().getLevelData();
-                    Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
-                    gameLoop.unload();
-                    if (!level.loadLevel()) {
-                        ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue();
-                        return;
-                    }
-                    popupStage.close();
-                    AppViewManager.get().switchTo(new LevelEditorFrame(level));
-                });
-            } else {
-                nextLevelButton.setOnAction(e -> {
-                    gameLoop.pause();
-                    popupStage.close();
-                    speedButton.setText("1x");
-                    pauseButton.setText("Pause");
-                    SoundManager.playSound(SoundListEnum.GAME_THEME);
-                    gameLoop.setNewLevel();
-                    popupShown = false;
-                });
-            }
-            buttonBox.getChildren().addAll(backToMenuButton, nextLevelButton);
-        } else {
-            Button retryLevelButton = new Button("Retry");
-            if (isEditor) {
-                messageLabel.setText("Level Not Accepted!");
-                retryLevelButton.setText("Edit");
-                retryLevelButton.setOnAction(e -> {
-                    String[] levelData = gameLoop.getLevel().getLevelData();
-                    Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
-                    gameLoop.unload();
-                    if (!level.loadLevel()) {
-                        ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue();
-                        return;
-                    }
-                    popupStage.close();
-                    AppViewManager.get().switchTo(new LevelEditorFrame(level));
-                });
-            } else {
-                retryLevelButton.setOnAction(e -> {
-                    popupStage.close();
-                    resetLevel();
-                });
-            }
-
-            buttonBox.getChildren().addAll(backToMenuButton, retryLevelButton);
-        }
-
-        VBox popupLayout = new VBox(20, messageLabel, buttonBox);
-        popupLayout.setPadding(new Insets(20));
-        popupLayout.setAlignment(Pos.CENTER);
-        popupLayout.setStyle("-fx-background-color: #333; -fx-border-color: white; -fx-border-width: 2px;");
-
-        Scene popupScene = new Scene(popupLayout, 300, 200);
-        popupStage.setScene(popupScene);
-        popupStage.setResizable(false);
-
-        popupStage.setOnCloseRequest(e -> {
-            e.consume();
-        });
-
-        popupStage.showAndWait();
+    @Override
+    public void draw(GraphicsContext gc) {
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     public void checkGameStatus(){
@@ -249,28 +158,15 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
     }
 
     private void drawObject(GraphicsContext gc, GameObject object) {
-        //double[] position = object.getPosition();
         double[] position = object.getScaledPositionSizePercentage(gameLoop.getLevel());
-        // multiply by scene height and width to get the size in pixels
-        position[0] = position[0] * canvas.getWidth() ;
-        position[1] = position[1] * canvas.getHeight();
-
-        Image texture = object.getTexture();
-        //int[] textureSize = object.getTextureSize();
+        position[0] *= canvas.getWidth();
+        position[1] *= canvas.getHeight();
 
         double[] textureSizeRatio = object.getScaledTextureSizePercentage(gameLoop.getLevel());
-        int[] textureSize = new int[2];
-        // multiply by scene height and width to get the size in pixels
-        textureSize[0] = (int) Math.ceil(canvas.getWidth() * textureSizeRatio[0]);
-        textureSize[1] = (int) Math.ceil(canvas.getHeight() * textureSizeRatio[1]);
+        int width = (int) Math.ceil(canvas.getWidth() * textureSizeRatio[0]);
+        int height = (int) Math.ceil(canvas.getHeight() * textureSizeRatio[1]);
 
-        double x = position[0];
-        double y = position[1];
-
-        double width = textureSize[0];
-        double height = textureSize[1];
-
-        gc.drawImage(texture, x, y, width, height);
+        gc.drawImage(object.getTexture(), position[0], position[1], width, height);
     }
 
     private void adjustFontSize(double width) {
@@ -278,34 +174,14 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
 
         // loop through all children of the hudBar and set the font size
         for (javafx.scene.Node node : hudBar.getChildrenUnmodifiable()) {
-            if (node instanceof Button) {
-                Button button = (Button) node;
+            if (node instanceof Button button) {
                 String currentStyle = button.getStyle();
                 button.setStyle(currentStyle + "-fx-font-size: " + fontSize + "px;");
-            } else if (node instanceof Label) {
-                Label label = (Label) node;
+            } else if (node instanceof Label label) {
                 String currentStyle = label.getStyle();
                 label.setStyle(currentStyle + "-fx-font-size: " + fontSize + "px;");
             }
         }
-    }
-
-    @Override
-    public void onResizeCanvas(double width, double height) {
-        double canvasHeight = height * (1 - 11.111 / 100);
-        canvas.setWidth(width);
-        canvas.setHeight(canvasHeight);
-
-        double hudHeight = height * 11.111 / 100;
-        hudBar.setMinHeight(hudHeight);
-        hudBar.setMaxHeight(hudHeight);
-        hudBar.setPrefHeight(hudHeight);
-        hudBar.setPrefWidth(width);
-
-        hudBar.setLayoutX(0);
-        hudBar.setLayoutY(canvasHeight);
-
-        adjustFontSize(width);
     }
 
     private Pane createHudBar() {
@@ -330,7 +206,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
                 Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
                 gameLoop.unload();
                 if (!level.loadLevel()) {
-                    ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue();
+                    logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
                     return;
                 }
                 AppViewManager.get().switchTo(new LevelEditorFrame(level));
@@ -379,17 +255,108 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         return bar;
     }
 
-    @Override
-    public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-    }
-    
-    void resetLevel() {
+    private void resetLevel() {
         popupShown = false;
         speedButton.setText("1x");
         pauseButton.setText("Pause");
         gameLoop.resetLevel();
         SoundManager.playSound(SoundListEnum.GAME_THEME);
+    }
+
+    private void showPopup(String message, boolean isWin) {
+        if (popupShown) return;
+
+        SoundManager.stopMusic();
+        SoundManager.playSound(isWin ? SoundListEnum.FINISH : SoundListEnum.GAME_OVER);
+        popupShown = true;
+
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Game Result");
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.initOwner(getScene().getWindow());
+
+        Label messageLabel = new Label(message);
+        messageLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;");
+
+        Button backToMenuButton = new Button(isEditor ? "Retry" : "Back to Menu");
+        VBox buttonBox = new VBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        if (isWin) {
+            Button nextLevelButton = new Button(isEditor ? "Edit" : "Next Level");
+
+            if (isEditor) {
+                messageLabel.setText("Level Accepted!");
+                nextLevelButton.setOnAction(e -> switchToEditor(popupStage));
+            } else {
+                nextLevelButton.setOnAction(e -> {
+                    gameLoop.pause();
+                    popupStage.close();
+                    speedButton.setText("1x");
+                    pauseButton.setText("Pause");
+                    SoundManager.playSound(SoundListEnum.GAME_THEME);
+                    gameLoop.setNewLevel();
+                    popupShown = false;
+                });
+            }
+
+            backToMenuButton.setOnAction(e -> {
+                popupStage.close();
+                if (isEditor) resetLevel();
+                else {
+                    gameLoop.unload();
+                    AppViewManager.get().switchTo(new LevelSelectionFrame(false));
+                }
+            });
+
+            buttonBox.getChildren().addAll(backToMenuButton, nextLevelButton);
+
+        } else {
+            Button retryLevelButton = new Button(isEditor ? "Edit" : "Retry");
+
+            if (isEditor) {
+                messageLabel.setText("Level Not Accepted!");
+                retryLevelButton.setOnAction(e -> switchToEditor(popupStage));
+            } else {
+                retryLevelButton.setOnAction(e -> {
+                    popupStage.close();
+                    resetLevel();
+                });
+            }
+
+            backToMenuButton.setOnAction(e -> {
+                popupStage.close();
+                if (isEditor) resetLevel();
+                else {
+                    gameLoop.unload();
+                    AppViewManager.get().switchTo(new LevelSelectionFrame(false));
+                }
+            });
+
+            buttonBox.getChildren().addAll(backToMenuButton, retryLevelButton);
+        }
+
+        VBox popupLayout = new VBox(20, messageLabel, buttonBox);
+        popupLayout.setPadding(new Insets(20));
+        popupLayout.setAlignment(Pos.CENTER);
+        popupLayout.setStyle("-fx-background-color: #333; -fx-border-color: white; -fx-border-width: 2px;");
+
+        Scene popupScene = new Scene(popupLayout, 300, 200);
+        popupStage.setScene(popupScene);
+        popupStage.setResizable(false);
+        popupStage.setOnCloseRequest(e -> e.consume());
+        popupStage.showAndWait();
+    }
+
+    private void switchToEditor(Stage popupStage) {
+        String[] levelData = gameLoop.getLevel().getLevelData();
+        Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+        gameLoop.unload();
+        if (!level.loadLevel()) {
+            logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
+            return;
+        }
+        popupStage.close();
+        AppViewManager.get().switchTo(new LevelEditorFrame(level));
     }
 }

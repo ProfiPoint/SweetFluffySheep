@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.LevelEditorObjectsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
@@ -39,6 +38,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
     private final GameLoop gameLoop;
     private final Canvas canvas;
     private final GridPane hudBar;
+
     private LevelEditorObjectsEnum selectedObject = LevelEditorObjectsEnum.EMPTY;
 
     private final Button playButton =      new Button("   [Play]   ");
@@ -68,7 +68,73 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
         gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
         gameLoop.renderScene();
+
         SoundManager.playSound(SoundListEnum.EDITOR_THEME);
+    }
+
+    // Level Editor can never be won or lost, only the level itself.
+    public void checkGameStatus(){}
+
+    @Override
+    public void onResizeCanvas(double width, double height) {
+        double canvasHeight = height * (1 - 11.111 / 100);
+        canvas.setWidth(width);
+        canvas.setHeight(canvasHeight);
+
+        double hudHeight = height * 11.111 / 100;
+        hudBar.setMinHeight(hudHeight);
+        hudBar.setMaxHeight(hudHeight);
+        hudBar.setPrefHeight(hudHeight);
+        hudBar.setPrefWidth(width);
+
+        hudBar.setLayoutX(0);
+        hudBar.setLayoutY(canvasHeight);
+
+        adjustFontSize(width);
+        gameLoop.renderScene();
+    }
+
+    @Override
+    public void handleClick(MouseEvent event) {
+        int[] canvasSize = {(int) canvas.getWidth(), (int) canvas.getHeight()};
+        int[] appCanvasSize = {(int) AppViewManager.get().getScene().getWidth(),
+                (int) AppViewManager.get().getScene().getHeight()};
+
+        int[] tileClick = LevelFrameUtils.getTileClicked(
+                (int) event.getX(), (int) event.getY(),
+                appCanvasSize, canvasSize,
+                gameLoop.getLevel()
+        );
+
+        if (tileClick[0] == -1) return;
+
+        LevelEditorUtils.addObjectToLevel(
+                new double[]{tileClick[0], tileClick[1]},
+                selectedObject
+        );
+
+        gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
+        gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
+        gameLoop.renderScene();
+    }
+
+    @Override
+    public void draw(GraphicsContext gc) {
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
+    public void drawLevelObjects() {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        gc.setFill(Color.WHEAT);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        for (GameObject object : gameLoop.getObjects()) {
+            if (object.isVisible()) {
+                drawObject(gc, object);
+            }
+        }
     }
 
     private boolean saveLevel(String headerText) {
@@ -87,6 +153,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         }
     }
 
+
     private GridPane createEditorHudBar() {
         GridPane bar = new GridPane();
         bar.setStyle("-fx-background-color: #222;");
@@ -102,26 +169,23 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         List<Button> imgButtons = new ArrayList<>();
         for (String name : imageNames) {
             String fullPath = texturePath + "/editor/" + name + ".png";
-
             Image image;
             try {
                 image = new Image(new File(fullPath).toURI().toURL().toExternalForm());
-                ImageView imageView = new ImageView(image);
-                imageView.setPreserveRatio(true);
             } catch (java.net.MalformedURLException e) {
-                e.printStackTrace();
+                logger.severe(ErrorMsgsEnum.TEXTURE_MISSING.getValue(fullPath + " " + e.getMessage()));
                 continue;
             }
+
             ImageView imageView = new ImageView(image);
             imageView.setPreserveRatio(true);
 
             Button imgButton = new Button();
             imgButton.setGraphic(imageView);
             imgButton.setStyle("-fx-background-color: transparent;");
-
-            // image sizing will be handled in onResizeCanvas
             bar.add(imgButton, col++, 0);
             imgButtons.add(imgButton);
+
             imgButton.setOnAction(event -> {
                 for (Button btn : imgButtons) {
                     btn.setStyle("-fx-background-color: transparent;");
@@ -130,121 +194,6 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
                 selectedObject = LevelEditorObjectsEnum.valueOf(name.toUpperCase());
             });
         }
-
-        playButton.setOnAction(event -> {
-            if (!saveLevel("Level cannot be completed")) {
-                return;
-            }
-
-            String[] levelData = gameLoop.getLevel().getLevelData();
-            Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
-            gameLoop.unload();
-            if (!newLevel.loadLevel()) {
-                ErrorMsgsEnum.LOAD_ERROR.getValue();
-                return;
-            }
-            AppViewManager.get().switchTo(new LevelFrame(newLevel, true));
-        });
-
-        variablesButton.setOnAction(event -> {
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setTitle("Level Settings");
-            dialog.initOwner(AppViewManager.get().getStage());
-            dialog.initModality(Modality.APPLICATION_MODAL);
-
-            ButtonType confirmButtonType = new ButtonType("Confirm");
-            ButtonType cancelButtonType = new ButtonType("Cancel");
-            dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, cancelButtonType);
-
-            Map<String, Integer> levelInfo = gameLoop.getLevel().getLevelInfo();
-            int[] mapSize = gameLoop.getLevel().getMapSize();
-
-            // set the limits for the values
-            Spinner<Integer> timeLimitSpinner = new Spinner<>(10, Integer.MAX_VALUE, levelInfo.get("timeLimit"));
-            Spinner<Integer> unicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("unicorns"));
-            Spinner<Integer> goalUnicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("goalUnicorns"));
-            Spinner<Integer> maxArrowsSpinner = new Spinner<>(1, mapSize[0] * mapSize[1], levelInfo.get("maxArrows"));
-            Spinner<Integer> mapSizeXSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[0]);
-            Spinner<Integer> mapSizeYSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[1]);
-            Spinner<Integer> itemDurationSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("defaultItemDuration"));
-
-
-            // user can edit the values with keyboard
-            timeLimitSpinner.setEditable(true);
-            unicornsSpinner.setEditable(true);
-            maxArrowsSpinner.setEditable(true);
-            goalUnicornsSpinner.setEditable(true);
-            mapSizeXSpinner.setEditable(true);
-            mapSizeYSpinner.setEditable(true);
-            itemDurationSpinner.setEditable(true);
-
-            GridPane grid = new GridPane();
-            grid.setHgap(10);
-            grid.setVgap(10);
-            grid.setPadding(new Insets(20, 150, 10, 10));
-
-            grid.add(new Label("Time Limit (s):"), 0, 0);
-            grid.add(timeLimitSpinner, 1, 0);
-            grid.add(new Label("Unicorns:"), 0, 1);
-            grid.add(unicornsSpinner, 1, 1);
-            grid.add(new Label("Goal Unicorns:"), 2, 1);
-            grid.add(goalUnicornsSpinner, 3, 1);
-            grid.add(new Label("Max Arrows:"), 0, 2);
-            grid.add(maxArrowsSpinner, 1, 2);
-            grid.add(new Label("Map Size (Width):"), 0, 3);
-            grid.add(mapSizeXSpinner, 1, 3);
-            grid.add(new Label("Map Size (Height):"), 2, 3);
-            grid.add(mapSizeYSpinner, 3, 3);
-            grid.add(new Label("Item Duration (s):"), 0, 4);
-            grid.add(itemDurationSpinner, 1, 4);
-
-            dialog.getDialogPane().setContent(grid);
-
-            // update the values, when the user changes the number of unicorns
-            Optional<ButtonType> result = dialog.showAndWait();
-            if (result.isPresent() && result.get() == confirmButtonType) {
-                // goal unicorns must be less than or equal to unicorns
-                if (goalUnicornsSpinner.getValue() > unicornsSpinner.getValue()) {
-                    goalUnicornsSpinner.getValueFactory().setValue(unicornsSpinner.getValue());
-                }
-
-                levelInfo.put("timeLimit", timeLimitSpinner.getValue());
-                levelInfo.put("unicorns", unicornsSpinner.getValue());
-                levelInfo.put("goalUnicorns", goalUnicornsSpinner.getValue());
-                levelInfo.put("maxArrows", maxArrowsSpinner.getValue());
-                levelInfo.put("defaultItemDuration", itemDurationSpinner.getValue());
-                logger.info("Level settings updated: " + levelInfo);
-                // check if the map size is updated
-                if (mapSize[0] != mapSizeXSpinner.getValue() || mapSize[1] != mapSizeYSpinner.getValue()) {
-                    mapSize[0] = mapSizeXSpinner.getValue();
-                    mapSize[1] = mapSizeYSpinner.getValue();
-                    logger.info("Map size updated: " + Arrays.toString(mapSize));
-
-                    // now reload the level
-                    if (!saveLevel("Level can not be resized")) {
-                        return;
-                    }
-
-                    String[] levelData = gameLoop.getLevel().getLevelData();
-                    Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
-                    gameLoop.unload();
-                    if (!newLevel.loadLevel()) {
-                        ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue();
-                        return;
-                    }
-                    AppViewManager.get().switchTo(new LevelEditorFrame(newLevel));
-                }
-            }
-        });
-
-        settingsButton.setOnAction(e -> {
-            AppViewManager.get().openSettings();
-        });
-
-        menuButton.setOnAction(e -> {
-            gameLoop.unload();
-            AppViewManager.get().switchTo(new LevelSelectionFrame(true));
-        });
 
         bar.add(playButton, col++, 0);
         bar.add(variablesButton, col++, 0);
@@ -257,7 +206,119 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
             bar.getColumnConstraints().add(cc);
         }
 
+        setupHudBarButtonActions();
+
         return bar;
+    }
+
+    private void setupHudBarButtonActions() {
+        playButton.setOnAction(event -> {
+            if (!saveLevel("Level cannot be completed")) return;
+
+            String[] levelData = gameLoop.getLevel().getLevelData();
+            Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+            gameLoop.unload();
+            if (!newLevel.loadLevel()) {
+                logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
+                return;
+            }
+            AppViewManager.get().switchTo(new LevelFrame(newLevel, true));
+        });
+
+        variablesButton.setOnAction(event -> {
+            openLevelSettingsDialog();
+        });
+
+        settingsButton.setOnAction(e -> AppViewManager.get().openSettings());
+
+        menuButton.setOnAction(e -> {
+            gameLoop.unload();
+            AppViewManager.get().switchTo(new LevelSelectionFrame(true));
+        });
+    }
+
+    private void openLevelSettingsDialog() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Level Settings");
+        dialog.initOwner(AppViewManager.get().getStage());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        ButtonType confirmButtonType = new ButtonType("Confirm");
+        ButtonType cancelButtonType = new ButtonType("Cancel");
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, cancelButtonType);
+
+        Map<String, Integer> levelInfo = gameLoop.getLevel().getLevelInfo();
+        int[] mapSize = gameLoop.getLevel().getMapSize();
+
+        Spinner<Integer> timeLimitSpinner = new Spinner<>(10, Integer.MAX_VALUE, levelInfo.get("timeLimit"));
+        Spinner<Integer> unicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("unicorns"));
+        Spinner<Integer> goalUnicornsSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("goalUnicorns"));
+        Spinner<Integer> maxArrowsSpinner = new Spinner<>(1, mapSize[0] * mapSize[1], levelInfo.get("maxArrows"));
+        Spinner<Integer> mapSizeXSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[0]);
+        Spinner<Integer> mapSizeYSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[1]);
+        Spinner<Integer> itemDurationSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("defaultItemDuration"));
+
+        timeLimitSpinner.setEditable(true);
+        unicornsSpinner.setEditable(true);
+        goalUnicornsSpinner.setEditable(true);
+        maxArrowsSpinner.setEditable(true);
+        mapSizeXSpinner.setEditable(true);
+        mapSizeYSpinner.setEditable(true);
+        itemDurationSpinner.setEditable(true);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        grid.add(new Label("Time Limit (s):"), 0, 0);
+        grid.add(timeLimitSpinner, 1, 0);
+        grid.add(new Label("Unicorns:"), 0, 1);
+        grid.add(unicornsSpinner, 1, 1);
+        grid.add(new Label("Goal Unicorns:"), 2, 1);
+        grid.add(goalUnicornsSpinner, 3, 1);
+        grid.add(new Label("Max Arrows:"), 0, 2);
+        grid.add(maxArrowsSpinner, 1, 2);
+        grid.add(new Label("Map Size (Width):"), 0, 3);
+        grid.add(mapSizeXSpinner, 1, 3);
+        grid.add(new Label("Map Size (Height):"), 2, 3);
+        grid.add(mapSizeYSpinner, 3, 3);
+        grid.add(new Label("Item Duration (s):"), 0, 4);
+        grid.add(itemDurationSpinner, 1, 4);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == confirmButtonType) {
+            if (goalUnicornsSpinner.getValue() > unicornsSpinner.getValue()) {
+                goalUnicornsSpinner.getValueFactory().setValue(unicornsSpinner.getValue());
+            }
+
+            levelInfo.put("timeLimit", timeLimitSpinner.getValue());
+            levelInfo.put("unicorns", unicornsSpinner.getValue());
+            levelInfo.put("goalUnicorns", goalUnicornsSpinner.getValue());
+            levelInfo.put("maxArrows", maxArrowsSpinner.getValue());
+            levelInfo.put("defaultItemDuration", itemDurationSpinner.getValue());
+
+            logger.info("Level settings updated: " + levelInfo);
+
+            if (mapSize[0] != mapSizeXSpinner.getValue() || mapSize[1] != mapSizeYSpinner.getValue()) {
+                mapSize[0] = mapSizeXSpinner.getValue();
+                mapSize[1] = mapSizeYSpinner.getValue();
+                logger.info("Map size updated: " + Arrays.toString(mapSize));
+
+                if (!saveLevel("Level can not be resized")) return;
+
+                String[] levelData = gameLoop.getLevel().getLevelData();
+                Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+                gameLoop.unload();
+                if (!newLevel.loadLevel()) {
+                    logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
+                    return;
+                }
+                AppViewManager.get().switchTo(new LevelEditorFrame(newLevel));
+            }
+        }
     }
 
     private void adjustFontSize(double width) {
@@ -280,92 +341,17 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         }
     }
 
-    @Override
-    public void onResizeCanvas(double width, double height) {
-        double canvasHeight = height * (1 - 11.111 / 100);
-        canvas.setWidth(width);
-        canvas.setHeight(canvasHeight);
-
-        double hudHeight = height * 11.111 / 100;
-        hudBar.setMinHeight(hudHeight);
-        hudBar.setMaxHeight(hudHeight);
-        hudBar.setPrefHeight(hudHeight);
-        hudBar.setPrefWidth(width);
-
-        hudBar.setLayoutX(0);
-        hudBar.setLayoutY(canvasHeight);
-
-        adjustFontSize(width);
-        gameLoop.renderScene();
-    }
-
-    // Level Editor can never be won or lost, only the level itself.
-    public void checkGameStatus(){}
-
-    public void drawLevelObjects() {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        gc.setFill(Color.WHEAT);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        for (GameObject object : gameLoop.getObjects()) {
-            if (object.isVisible()) {
-                drawObject(gc, object);
-            }
-        }
-    }
-
     private void drawObject(GraphicsContext gc, GameObject object) {
-        //double[] position = object.getPosition();
         double[] position = object.getScaledPositionSizePercentage(gameLoop.getLevel());
-        // multiply by scene height and width to get the size in pixels
-        position[0] = position[0] * canvas.getWidth() ;
-        position[1] = position[1] * canvas.getHeight();
-
-        Image texture = object.getTexture();
-        //int[] textureSize = object.getTextureSize();
+        position[0] *= canvas.getWidth();
+        position[1] *= canvas.getHeight();
 
         double[] textureSizeRatio = object.getScaledTextureSizePercentage(gameLoop.getLevel());
-        int[] textureSize = new int[2];
-        // multiply by scene height and width to get the size in pixels
-        textureSize[0] = (int) Math.ceil(canvas.getWidth() * textureSizeRatio[0]);
-        textureSize[1] = (int) Math.ceil(canvas.getHeight() * textureSizeRatio[1]);
+        int[] textureSize = {
+                (int) Math.ceil(canvas.getWidth() * textureSizeRatio[0]),
+                (int) Math.ceil(canvas.getHeight() * textureSizeRatio[1])
+        };
 
-        double x = position[0];
-        double y = position[1];
-
-        double width = textureSize[0];
-        double height = textureSize[1];
-
-        gc.drawImage(texture, x, y, width, height);
-    }
-
-    @Override
-    public void handleClick(MouseEvent event) {
-        int[] canvasSize = {(int) canvas.getWidth(), (int) canvas.getHeight()};
-        int[] appCanvasSize = {(int) AppViewManager.get().getScene().getWidth(),
-                (int) AppViewManager.get().getScene().getHeight()};
-
-        int[] tileClick = LevelFrameUtils.getTileClicked(
-                (int) event.getX(), (int) event.getY(),
-                appCanvasSize, canvasSize,
-                gameLoop.getLevel()
-        );
-
-        if (tileClick[0] == -1) return;
-
-        LevelEditorUtils.addObjectToLevel(
-                new double[]{tileClick[0], tileClick[1]},
-                selectedObject
-        );
-        gameLoop.setObjects(gameLoop.getLevel().getListOfObjects());
-        gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
-        gameLoop.renderScene();
-    }
-
-    @Override
-    public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.drawImage(object.getTexture(), position[0], position[1], textureSize[0], textureSize[1]);
     }
 }

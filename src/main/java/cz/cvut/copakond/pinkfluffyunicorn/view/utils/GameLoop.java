@@ -1,79 +1,36 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.utils;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.game.GameObject;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.pinkfluffyunicorn.model.world.Level;
 import cz.cvut.copakond.pinkfluffyunicorn.view.interfaces.ILevelFrame;
+import javafx.application.Platform;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.locks.LockSupport;
 import java.util.logging.Logger;
-
 
 public class GameLoop {
     private static final Logger logger = Logger.getLogger(GameLoop.class.getName());
 
-    ILevelFrame levelFrame;
+    private final ILevelFrame levelFrame;
+    private final int[] speedOptions = {1, 2, 4, 8}; // internally used multiplier (2x is default)
+
     private boolean isRunning = false;
+
+    private int currentSpeedIndex = 1;
+    private long currentFrame = 0;
+
     private Level level;
     private List<GameObject> objects;
-    private long currentFrame = 0;
-    private final int[] speedOptions = {1, 2, 4, 8}; // default speed is 2x, but is presented to user
-    // as 1x
-    private int currentSpeedIndex = 1; // index of speedOptions
-    private boolean isLoopRunning = false;
 
+    private Thread gameLoopThread;
 
     public GameLoop(ILevelFrame levelFrame, Level level) {
         this.levelFrame = levelFrame;
         this.level = level;
-    }
-
-    void run() {
-        Thread gameLoopThread = new Thread(() -> {
-            isLoopRunning = true;
-            final int fps = GameObject.getFPS();
-            final long frameDuration = 1000 / fps;
-            currentFrame = 0;
-
-            while (isRunning) {
-                long startTime = System.currentTimeMillis();
-                currentFrame++;
-
-                // check if the game is over or won
-                javafx.application.Platform.runLater(levelFrame::checkGameStatus);
-
-                // if the game speed is not 1 (on screen 0.5), skip the frame, for faster speeds
-                if (currentFrame % speedOptions[currentSpeedIndex] != 0) {
-                    level.tick(false);
-                    continue;
-                } else {
-                    level.tick(true);
-                }
-
-                // javafx thread
-                javafx.application.Platform.runLater(levelFrame::drawLevelObjects);
-
-                long endTime = System.currentTimeMillis();
-                long sleepTime = frameDuration - (endTime - startTime);
-
-                if (sleepTime > 0) {
-                    try {
-                        Thread.sleep(sleepTime);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-            }
-            isLoopRunning = false;
-        });
-
-
-        gameLoopThread.setDaemon(true);
-        gameLoopThread.start();
     }
 
     public Level getLevel() {return level;}
@@ -100,8 +57,45 @@ public class GameLoop {
         return isRunning;
     }
 
-    public int elapsedSeconds() {
-        return (int)currentFrame / GameObject.getFPS();
+    public long elapsedSeconds() {
+        return currentFrame / GameObject.getFPS();
+    }
+
+    void run() {
+        gameLoopThread = new Thread(() -> {
+            final int fps = GameObject.getFPS();
+            final long frameDuration = 1000 / fps;
+            currentFrame = 0;
+
+            while (isRunning) {
+                long startTime = System.currentTimeMillis();
+                currentFrame++;
+
+                // check if the game is over or won
+                Platform.runLater(levelFrame::checkGameStatus);
+
+                // if the game speed is not 1 (on screen 0.5), skip the frame, for faster speeds
+                if (currentFrame % speedOptions[currentSpeedIndex] != 0) {
+                    level.tick(false);
+                    continue;
+                } else {
+                    level.tick(true);
+                }
+
+                // javafx thread
+                Platform.runLater(levelFrame::drawLevelObjects);
+
+                long endTime = System.currentTimeMillis();
+                long sleepTime = frameDuration - (endTime - startTime);
+
+                if (sleepTime > 0) {
+                    LockSupport.parkNanos(sleepTime * 1_000_000);
+                }
+            }
+        });
+
+        gameLoopThread.setDaemon(true);
+        gameLoopThread.start();
     }
 
     public void pause() {
@@ -123,39 +117,42 @@ public class GameLoop {
         run();
     }
 
-    public void renderScene() {
-        if (level.getGoal() != null) {
-            level.getGoal().unlockForLevelEditor(); // unlock goal for level editor
-        }
-        javafx.application.Platform.runLater(levelFrame::drawLevelObjects);
-    }
-
     public void unload() {
         pause();
         AppViewManager.get().setClickListener(null);
         level.Unload();
     }
 
+    public void renderScene() {
+        if (level.getGoal() != null) {
+            level.getGoal().unlockForLevelEditor(); // unlock goal for level editor
+        }
+        Platform.runLater(levelFrame::drawLevelObjects);
+    }
+
     public void resetLevel() {
         String[] levelData = level.getLevelData();
         boolean isEditor = levelData[1].equals("true");
         boolean isStory = levelData[2].equals("true");
+
         isRunning = false;
         level.Unload();
         level = new Level(levelData[0], isEditor, isStory);
+
         if (!level.loadLevel()) {
-            ErrorMsgsEnum.LOAD_ERROR.getValue();
+            logger.warning(ErrorMsgsEnum.LOAD_ERROR.getValue());
             return;
         }
+
         currentSpeedIndex = 1;
 
-        // wait for the loop to finish
-        while (isLoopRunning){
+        // wait for the loop to finish; alternatively, we could use a thread join
+        if (gameLoopThread != null && gameLoopThread.isAlive()) {
             try {
-                Thread.sleep(10);
+                gameLoopThread.join();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                break;
+                logger.warning(ErrorMsgsEnum.THREAD_INTERRUPTED.getValue());
             }
         }
 

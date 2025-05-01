@@ -1,6 +1,5 @@
 package cz.cvut.copakond.pinkfluffyunicorn.view.frames;
 
-import cz.cvut.copakond.pinkfluffyunicorn.Launcher;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.pinkfluffyunicorn.model.utils.files.FileUtils;
@@ -27,10 +26,7 @@ import java.util.logging.Logger;
 
 public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawableFrame {
     private static final Logger logger = Logger.getLogger(LevelSelectionFrame.class.getName());
-
     private static String profileName;
-    private static int storyLevelsCount;
-    private static int customLevelsCount;
 
     private final Label storyLabel = new Label("Story Mode");
     private final Label userLabel = new Label("User Created Levels");
@@ -38,7 +34,7 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
 
     private final GridPane storyGrid = new GridPane();
     private final GridPane userGrid = new GridPane();
-    private final VBox contentLayout = new VBox(50); // vertical spacing
+    private final VBox contentLayout = new VBox(50);
 
     private final List<Button> storyButtons = new ArrayList<>();
     private final List<Button> userButtons = new ArrayList<>();
@@ -50,14 +46,12 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
         SoundManager.playSound(SoundListEnum.MENU_THEME);
     }
 
-    private void init(boolean editorMode){
+    private void init(boolean editorMode) {
         this.editorMode = editorMode;
 
         profileName = ProfileManager.getCurrentProfile();
-        storyLevelsCount = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getLevelsPath());
-        customLevelsCount = FileUtils.getNumberOfFilesInDirectory(
-                FolderUtils.getProfilesPath() + "/" + profileName
-        );
+        int storyLevelsCount = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getLevelsPath());
+        int customLevelsCount = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getProfilesPath() + "/" + profileName);
 
         if (editorMode) {
             customLevelsCount++;
@@ -68,31 +62,24 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
             contentLayout.getChildren().addAll(storyLabel, storyGrid, userLabel, userGrid);
         }
 
-
         setupGrid(userGrid, customLevelsCount, "User", userButtons);
 
         storyLabel.setTextFill(Color.WHITE);
         userLabel.setTextFill(Color.WHITE);
-
         contentLayout.setAlignment(Pos.CENTER);
-
 
         StackPane layout = new StackPane();
         layout.getChildren().add(contentLayout);
 
-        backButton.setOnAction(e -> {
-            AppViewManager.get().switchTo(new MenuFrame());
-        });
-
+        backButton.setOnAction(e -> AppViewManager.get().switchTo(new MenuFrame()));
         StackPane.setAlignment(backButton, Pos.TOP_RIGHT);
         backButton.setTranslateX(-20);
         backButton.setTranslateY(20);
 
         layout.getChildren().add(backButton);
-
         getChildren().add(layout);
 
-        show(); // Initial draw
+        show();
     }
 
     private void setupGrid(GridPane grid, int levelCount, String prefix, List<Button> list) {
@@ -103,14 +90,13 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
         int cols = 10;
         for (int i = 0; i < levelCount; i++) {
             final int levelNumber = i + 1;
-
             int row = i / cols;
             int col = i % cols;
 
             Button levelButton = new Button(String.valueOf(levelNumber));
             if (!editorMode) {
                 levelButton.setStyle("-fx-background-color: #444; -fx-text-fill: white;");
-            } else if (i == levelCount -1) {
+            } else if (i == levelCount - 1) {
                 levelButton.setStyle("-fx-background-color: #ffffff; -fx-text-fill: black;");
                 levelButton.setText("+");
             } else {
@@ -119,20 +105,19 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
 
             levelButton.setOnAction(e -> {
                 logger.info(prefix + " Level " + levelNumber + " clicked");
-                Integer levelNum = levelNumber;
-                Level level = new Level(Integer.toString(levelNum), editorMode, prefix.equals("Story"),
+                Level level = new Level(Integer.toString(levelNumber), editorMode, prefix.equals("Story"),
                         levelButton.getText().equals("+"));
 
                 if (!level.loadLevel()) {
-                    ErrorMsgsEnum.LOAD_ERROR.getValue();
+                    logger.severe(ErrorMsgsEnum.LOAD_ERROR.getValue());
                     return;
                 }
+
                 if (editorMode) {
                     AppViewManager.get().switchTo(new LevelEditorFrame(level));
                 } else {
                     AppViewManager.get().switchTo(new LevelFrame(level, false));
                 }
-
             });
 
             grid.add(levelButton, col, row);
@@ -141,10 +126,49 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
         }
     }
 
+    private void updateButtonStyles(List<Integer> levelData, List<Button> buttons, String prefix) {
+        for (Integer levelDatum : levelData) {
+            int levelNumber = levelDatum - 1;
+            if (levelNumber < 0 || levelNumber >= buttons.size()) {
+                logger.info(ErrorMsgsEnum.LOAD_INVALID_LEVEL_NAME.getValue(String.valueOf(levelNumber)));
+                continue;
+            }
+
+            Button button = buttons.get(levelNumber);
+            if (button != null) {
+                button.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+            } else {
+                logger.info(prefix + " level " + (levelNumber + 1));
+                logger.severe(ErrorMsgsEnum.LOAD_BUTTON_NOT_FOUND.getValue(prefix + " level " + (levelNumber + 1)));
+            }
+        }
+    }
+
+    public void setButtonsCompleted() {
+        List<List<Integer>> completedLevels = JsonFileManager.getProfileLFromJsonFile(
+                FolderUtils.getProfilesPath() + "/" + profileName + "/_DATA.json"
+        );
+
+        if (completedLevels == null) {
+            logger.severe(ErrorMsgsEnum.LOAD_COMPLETED_LEVELS.getValue());
+            return;
+        }
+
+        updateButtonStyles(completedLevels.get(0), storyButtons, "Story");
+        updateButtonStyles(completedLevels.get(1), userButtons, "User");
+    }
+
+    public void show() {
+        if (!editorMode) {
+            setButtonsCompleted();
+        }
+        AppViewManager.get().update();
+    }
+
     @Override
     public void onResizeCanvas(double width, double height) {
         double fontSize = height / 30;
-        double buttonSize = Math.min(width / 12, height / 12); // square button
+        double buttonSize = Math.min(width / 12, height / 12);
 
         storyLabel.setFont(Font.font("Arial", fontSize * 1.5));
         userLabel.setFont(Font.font("Arial", fontSize * 1.5));
@@ -167,51 +191,13 @@ public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawa
 
         backButton.setPrefWidth(buttonSize * 2);
         backButton.setPrefHeight(buttonSize);
-        backButton.setStyle("-fx-font-size: " + (fontSize * 0.8) + "px;");
         backButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-size: " + (fontSize * 0.8) + "px;");
-
         contentLayout.setSpacing(height / 20);
-    }
-
-    private void updateButtonStyles(List<Integer> levelData, List<Button> buttons, String prefix) {
-        for (int i = 0; i < levelData.size(); i++) {
-            int levelNumber = levelData.get(i) - 1;
-            if (levelNumber < 0 || levelNumber >= buttons.size()) {
-                ErrorMsgsEnum.LOAD_INVALID_LEVEL_NAME.getValue(String.valueOf(levelNumber));
-                continue;
-            }
-            Button button = buttons.get(levelNumber);
-            if (button != null) {
-                button.setStyle("-fx-background-color: green; -fx-text-fill: white;");
-            } else {
-                logger.info(prefix + " level " + (levelNumber + 1));
-                ErrorMsgsEnum.LOAD_BUTTON_NOT_FOUND.getValue(prefix + " level " + (levelNumber + 1));
-            }
-        }
-    }
-
-    public void setButtonsCompleted(){
-        List<List<Integer>> completedLevels = JsonFileManager.getProfileLFromJsonFile(
-                FolderUtils.getProfilesPath() + "/" + profileName + "/_DATA.json"
-        );
-        if (completedLevels == null) {
-            ErrorMsgsEnum.LOAD_COMPLETED_LEVELS.getValue();
-            return;
-        }
-
-        updateButtonStyles(completedLevels.get(0), storyButtons, "Story");
-        updateButtonStyles(completedLevels.get(1), userButtons, "User");
-
     }
 
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-    }
-
-    public void show() {
-        if (!editorMode){setButtonsCompleted();}
-        AppViewManager.get().update();
     }
 }
