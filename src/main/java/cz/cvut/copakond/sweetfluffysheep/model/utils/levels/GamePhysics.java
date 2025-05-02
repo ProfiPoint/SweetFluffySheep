@@ -172,7 +172,7 @@ public class GamePhysics {
 
             if (!FreezeItem.isActive() && !RageItem.isActive()) {
                 for (Wolf enemy : enemies) {
-                    if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS())) {
+                    if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS()*2)) {
                         return PhisicsEventsEnum.SHEEP_KILLED;
                     }
                 }
@@ -180,7 +180,7 @@ public class GamePhysics {
 
             if (RageItem.isActive()){
                 for (Wolf enemy : enemies) {
-                    if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS())) {
+                    if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS()*2)) {
                         enemy.kill();
                     }
                 }
