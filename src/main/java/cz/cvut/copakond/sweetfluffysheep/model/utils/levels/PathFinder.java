@@ -73,6 +73,10 @@ public class PathFinder {
 
         List<Tile> tiles = level.getTiles();
         for (Tile tile : tiles) {
+            if (!tile.isWalkable()) {
+                continue;
+            }
+
             int x = (int) Math.round(tile.getPosition()[0]);
             int y = (int) Math.round(tile.getPosition()[1]);
 
@@ -218,6 +222,8 @@ public class PathFinder {
             return false;
         }
 
+        logger.info("Checking level...");
+        logger.info("Reason for failure: " + reasonForFailure);
         return check();
     }
 }
