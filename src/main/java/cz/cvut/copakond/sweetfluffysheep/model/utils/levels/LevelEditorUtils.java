@@ -6,6 +6,8 @@ import cz.cvut.copakond.sweetfluffysheep.model.items.ItemFactory;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.ItemEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.LevelEditorObjectsEnum;
+import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
+import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Goal;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
@@ -45,6 +47,7 @@ public class LevelEditorUtils {
         if (isNotTileAtPosition(position)) {
             Tile tile = new Tile(position, (int)((position[0] + position[1]) % 2 + 1) * 16, true);
             level.getTiles().add(tile);
+            SoundManager.playSound(SoundListEnum.ARROW);
         }
     }
 
@@ -56,6 +59,7 @@ public class LevelEditorUtils {
                 logger.info("Removing tile at position: " + position[0] + ", " + position[1]);
                 tiles.remove(object);
                 destroyObject(position);
+                SoundManager.playSound(SoundListEnum.ARROW_DEL);
             }
         }
     }
@@ -70,6 +74,7 @@ public class LevelEditorUtils {
         if (objectsInPosition.isEmpty()) {
             Wolf wolf = new Wolf(position, DirectionEnum.LEFT);
             wolves.add(wolf);
+            SoundManager.playSound(SoundListEnum.ENEMY_DOWN);
             logger.info("Adding wolf at position: " + position[0] + ", " + position[1]);
         } else {
             logger.info("Wolf already exists at position: " + position[0] + ", " + position[1]);
@@ -78,14 +83,17 @@ public class LevelEditorUtils {
 
     private static void addCoin(double[] position) {
         addItem(position, ItemEnum.COIN);
+        SoundManager.playSound(SoundListEnum.MONEY);
     }
 
     private static void addFire(double[] position) {
         addItem(position, ItemEnum.FIRE);
+        SoundManager.playSound(SoundListEnum.PRIZE);
     }
 
     private static void addRainbow(double[] position) {
         addItem(position, ItemEnum.RAINBOW);
+        SoundManager.playSound(SoundListEnum.PRIZE);
     }
 
     private static void addStart(double[] position) {
@@ -96,10 +104,12 @@ public class LevelEditorUtils {
         Start start = level.getStart();
         if (start == null) {
             level.setStart(new Start(position, DirectionEnum.RIGHT));
+            SoundManager.playSound(SoundListEnum.ARROW);
         } else if (samePosition(start.getPosition(), position)) {
             rotateObject(position);
         } else {
             start.setPosition(position);
+            SoundManager.playSound(SoundListEnum.ARROW);
         }
     }
 
@@ -111,10 +121,12 @@ public class LevelEditorUtils {
         Goal goal = level.getGoal();
         if (goal == null) {
             level.setGoal(new Goal(position, DirectionEnum.RIGHT));
+            SoundManager.playSound(SoundListEnum.ARROW);
         } else if (samePosition(goal.getPosition(), position)) {
             rotateObject(position);
         } else {
             goal.setPosition(position);
+            SoundManager.playSound(SoundListEnum.ARROW);
         }
     }
 
@@ -122,18 +134,21 @@ public class LevelEditorUtils {
         for (Wolf wolf : checkPosition(position, level.getEnemies())) {
             wolf.rotateCharacterLE();
             logger.info("Rotating wolf to " + wolf.getDirection());
+            SoundManager.playSound(SoundListEnum.ROTATE);
         }
 
         Start start = level.getStart();
         if (start != null && samePosition(start.getPosition(), position)) {
             start.rotateCharacterLE();
             logger.info("Rotating start to " + start.getDirection());
+            SoundManager.playSound(SoundListEnum.ROTATE);
         }
 
         Goal goal = level.getGoal();
         if (goal != null && samePosition(goal.getPosition(), position)) {
             goal.rotateCharacterLE();
             logger.info("Rotating goal to " + goal.getDirection());
+            SoundManager.playSound(SoundListEnum.ROTATE);
         }
     }
 
@@ -145,16 +160,19 @@ public class LevelEditorUtils {
         for (Item item : checkPosition(position, level.getItems())) {
             level.getItems().remove(item);
             logger.info("Removing item: " + item.getItemEffect());
+            SoundManager.playSound(SoundListEnum.DESTROY);
         }
 
         if (level.getStart() != null && samePosition(level.getStart().getPosition(), position)) {
             level.setStart(null);
             logger.info("Removing start");
+            SoundManager.playSound(SoundListEnum.DESTROY);
         }
 
         if (level.getGoal() != null && samePosition(level.getGoal().getPosition(), position)) {
             level.setGoal(null);
             logger.info("Removing goal");
+            SoundManager.playSound(SoundListEnum.DESTROY);
         }
     }
 

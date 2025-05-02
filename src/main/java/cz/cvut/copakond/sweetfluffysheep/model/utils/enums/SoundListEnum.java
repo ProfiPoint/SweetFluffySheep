@@ -1,27 +1,29 @@
 package cz.cvut.copakond.sweetfluffysheep.model.utils.enums;
 
 public enum SoundListEnum {
-    MENU_THEME("music/menu.wav", false,true, 1, 100),
-    GAME_THEME("music/game.wav", false,true, 1, 100),
-    EDITOR_THEME("music/editor.wav", false,true, 1, 100),
-    NONE("", false,true, 1, 100),
+    MENU_THEME("music/menu.wav", false,true, 1, 75),
+    GAME_THEME("music/game.wav", false,true, 1, 75),
+    EDITOR_THEME("music/editor.wav", false,true, 1, 75),
+    NONE("", false,true, 1, 75),
 
-    ARROW("sfx/arrow.wav", true,false, 1, 100),
-    ARROW_DEL("sfx/arrow-del.wav", true,false, 1, 100),
-    ENEMY_DOWN("sfx/enemy-down.wav", true,false, 1, 100),
-    FINISH("sfx/finish.wav", true,false, 1, 100),
-    GAME_OVER("sfx/game-over.wav", true,false, 1, 100),
-    GOAL_UNLOCKED("sfx/goal-unlocked.wav", true,false, 1, 100),
-    HERO_DOWN("sfx/hero-down_{i}.wav", true,false, 5, 100),
-    HERO_ENEMY_COLLISION("sfx/hero-enemy-collision.wav", true,false, 1, 100),
-    HERO_FINISH("sfx/hero-finish.wav", true,false, 1, 100),
-    HOLD("sfx/hold.wav", true,true, 1, 100),
-    IMMORTAL("sfx/immortal.wav", true,true, 1, 100),
-    MONEY("sfx/money.wav", true,false, 1, 100),
-    MOUSE_CLICK("sfx/mouse-click.wav", true,false, 1, 100),
-    PRIZE("sfx/prize.wav", true,false, 1, 100),
-    PROFILE_CREATED("sfx/profile-created.wav", true,false, 1, 100),
-    TIME_OUT("sfx/time-out.wav", true,false, 1, 100);
+    ARROW("sfx/arrow.wav", true,false, 1, 75),
+    ARROW_DEL("sfx/arrow-del.wav", true,false, 1, 75),
+    DESTROY("sfx/destroy.wav", true,false, 1, 75),
+    ENEMY_DOWN("sfx/enemy-down.wav", true,false, 1, 75),
+    FINISH("sfx/finish.wav", true,false, 1, 75),
+    GAME_OVER("sfx/game-over.wav", true,false, 1, 75),
+    GOAL_UNLOCKED("sfx/goal-unlocked.wav", true,false, 1, 75),
+    HERO_DOWN("sfx/hero-down_{i}.wav", true,false, 5, 75),
+    HERO_ENEMY_COLLISION("sfx/hero-enemy-collision.wav", true,false, 1, 75),
+    HERO_FINISH("sfx/hero-finish.wav", true,false, 1, 75),
+    HOLD("sfx/hold.wav", true,true, 1, 75),
+    IMMORTAL("sfx/immortal.wav", true,true, 1, 75),
+    MONEY("sfx/money.wav", true,false, 1, 75),
+    MOUSE_CLICK("sfx/mouse-click.wav", true,false, 1, 75),
+    PRIZE("sfx/prize.wav", true,false, 1, 75),
+    PROFILE_CREATED("sfx/profile-created.wav", true,false, 1, 75),
+    ROTATE("sfx/rotate.wav", true,false, 1, 75),
+    TIME_OUT("sfx/time-out.wav", true,false, 1, 75);
 
     private final String fileName;
     private final boolean isSFX;

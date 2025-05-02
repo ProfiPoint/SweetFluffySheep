@@ -134,7 +134,7 @@ public class AppViewManager {
             }
         });
 
-        Slider fpsSlider = createSlider(fps[0], 1, 240, 60, fpsLabel, "FPS", newVal -> {
+        Slider fpsSlider = createSlider(fps[0], 0, 240, 60, fpsLabel, "FPS", newVal -> {
             if (newVal != fps[0]) {
                 restartWarning.setTextFill(Color.RED);
             } else {
@@ -172,7 +172,7 @@ public class AppViewManager {
             musicVolume = (int) musicVolumeSlider.getValue();
             sfxVolume = (int) sfxVolumeSlider.getValue();
             boolean hasFpsChanged = fps[0] != (int) fpsSlider.getValue();
-            fps[0] = (int) fpsSlider.getValue();
+            fps[0] = Math.max(1,(int) fpsSlider.getValue());
             boolean isFullscreen = fullscreenCheckBox.isSelected();
             String path = profilesPath + "/" + ProfileManager.getCurrentProfile() + "/_SETTINGS.json";
             if (!JsonFileManager.writeSettingsToJson(path, musicVolume, sfxVolume, fps[0], isFullscreen)) {
