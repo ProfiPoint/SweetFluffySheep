@@ -27,7 +27,21 @@ public class Goal extends GameObject {
     }
 
     public static DirectionEnum getGlobalDirection() {
-        return globalDirection;
+        // because the texture is rotated 90 degrees
+        switch (globalDirection) {
+            case UP -> {
+                return DirectionEnum.LEFT;
+            }
+            case LEFT -> {
+                return DirectionEnum.DOWN;
+            }
+            case RIGHT -> {
+                return DirectionEnum.RIGHT;
+            }
+            default -> {
+                return DirectionEnum.UP;
+            }
+        }
     }
 
     public DirectionEnum getDirection() {
