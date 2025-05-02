@@ -133,6 +133,14 @@ public class Level {
         return Sheep.getSheepAlive() - levelInfo.get("goalSheep") + 1;
     }
 
+    public int getSheepLeft() {
+        return Sheep.getSheepAlive() - Sheep.getSheepInGoal();
+    }
+
+    public int[] getArrowsInfo() {
+        return new int[]{arrows.size(), levelInfo.get("maxArrows")};
+    }
+
     public String[] getLevelData() {
         String isLevelEditor = this.isLevelEditor ? "true" : "false";
         String isStoryLevel = this.isStoryLevel ? "true" : "false";

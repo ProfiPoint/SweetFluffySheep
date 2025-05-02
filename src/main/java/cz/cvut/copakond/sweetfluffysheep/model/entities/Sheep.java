@@ -29,6 +29,10 @@ public class Sheep extends Character {
         return counter;
     }
 
+    public static int getSheepInGoal() {
+        return sheepInGoal;
+    }
+
     public static void sheepEnteredGoal(boolean entered) {
         if (entered) {
             sheepInGoal++;

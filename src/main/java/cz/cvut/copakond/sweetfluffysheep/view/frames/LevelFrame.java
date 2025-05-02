@@ -40,6 +40,8 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
     private final Button speedButton = new Button("1x");
     private final Label coinsLabel = new Label("0/10");
     private final Label lifesLabel = new Label("3♥");
+    private final Label sheepLabel = new Label("10🐑");
+    private final Label arrowsLabel = new Label("0/20⬆");
     private final Label timeLabel = new Label("180s");
     private final Button pauseButton = new Button("Pause");
     private final Button retryButton = new Button("Retry");
@@ -155,7 +157,12 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         int[] coinsInfo = gameLoop.getLevel().getCoinsLeftAndCoins();
         coinsLabel.setText(coinsInfo[1]-coinsInfo[0] + "/" + coinsInfo[1]);
         lifesLabel.setText(gameLoop.getLevel().getLives() + "♥");
+        sheepLabel.setText(gameLoop.getLevel().getSheepLeft() + "🐑");
         timeLabel.setText(gameLoop.getLevel().getTimeLeft() + "s");
+
+        int[] arrowsInfo = gameLoop.getLevel().getArrowsInfo();
+        String arrowsText = arrowsInfo[0] + "/" + arrowsInfo[1];
+        arrowsLabel.setText(arrowsText + "⬆");
     }
 
     private void drawObject(GraphicsContext gc, GameObject object) {
@@ -234,11 +241,19 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
 
         coinsLabel.setStyle("-fx-text-fill: gold; -fx-font-weight: bold;");
         lifesLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        sheepLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        arrowsLabel.setStyle("-fx-text-fill: #0077ff; -fx-font-weight: bold;");
         timeLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
 
+        coinsLabel.setMinWidth(60); coinsLabel.setPrefWidth(60);
+        lifesLabel.setMinWidth(60); lifesLabel.setPrefWidth(60);
+        sheepLabel.setMinWidth(60); sheepLabel.setPrefWidth(60);
+        arrowsLabel.setMinWidth(60); arrowsLabel.setPrefWidth(60);
+        timeLabel.setMinWidth(60); timeLabel.setPrefWidth(60);
+
         javafx.scene.Node[] nodes = {
-                speedButton, coinsLabel, lifesLabel, timeLabel,
-                pauseButton, retryButton, settingsButton, menuButton
+                speedButton, coinsLabel, lifesLabel, sheepLabel, arrowsLabel,
+                timeLabel, pauseButton, retryButton, settingsButton, menuButton
         };
 
         for (javafx.scene.Node node : nodes) {
