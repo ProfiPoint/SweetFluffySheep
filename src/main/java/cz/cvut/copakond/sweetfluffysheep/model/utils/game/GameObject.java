@@ -13,14 +13,14 @@ public class GameObject implements IGameObject {
     private static final double COLLISION_HITBOX_PRECISION = 0.1; // 0.1/fps tiles precision
 
     protected boolean visible;
-    protected int renderPriority;
+    protected final int renderPriority;
     protected double[] position;
 
     protected List<Image> textures;
     protected List<int[]> textureSizes;
     protected int textureIdNow;
     protected static GameStatusEnum gameStatus = GameStatusEnum.RUNNING;
-    protected static TextureManager textureManager = new TextureManager();
+    protected final static TextureManager textureManager = new TextureManager();
 
     public GameObject(String textureName, double[] position, int renderPriority) {
         this.position = position;

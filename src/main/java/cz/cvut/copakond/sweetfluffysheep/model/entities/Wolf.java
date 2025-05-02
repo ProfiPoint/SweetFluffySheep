@@ -37,11 +37,6 @@ public class Wolf extends Character {
         return this.textures.get(this.textureIdNow + 100);
     }
 
-    @Override
-    public void resetLevel() {
-        super.resetLevel();
-    }
-
     public void kill() {
         super.kill();
         SoundManager.playSound(SoundListEnum.HERO_ENEMY_COLLISION);

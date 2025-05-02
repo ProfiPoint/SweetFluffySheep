@@ -25,10 +25,6 @@ public class Sheep extends Character {
 
     public static void setGoalSheep(int goal) {goalSheep = goal;}
 
-    public static int getGoalSheep() {
-        return goalSheep;
-    }
-
     public static int getSheepAlive() {
         return counter;
     }

@@ -5,6 +5,4 @@ public enum PathFinderEnum {
     TILE,
     VISITED,
     COIN,
-    START,
-    GOAL,
 }

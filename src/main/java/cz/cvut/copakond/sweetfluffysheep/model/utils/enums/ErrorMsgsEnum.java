@@ -16,7 +16,6 @@ public enum ErrorMsgsEnum {
     TEXTURE_MISSING("Texture missing or corrupted."),
     TEXTURE_MISSING_IS_MISSING("Missing texture of missing 'missing_texture.png' is missing or corrupted."),
     TEXTURE_UNKNOWN_NAME("Unknown texture name in classes"),
-    TEXTURE_OUT_OF_INDEX("Texture out of index."),
 
     // Physics
     PHYSICS_ALREADY_INIT("PHYSICS: Physics already initialized."),
@@ -34,7 +33,6 @@ public enum ErrorMsgsEnum {
     LOAD_VALUES4_LIMIT("LEVEL LOAD: Values out of range [x,y,itemId,duration], x, y must be lower than the map size and itemId must be a valid item id."),
     LOAD_VALUES3_LIMIT("LEVEL LOAD: Values out of range [x,y,orientation], x, y must be lower than the map size and orientation must be 0, 90, 180 or 270."),
     LOAD_VALUES3path_LIMIT("LEVEL LOAD: Values out of range [x,y,pathTextureId], x, y must be lower than the map size and pathTextureId must be a valid path texture id."),
-    LOAD_VALUES2_LIMIT("LEVEL LOAD: Values out of range [x,y], x, y must be lower than the map size"),
     LOAD_LIST_IntIntOrientation("LEVEL LOAD: Invalid list of integers. Must be in format [int, int, orientation]."),
     LOAD_LIST_IntInt("LEVEL LOAD: Invalid list of integers. Must be in format [int, int]."),
     LOAD_EMPTY_LIST("LEVEL LOAD: The given list/dictionary cannot be empty."),

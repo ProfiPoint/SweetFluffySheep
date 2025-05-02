@@ -66,26 +66,6 @@ public class TextureManager {
         return textures;
     }
 
-    public List<Image> getTexture(String objectName, int[] textureSelections) {
-        if (loadedTexturesList.containsKey(objectName)) {
-            return loadedTexturesList.get(objectName);
-        }
-
-        TextureListEnum textureListEnum = TextureListEnum.fromValue(objectName);
-        String[] textureNames = textureListEnum.getTextures();
-        List<Image> textures = new ArrayList<>();
-        for (int index : textureSelections) {
-            if (index >= 0 && index < textureNames.length + 1) {
-                String textureName = textureNames[index - 1];
-                textures.add(getLoadedTexture(textureName));
-            } else {
-                logger.severe(ErrorMsgsEnum.TEXTURE_OUT_OF_INDEX.getValue(objectName + " " + index));
-            }
-        }
-        loadedTexturesList.put(objectName, textures);
-        return textures;
-    }
-
     public List<int[]> getTextureSizes(List<Image> textures, String textureName) {
         if (loadedTexturesSizes.containsKey(textureName)) {
             return loadedTexturesSizes.get(textureName);

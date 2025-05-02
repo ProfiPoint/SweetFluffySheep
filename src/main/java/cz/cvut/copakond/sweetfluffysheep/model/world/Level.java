@@ -121,10 +121,6 @@ public class Level {
         return enemies;
     }
 
-    public List<Sheep> getSheep() {
-        return sheep;
-    }
-
     public List<Item> getItems() {
         return items;
     }
