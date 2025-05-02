@@ -1,6 +1,7 @@
 package cz.cvut.copakond.sweetfluffysheep.model.utils.json;
 
 import cz.cvut.copakond.sweetfluffysheep.model.entities.Wolf;
+import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Goal;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Start;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Tile;
@@ -72,7 +73,7 @@ public class SaveManager {
         for (Item item : items) {
             double[] itemPos = item.getPosition();
             itemsArray.put(new JSONArray(new int[]{(int)Math.round(itemPos[0]), (int)Math.round(itemPos[1]),
-                    item.getItemEffect().ordinal(), item.getDurationTicks()}));
+                    item.getItemEffect().ordinal(), item.getDurationTicks() / GameObject.getFPS()})); // duration in seconds
         }
         data.put("items", itemsArray);
     }
