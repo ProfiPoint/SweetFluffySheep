@@ -104,7 +104,7 @@ public class GamePhysics {
     }
 
     static boolean isCollidingWithWall(int currentTilePos, double characterPos, int[] targetTilePos) {
-        return getDistanceOnePoint(currentTilePos, characterPos) <= collisionLimit * 2 && tileNotExists(targetTilePos);
+        return getDistanceOnePoint(currentTilePos, characterPos) <= collisionLimit * 4 && tileNotExists(targetTilePos);
     }
 
     static int[] getTargetTilePosition(DirectionEnum direction, Character character) {

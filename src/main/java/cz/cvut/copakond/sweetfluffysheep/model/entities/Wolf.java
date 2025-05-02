@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 public class Wolf extends Character {
     private static final Logger logger = Logger.getLogger(Wolf.class.getName());
-
     private boolean canMove = true;
 
     public Wolf(double[] position, DirectionEnum direction) {
