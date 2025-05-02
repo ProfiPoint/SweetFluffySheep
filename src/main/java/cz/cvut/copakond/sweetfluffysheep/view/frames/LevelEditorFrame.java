@@ -104,7 +104,6 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
                 appCanvasSize, canvasSize,
                 gameLoop.getLevel()
         );
-
         if (tileClick[0] == -1) return;
 
         LevelEditorUtils.addObjectToLevel(

@@ -28,6 +28,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;

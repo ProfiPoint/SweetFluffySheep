@@ -32,9 +32,15 @@ public class LevelFrameUtils {
                 (sceneSize[1] * LEVEL_BOX_HEIGHT_COEFF) / mapSize[1]
         };
 
-        return new int[] {
+        int[] position = new int[] {
                 (int) Math.floor(relativeClick[0] / tileSize[0]),
                 (int) Math.floor(relativeClick[1] / tileSize[1])
         };
+
+        if (position[0] < 0 || position[1] < 0 ||
+                position[0] >= mapSize[0] || position[1] >= mapSize[1]) {
+            return new int[] { -1, -1 };
+        }
+        return position;
     }
 }
