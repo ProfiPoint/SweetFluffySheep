@@ -78,6 +78,7 @@ public class LevelEditorUtils {
             logger.info("Adding wolf at position: " + position[0] + ", " + position[1]);
         } else {
             logger.info("Wolf already exists at position: " + position[0] + ", " + position[1]);
+            rotateObject(position);
         }
     }
 
