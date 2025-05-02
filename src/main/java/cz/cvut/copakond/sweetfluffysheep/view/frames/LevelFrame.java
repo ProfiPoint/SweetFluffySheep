@@ -322,7 +322,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
                 totalScore = (long) (100*totalScore * (gameLoop.getLevel().getLevelInfo().get("timeLimit")/totalTime));
 
                 descriptionLabel.setText("Coins collected: " + coinsCollected + "\n" +
-                        "Sheep saved:" + sheepInGoal + "\n" +
+                        "Sheep saved: " + sheepInGoal + "\n" +
                         "Wolves killed: " + enemiesKilled + "\n" +
                         "Sheep killed: " + sheepKilled + "\n" +
                         "Level completed in: " + String.format("%.3f", totalTime) + " seconds\n" +
