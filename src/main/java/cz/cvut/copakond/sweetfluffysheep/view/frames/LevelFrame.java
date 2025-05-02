@@ -6,9 +6,8 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IDrawableFrame;
+import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
 import cz.cvut.copakond.sweetfluffysheep.view.interfaces.ILevelFrame;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IResizableFrame;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.GameLoop;
@@ -30,7 +29,7 @@ import javafx.stage.Stage;
 import java.util.Comparator;
 import java.util.logging.Logger;
 
-public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, IDrawableFrame, IClickListener {
+public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame, IClickListener {
     private static final Logger logger = Logger.getLogger(LevelFrame.class.getName());
 
     private final GameLoop gameLoop;

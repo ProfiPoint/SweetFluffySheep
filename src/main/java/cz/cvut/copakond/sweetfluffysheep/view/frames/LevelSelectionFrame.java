@@ -9,8 +9,7 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.ProfileManager;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IDrawableFrame;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IResizableFrame;
+import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class LevelSelectionFrame extends VBox implements IResizableFrame, IDrawableFrame {
+public class LevelSelectionFrame extends VBox implements IInteractableFrame {
     private static final Logger logger = Logger.getLogger(LevelSelectionFrame.class.getName());
     private static String profileName;
 

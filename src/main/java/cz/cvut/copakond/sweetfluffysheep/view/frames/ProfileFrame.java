@@ -7,8 +7,7 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.ProfileManager;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IDrawableFrame;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IResizableFrame;
+import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -19,7 +18,7 @@ import javafx.scene.text.Font;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class ProfileFrame extends VBox implements IResizableFrame, IDrawableFrame {
+public class ProfileFrame extends VBox implements IInteractableFrame {
     private static final Logger logger = Logger.getLogger(ProfileFrame.class.getName());
 
     private final Label titleLabel = new Label("Select Profile");

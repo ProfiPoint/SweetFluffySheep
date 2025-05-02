@@ -12,9 +12,8 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.GameLoop;
 import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IClickListener;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.levels.LevelFrameUtils;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IDrawableFrame;
+import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
 import cz.cvut.copakond.sweetfluffysheep.view.interfaces.ILevelFrame;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IResizableFrame;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -32,7 +31,7 @@ import java.io.File;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFrame, IDrawableFrame, IClickListener {
+public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractableFrame, IClickListener {
     private static final Logger logger = Logger.getLogger(LevelEditorFrame.class.getName());
 
     private final GameLoop gameLoop;

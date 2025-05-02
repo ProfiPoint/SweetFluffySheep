@@ -6,8 +6,7 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IDrawableFrame;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IResizableFrame;
+import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -17,7 +16,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.logging.Logger;
 
-public class MenuFrame extends VBox implements IResizableFrame, IDrawableFrame {
+public class MenuFrame extends VBox implements IInteractableFrame {
     private static final Logger logger = Logger.getLogger(MenuFrame.class.getName());
 
     private final Label logo = new Label("SWEET FLUFFY SHEEP");

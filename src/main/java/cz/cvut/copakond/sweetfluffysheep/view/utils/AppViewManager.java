@@ -6,8 +6,7 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.ProfileManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.json.JsonFileManager;
 import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IClickListener;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IDrawableFrame;
-import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IResizableFrame;
+import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -250,7 +249,7 @@ public class AppViewManager {
         overlay.setPrefSize(w, h);
         overlay.setMaxSize(w, h);
 
-        if (currentFrame instanceof IResizableFrame frame) {
+        if (currentFrame instanceof IInteractableFrame frame) {
             frame.onResizeCanvas(w, h);
         }
 
@@ -266,7 +265,7 @@ public class AppViewManager {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        if (currentFrame instanceof IDrawableFrame frame) {
+        if (currentFrame instanceof IInteractableFrame frame) {
             frame.draw(gc);
         }
     }
