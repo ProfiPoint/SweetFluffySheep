@@ -136,7 +136,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         if (gameStatus == GameStatusEnum.WIN) {
             gameLoop.getLevel().Completed(); // mark the level as completed
             showPopup("You Win!", true);
-        } else if (gameStatus == GameStatusEnum.LOSE || gameLoop.getLevel().getTimeLeft() <= 0) {
+        } else if (gameStatus == GameStatusEnum.LOSE) {
             showPopup("You Lose!", false);
         }
     }

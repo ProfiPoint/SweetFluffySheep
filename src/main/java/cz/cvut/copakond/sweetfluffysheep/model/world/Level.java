@@ -276,7 +276,13 @@ public class Level {
 
                 if (timeLeft <= 0) {
                     timeLeft = 0;
-                    GameObject.setGameStatusLose();
+                    if (Sheep.getSheepInGoal() >= levelInfo.get("goalSheep")) {
+                        logger.info("You win!");
+                        GameObject.setGameStatus(GameStatusEnum.WIN);
+                    } else {
+                        logger.info("Game Over - Time is up");
+                        GameObject.setGameStatus(GameStatusEnum.LOSE);
+                    }
                 }
 
                 if (timeLeft/GameObject.getFPS() <= 6 && timeLeft % GameObject.getFPS() == 0 && timeLeft != 0) {

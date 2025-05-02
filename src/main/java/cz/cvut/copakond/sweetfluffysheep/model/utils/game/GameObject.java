@@ -34,8 +34,8 @@ public class GameObject implements IGameObject {
         return gameStatus;
     }
 
-    public static void setGameStatusLose() {
-        gameStatus = GameStatusEnum.LOSE;
+    public static void setGameStatus(GameStatusEnum gameStatus) {
+        GameObject.gameStatus = gameStatus;
     }
 
     public static int getFPS() {
