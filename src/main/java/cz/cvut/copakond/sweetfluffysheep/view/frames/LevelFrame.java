@@ -161,8 +161,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         timeLabel.setText(gameLoop.getLevel().getTimeLeft() + "s");
 
         int[] arrowsInfo = gameLoop.getLevel().getArrowsInfo();
-        String arrowsText = arrowsInfo[0] + "/" + arrowsInfo[1];
-        arrowsLabel.setText(arrowsText + "⬆");
+        arrowsLabel.setText(arrowsInfo[0] + "/" + arrowsInfo[1] + "⬆");
     }
 
     private void drawObject(GraphicsContext gc, GameObject object) {
@@ -294,6 +293,15 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
         Label messageLabel = new Label(message);
         messageLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;");
 
+        Label descriptionLabel = new Label("");
+        descriptionLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: lightgray;");
+        descriptionLabel.setAlignment(Pos.CENTER);
+        descriptionLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        descriptionLabel.setWrapText(true);
+        descriptionLabel.setMaxWidth(800);
+        descriptionLabel.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        descriptionLabel.setMinHeight(Region.USE_PREF_SIZE);
+
         Button backToMenuButton = new Button(isEditor ? "Retry" : "Back to Menu");
         VBox buttonBox = new VBox(10);
         buttonBox.setAlignment(Pos.CENTER);
@@ -303,8 +311,24 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
 
             if (isEditor) {
                 messageLabel.setText("Level Accepted!");
+                descriptionLabel.setText("Level has been saved,\nyou can edit it any time later");
                 nextLevelButton.setOnAction(e -> switchToEditor(popupStage));
             } else {
+                int coinsCollected = gameLoop.getLevel().getCoinsLeftAndCoins()[1];
+                int sheepInGoal = gameLoop.getLevel().getSheepInGoal();
+                int sheepKilled = gameLoop.getLevel().getLevelInfo().get("sheep") - sheepInGoal;
+                int enemiesKilled = gameLoop.getLevel().getEnemiesKilled();
+                float totalTime = gameLoop.getLevel().getTimeElapsed();
+                long totalScore = coinsCollected + sheepInGoal * 10L - sheepKilled * 20L + enemiesKilled * 20L;
+                totalScore = (long) (100*totalScore * (gameLoop.getLevel().getLevelInfo().get("timeLimit")/totalTime));
+
+                descriptionLabel.setText("Coins collected: " + coinsCollected + "\n" +
+                        "Sheep saved:" + sheepInGoal + "\n" +
+                        "Wolves killed: " + enemiesKilled + "\n" +
+                        "Sheep killed: " + sheepKilled + "\n" +
+                        "Level completed in: " + String.format("%.3f", totalTime) + " seconds\n" +
+                        "TOTAL SCORE: " + String.format("%,d", totalScore));
+
                 nextLevelButton.setOnAction(e -> {
                     gameLoop.pause();
                     popupStage.close();
@@ -332,8 +356,15 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
 
             if (isEditor) {
                 messageLabel.setText("Level Not Accepted!");
+                descriptionLabel.setText("To save it properly,\nyou need to fix to complete the level to prove it is playable");
                 retryLevelButton.setOnAction(e -> switchToEditor(popupStage));
             } else {
+                if (gameLoop.getLevel().getTimeLeft() <= 0) {
+                    descriptionLabel.setText("You have run out of time,\nbe faster next time");
+                } else if (gameLoop.getLevel().getLives() <= 0) {
+                    descriptionLabel.setText("You have lost all your lives,\nyou don't have enough sheep to complete the level");
+                }
+
                 retryLevelButton.setOnAction(e -> {
                     popupStage.close();
                     resetLevel();
@@ -352,12 +383,12 @@ public class LevelFrame extends VBox implements ILevelFrame, IResizableFrame, ID
             buttonBox.getChildren().addAll(backToMenuButton, retryLevelButton);
         }
 
-        VBox popupLayout = new VBox(20, messageLabel, buttonBox);
+        VBox popupLayout = new VBox(20, messageLabel, descriptionLabel, buttonBox);
         popupLayout.setPadding(new Insets(20));
         popupLayout.setAlignment(Pos.CENTER);
         popupLayout.setStyle("-fx-background-color: #333; -fx-border-color: white; -fx-border-width: 2px;");
 
-        Scene popupScene = new Scene(popupLayout, 300, 200);
+        Scene popupScene = new Scene(popupLayout, 350, 275);
         popupStage.setScene(popupScene);
         popupStage.setResizable(false);
         popupStage.setOnCloseRequest(Event::consume);

@@ -137,6 +137,20 @@ public class Level {
         return Sheep.getSheepAlive() - Sheep.getSheepInGoal();
     }
 
+    public int getSheepInGoal() {
+        return Sheep.getSheepInGoal();
+    }
+
+    public int getEnemiesKilled() {
+        int killed = 0;
+        for (Wolf enemy : enemies) {
+            if (!enemy.isAlive()) {
+                killed++;
+            }
+        }
+        return killed;
+    }
+
     public int[] getArrowsInfo() {
         return new int[]{arrows.size(), levelInfo.get("maxArrows")};
     }
@@ -145,6 +159,10 @@ public class Level {
         String isLevelEditor = this.isLevelEditor ? "true" : "false";
         String isStoryLevel = this.isStoryLevel ? "true" : "false";
         return new String[]{levelName, isLevelEditor, isStoryLevel};
+    }
+
+    public float getTimeElapsed() {
+        return (float) (levelInfo.get("timeLimit") * GameObject.getFPS() - timeLeft) / GameObject.getFPS();
     }
 
     public static void setLevelPath(String p) {
@@ -208,7 +226,7 @@ public class Level {
         if (playerInfo.get("creator") == null || playerInfo.get("creatorUpdated") == null) return false;
 
         levelInfo.put("timeLimit", lm.getIntLimit("timeLimit", 60 * 60 * 24));
-        levelInfo.put("sheep", lm.getIntLimit("sheep", 1000));
+        levelInfo.put("sheep", lm.getIntLimit("sheep", 5000));
         levelInfo.put("maxArrows", Math.min(lm.getInt("maxArrows"), mapSize[0] * mapSize[1]));
         levelInfo.put("creationTime", lm.getInt("creationTime"));
         levelInfo.put("updatedTime", lm.getInt("updatedTime"));
