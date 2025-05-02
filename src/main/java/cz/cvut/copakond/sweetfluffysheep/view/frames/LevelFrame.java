@@ -4,6 +4,7 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.GameStatusEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
+import cz.cvut.copakond.sweetfluffysheep.model.utils.files.TextureManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
 import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
@@ -19,6 +20,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -27,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame, IClickListener {
@@ -142,9 +145,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
 
     public void drawLevelObjects() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        gc.setFill(Color.WHEAT);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.drawImage(GameObject.getTextureManager().getTexture("background").getFirst(), 0, 0, canvas.getWidth(), canvas.getHeight());
 
         for (GameObject object : gameLoop.getObjects()) {
             if (object.isVisible()) {

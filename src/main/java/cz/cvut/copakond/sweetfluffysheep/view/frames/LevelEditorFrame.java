@@ -125,9 +125,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
 
     public void drawLevelObjects() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        gc.setFill(Color.WHEAT);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.drawImage(GameObject.getTextureManager().getTexture("background").getFirst(), 0, 0, canvas.getWidth(), canvas.getHeight());
 
         for (GameObject object : gameLoop.getObjects()) {
             if (object.isVisible()) {

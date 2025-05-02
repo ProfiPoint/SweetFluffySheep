@@ -50,6 +50,8 @@ public class GameObject implements IGameObject {
         return COLLISION_HITBOX_PRECISION;
     }
 
+    public static TextureManager getTextureManager() {return textureManager;}
+
     public boolean isVisible() {
         return this.visible;
     }
