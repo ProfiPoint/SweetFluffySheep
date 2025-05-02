@@ -112,6 +112,7 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
                     return;
                 }
 
+                levelButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
                 if (editorMode) {
                     AppViewManager.get().switchTo(new LevelEditorFrame(level));
                 } else {
