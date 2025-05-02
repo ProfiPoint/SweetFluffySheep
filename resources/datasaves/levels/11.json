@@ -1,11 +1,11 @@
 {
-  "updatedTime": 29103480,
+  "updatedTime": 29103651,
   "creator": "ProfiPoint",
-  "goal": [5,0,0],
+  "goal": [5,0,90],
   "mapSize": [24,12],
   "creationTime": 0,
   "maxArrows": 1,
-  "defaultLevel": true,
+  "defaultLevel": false,
   "start": [21,0,270],
   "enemies": {
     "18-8": 270,
@@ -59,7 +59,6 @@
     "13-6": 0,
     "17-1": 180,
     "13-3": 180,
-    "6-6": 0,
     "13-10": 0,
     "6-8": 0,
     "7-10": 0,
@@ -234,9 +233,9 @@
   "creatorUpdated": "ProfiPoint",
   "goalSheep": 200,
   "items": [
-    [21,1,2,36000],
-    [5,5,0,36000],
-    [5,6,1,36000]
+    [5,5,0,1],
+    [21,1,2,10],
+    [6,6,1,10]
   ],
   "sheep": 200
 }

@@ -1,7 +1,7 @@
 {
-  "updatedTime": 29084541,
+  "updatedTime": 0,
   "creator": "ProfiPoint",
-  "goal": [5,0,0],
+  "goal": [5,0,90],
   "mapSize": [24,12],
   "creationTime": 0,
   "maxArrows": 20,
@@ -11,7 +11,6 @@
     "5-2": 270
   },
   "timeLimit": 180,
-  "sheep": 8,
   "tiles": {
     "0-1": 2,
     "1-1": 1,
@@ -31,12 +30,13 @@
     "5-2": 2,
     "5-3": 1
   },
+  "creatorUpdated": "",
   "goalSheep": 8,
-  "creatorUpdated": "ProfiPoint",
   "items": [
     [5,3,0,15],
     [4,3,0,15],
     [2,2,1,15],
     [3,2,2,15]
-  ]
+  ],
+  "sheep": 8
 }

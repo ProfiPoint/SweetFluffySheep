@@ -5,7 +5,7 @@
   "mapSize": [24,12],
   "creationTime": 0,
   "maxArrows": 20,
-  "defaultLevel": true,
+  "defaultLevel": false,
   "start": [21,0,270],
   "enemies": {
 
@@ -60,10 +60,10 @@
   "creatorUpdated": "ProfiPoint",
   "goalSheep": 1,
   "items": [
-    [12,4,0,2160000],
-    [13,5,0,2160000],
-    [14,4,0,2160000],
-    [13,3,0,2160000]
+    [12,4,0,1],
+    [13,5,0,1],
+    [14,4,0,1],
+    [13,3,0,1]
   ],
   "sheep": 1
 }
