@@ -5,6 +5,7 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.PhisicsEventsEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.RenderPriorityEnums;
+import cz.cvut.copakond.sweetfluffysheep.model.world.Goal;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
 import javafx.scene.image.Image;
 
@@ -97,6 +98,7 @@ public class Character extends GameObject implements ICharacter {
                 // do not rotate or get affected by arrows, after goal
                 if (previousEvent != PhisicsEventsEnum.IN_GOAL) {
                     Sheep.sheepEnteredGoal(true);
+                    this.direction = Goal.getGlobalDirection();
                 }
                 break;
             case ROTATION_OPPOSITE:

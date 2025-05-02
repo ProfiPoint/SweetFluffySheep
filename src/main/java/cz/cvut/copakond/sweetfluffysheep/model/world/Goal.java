@@ -18,10 +18,16 @@ public class Goal extends GameObject {
     private boolean locked = true;
     private boolean lockedTexture = true;
     private DirectionEnum direction;
+    private static DirectionEnum globalDirection;
 
     public Goal(double[] position, DirectionEnum orientation) {
         super("goal", position, RenderPriorityEnums.ARROW.getValue());
         this.direction = orientation;
+        globalDirection = orientation;
+    }
+
+    public static DirectionEnum getGlobalDirection() {
+        return globalDirection;
     }
 
     public DirectionEnum getDirection() {
@@ -34,6 +40,7 @@ public class Goal extends GameObject {
 
     public void rotateCharacterLE(){
         this.direction = this.direction.next();
+        globalDirection = this.direction;
     }
 
     // to show the unlocked goal texture in level editor
