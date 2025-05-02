@@ -14,8 +14,8 @@ public class ItemFactory {
     // item register of types and their corresponding classes
     static {
         itemMap.put(ItemEnum.COIN, Coin.class);
-        itemMap.put(ItemEnum.FIRE, FireItem.class);
-        itemMap.put(ItemEnum.RAINBOW, RainbowItem.class);
+        itemMap.put(ItemEnum.FREEZE, FreezeItem.class);
+        itemMap.put(ItemEnum.RAGE, RageItem.class);
     }
 
     public static IItem createItem(ItemEnum itemEnum, double[] position, int duration) {

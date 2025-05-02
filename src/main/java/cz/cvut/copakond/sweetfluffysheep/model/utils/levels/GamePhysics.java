@@ -3,9 +3,9 @@ package cz.cvut.copakond.sweetfluffysheep.model.utils.levels;
 import cz.cvut.copakond.sweetfluffysheep.model.entities.Character;
 import cz.cvut.copakond.sweetfluffysheep.model.entities.Wolf;
 import cz.cvut.copakond.sweetfluffysheep.model.entities.Sheep;
-import cz.cvut.copakond.sweetfluffysheep.model.items.FireItem;
+import cz.cvut.copakond.sweetfluffysheep.model.items.FreezeItem;
 import cz.cvut.copakond.sweetfluffysheep.model.items.Item;
-import cz.cvut.copakond.sweetfluffysheep.model.items.RainbowItem;
+import cz.cvut.copakond.sweetfluffysheep.model.items.RageItem;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.*;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
 import cz.cvut.copakond.sweetfluffysheep.model.world.*;
@@ -170,7 +170,7 @@ public class GamePhysics {
                 return PhisicsEventsEnum.IN_GOAL;
             }
 
-            if (!FireItem.isActive() && !RainbowItem.isActive()) {
+            if (!FreezeItem.isActive() && !RageItem.isActive()) {
                 for (Wolf enemy : enemies) {
                     if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS())) {
                         return PhisicsEventsEnum.SHEEP_KILLED;
@@ -178,7 +178,7 @@ public class GamePhysics {
                 }
             }
 
-            if (RainbowItem.isActive()){
+            if (RageItem.isActive()){
                 for (Wolf enemy : enemies) {
                     if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS())) {
                         enemy.kill();

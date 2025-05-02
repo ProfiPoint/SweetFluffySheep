@@ -22,7 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /* assuming the file hash of level 1.json is 38abac4f0688d22604ee8f0719f2298009d7a3d310be8ae5204d1e165dad2734
- * check load tests are to check if the json file is loaded correctly
+ * check load tests are to check if the JSON file is loaded correctly
  * runGame tests are to check if the game is running correctly
  */
 
@@ -48,6 +48,7 @@ class LevelTest {
         );
 
         String currentProfile = FileUtils.readFile("src/test/resources/datasaves/profiles/_CURRENT.txt");
+        assertNotNull(currentProfile);
         if (!currentProfile.isBlank()) {
             ProfileManager.switchProfile(currentProfile);
         }
@@ -69,8 +70,8 @@ class LevelTest {
          * G: goal,
          * E: enemy starting position,
          * C: coin,
-         * R: rainbow,
-         * F: fire,
+         * R: rage,
+         * F: freeze,
          * A/>/V/<: arrow rotated to UP/LEFT/RIGHT/DOWN
          *
          * Map:
@@ -161,7 +162,7 @@ class LevelTest {
         assertNotNull(enemies, "Enemies list is null");
         assertEquals(1, enemies.size(), "Unexpected number of enemies");
 
-        Wolf enemy = enemies.get(0);
+        Wolf enemy = enemies.getFirst();
         assertNotNull(enemy, "Enemy object is null");
         assertEquals(4.0, enemy.getPosition()[0], "Enemy X position incorrect");
         assertEquals(2.0, enemy.getPosition()[1], "Enemy Y position incorrect");
@@ -176,7 +177,7 @@ class LevelTest {
         assertNotNull(items, "Items list is null");
         assertEquals(2, items.size(), "Unexpected number of items");
 
-        Item item1 = items.get(0);
+        Item item1 = items.getFirst();
         assertEquals(2.0, item1.getPosition()[0], "Item1 X position incorrect");
         assertEquals(0.0, item1.getPosition()[1], "Item1 Y position incorrect");
         assertEquals(ItemEnum.COIN, item1.getItemEffect(), "Item1 effect incorrect");
@@ -184,7 +185,7 @@ class LevelTest {
         Item item2 = items.get(1);
         assertEquals(3.0, item2.getPosition()[0], "Item2 X position incorrect");
         assertEquals(1.0, item2.getPosition()[1], "Item2 Y position incorrect");
-        assertEquals(ItemEnum.RAINBOW, item2.getItemEffect(), "Item2 effect incorrect");
+        assertEquals(ItemEnum.RAGE, item2.getItemEffect(), "Item2 effect incorrect");
     }
 
     @Test
@@ -276,7 +277,7 @@ class LevelTest {
         placeAndRotateArrow(level, new int[]{0, 1}, 3);
 
         level.buildObjectsList();
-        Wolf enemy = level.getEnemies().get(0);
+        Wolf enemy = level.getEnemies().getFirst();
         assertTrue(enemy.isAlive(), "Enemy should initially be alive");
 
         for (int i = 10 * FPS - 1; i > 0; i--) {

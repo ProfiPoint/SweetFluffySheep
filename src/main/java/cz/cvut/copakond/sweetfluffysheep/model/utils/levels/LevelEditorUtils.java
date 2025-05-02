@@ -34,8 +34,8 @@ public class LevelEditorUtils {
             case REMOVETILE -> removeTile(position);
             case WOLF -> addWolf(position);
             case COIN -> addCoin(position);
-            case FIRE -> addFire(position);
-            case RAINBOW -> addRainbow(position);
+            case FREEZE -> addFreeze(position);
+            case RAGE -> addRage(position);
             case START -> addStart(position);
             case GOAL -> addGoal(position);
             case ROTATE -> rotateObject(position);
@@ -86,13 +86,13 @@ public class LevelEditorUtils {
         SoundManager.playSound(SoundListEnum.MONEY);
     }
 
-    private static void addFire(double[] position) {
-        addItem(position, ItemEnum.FIRE);
+    private static void addFreeze(double[] position) {
+        addItem(position, ItemEnum.FREEZE);
         SoundManager.playSound(SoundListEnum.PRIZE);
     }
 
-    private static void addRainbow(double[] position) {
-        addItem(position, ItemEnum.RAINBOW);
+    private static void addRage(double[] position) {
+        addItem(position, ItemEnum.RAGE);
         SoundManager.playSound(SoundListEnum.PRIZE);
     }
 

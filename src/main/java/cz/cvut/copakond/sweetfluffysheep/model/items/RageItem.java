@@ -6,13 +6,13 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 
 import java.util.logging.Logger;
 
-public class RainbowItem extends Item {
-    private static final Logger logger = Logger.getLogger(RainbowItem.class.getName());
+public class RageItem extends Item {
+    private static final Logger logger = Logger.getLogger(RageItem.class.getName());
     
-    private static RainbowItem active = null; // only one fire item can be active at a time
+    private static RageItem active = null; // only one freeze item can be active at a time
 
-    public RainbowItem(double[] position, int duration) {
-        super("rainbow", position, duration, ItemEnum.RAINBOW);
+    public RageItem(double[] position, int duration) {
+        super("rage", position, duration, ItemEnum.RAGE);
     }
 
     public static boolean isActive() {
@@ -22,7 +22,7 @@ public class RainbowItem extends Item {
     @Override
     public boolean use() {
         if (active != null) {
-            return false; // fire item is already active
+            return false; // freeze item is already active
         }
         active = this;
         SoundManager.playSound(SoundListEnum.IMMORTAL);
@@ -36,7 +36,7 @@ public class RainbowItem extends Item {
             durationTicks--;
             if (durationTicks == 0) {
                 active = null;
-                logger.info("Rainbow item expired");
+                logger.info("Rage item expired");
                 SoundManager.stopSfx(SoundListEnum.IMMORTAL);
             }
         }

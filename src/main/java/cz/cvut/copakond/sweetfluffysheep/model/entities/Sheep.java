@@ -1,6 +1,6 @@
 package cz.cvut.copakond.sweetfluffysheep.model.entities;
 
-import cz.cvut.copakond.sweetfluffysheep.model.items.RainbowItem;
+import cz.cvut.copakond.sweetfluffysheep.model.items.RageItem;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.GameStatusEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.PhisicsEventsEnum;
@@ -68,7 +68,7 @@ public class Sheep extends Character {
 
     @Override
     public Image getTexture() {
-        if (RainbowItem.isActive()) {
+        if (RageItem.isActive()) {
             this.textureIdNow = getTextureNumber() + 100;
             return this.textures.get(this.textureIdNow);
         }

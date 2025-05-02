@@ -10,8 +10,8 @@ public enum TextureListEnum {
     GOAL("goal", "objects/goal/goal_{i}.png",32*4*2), // 1,128 - unlocked, 129,256 - locked
     EMPTY("empty", "missing_texture.png",1, false),
     COIN("coin", "items/coin/coin_{i}.png", 32),
-    FIRE("fire", "items/fire/fire_{i}.png", 32),
-    RAINBOW("rainbow", "items/rainbow/rainbow_{i}.png", 32),
+    FREEZE("freeze", "items/freeze/freeze_{i}.png", 32),
+    RAGE("rage", "items/rage/rage_{i}.png", 32),
     ARROW("arrow", "arrows/arrow_{i}.png", 9*4);
 
     private static final Logger logger = Logger.getLogger(TextureListEnum.class.getName());

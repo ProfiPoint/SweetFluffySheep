@@ -162,7 +162,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IResizableFra
         bar.setHgap(5);
 
         String[] imageNames = {
-                "tile", "removeTile", "wolf", "coin", "fire", "rainbow", "start", "goal", "rotate", "destroy"
+                "tile", "removeTile", "wolf", "coin", "freeze", "rage", "start", "goal", "rotate", "destroy"
         };
 
         int col = 0;

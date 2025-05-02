@@ -6,13 +6,13 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 
 import java.util.logging.Logger;
 
-public class FireItem extends Item {
-    private static final Logger logger = Logger.getLogger(FireItem.class.getName());
+public class FreezeItem extends Item {
+    private static final Logger logger = Logger.getLogger(FreezeItem.class.getName());
 
-    private static FireItem active = null; // only one fire item can be active at a time
+    private static FreezeItem active = null; // only one freeze item can be active at a time
 
-    public FireItem(double[] position, int duration) {
-        super("fire", position, duration, ItemEnum.FIRE);
+    public FreezeItem(double[] position, int duration) {
+        super("freeze", position, duration, ItemEnum.FREEZE);
     }
 
     public static boolean isActive() {
@@ -22,7 +22,7 @@ public class FireItem extends Item {
     @Override
     public boolean use() {
         if (active != null) {
-            return false; // fire item is already active
+            return false; // freeze item is already active
         }
         active = this;
         SoundManager.playSound(SoundListEnum.HOLD);
@@ -36,7 +36,7 @@ public class FireItem extends Item {
             durationTicks--;
             if (durationTicks == 0) {
                 active = null;
-                logger.info("Fire item expired");
+                logger.info("Freeze item expired");
                 SoundManager.stopSfx(SoundListEnum.HOLD);
             }
         }

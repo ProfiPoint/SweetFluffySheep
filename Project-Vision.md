@@ -50,8 +50,8 @@ The player's objective is to guide as many **Unicorns** (based on sheep in *OveÄ
 ### Items
 The items are instantly consumed upon colliding with **Unicorns** and the effect lasts around **15 seconds.**
 
--   **Fire** - _Dries_ Clouds, stopping their movement.
--   **Rainbow** - Grants Unicorns the power to kill Clouds on collision (similar to Pac-Man cherries).
+-   **Freeze** - _Dries_ Clouds, stopping their movement.
+-   **Rage** - Grants Unicorns the power to kill Clouds on collision (similar to Pac-Man cherries).
 
 ### GUI
 

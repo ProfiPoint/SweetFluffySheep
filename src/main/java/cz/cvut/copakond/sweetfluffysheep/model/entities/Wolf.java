@@ -1,6 +1,6 @@
 package cz.cvut.copakond.sweetfluffysheep.model.entities;
 
-import cz.cvut.copakond.sweetfluffysheep.model.items.FireItem;
+import cz.cvut.copakond.sweetfluffysheep.model.items.FreezeItem;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
@@ -20,7 +20,7 @@ public class Wolf extends Character {
 
     @Override
     public void tick(boolean doesTimeFlow) {
-        if (FireItem.isActive()) {
+        if (FreezeItem.isActive()) {
             move(0, doesTimeFlow);
             canMove = false;
         } else {
