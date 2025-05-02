@@ -3,6 +3,7 @@ package cz.cvut.copakond.sweetfluffysheep.view.frames;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
+import cz.cvut.copakond.sweetfluffysheep.model.utils.game.ProfileManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
@@ -20,6 +21,7 @@ public class MenuFrame extends VBox implements IInteractableFrame {
     private static final Logger logger = Logger.getLogger(MenuFrame.class.getName());
 
     private final Label logo = new Label("SWEET FLUFFY SHEEP");
+    private final Label profileName = new Label("Welcome back, " + ProfileManager.getCurrentProfile());
     private final Label creator = new Label("Created by: Ondřej Čopák, ProfiPoint 2025");
 
     private final Button playButton = new Button("PLAY");
@@ -67,10 +69,11 @@ public class MenuFrame extends VBox implements IInteractableFrame {
         });
 
         logo.setTextFill(Color.HOTPINK);
+        profileName.setTextFill(Color.LIGHTBLUE);
         creator.setTextFill(Color.DARKORANGE);
 
         getChildren().addAll(
-                logo, playButton, continueButton,
+                logo, profileName, playButton, continueButton,
                 editorButton, profileButton, settingsButton,
                 exitButton, creator
         );
@@ -84,6 +87,7 @@ public class MenuFrame extends VBox implements IInteractableFrame {
         double spacing = height / 30;
 
         logo.setFont(Font.font("Arial", fontSize * 1.5));
+        profileName.setFont(Font.font("Arial", fontSize * 0.8));
         creator.setFont(Font.font("Arial", fontSize * 0.5));
 
         playButton.setStyle("-fx-font-size: " + fontSize + "px;");
