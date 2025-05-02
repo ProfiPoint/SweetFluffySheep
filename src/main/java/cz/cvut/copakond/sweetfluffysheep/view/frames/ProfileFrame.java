@@ -40,7 +40,7 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
 
         scrollPane.setContent(profileListBox);
         scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background: black; -fx-background-color: transparent;");
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
         getChildren().add(scrollPane);
 
         nameField.setPromptText("Enter new profile name...");
@@ -173,7 +173,7 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
 
     @Override
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        AppViewManager.playBackgroundVideo();
+        AppViewManager.get().resizeBackgroundVideo();
     }
 }

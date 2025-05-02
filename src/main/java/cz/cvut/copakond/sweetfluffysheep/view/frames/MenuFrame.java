@@ -22,7 +22,7 @@ public class MenuFrame extends VBox implements IInteractableFrame {
 
     private final Label logo = new Label("SWEET FLUFFY SHEEP");
     private final Label profileName = new Label("Welcome back, " + ProfileManager.getCurrentProfile());
-    private final Label creator = new Label("Created by: Ondřej Čopák, ProfiPoint 2025");
+    private final Label creator = new Label("Created by: Ondřej Čopák, ProfiPoint 2025, Based of 'Ovečky' Špidla Data Processing 2009");
 
     private final Button playButton = new Button("PLAY");
     private final Button continueButton = new Button("CONTINUE");
@@ -68,8 +68,8 @@ public class MenuFrame extends VBox implements IInteractableFrame {
             System.exit(0);
         });
 
-        logo.setTextFill(Color.HOTPINK);
-        profileName.setTextFill(Color.LIGHTBLUE);
+        logo.setTextFill(Color.WHITE);
+        profileName.setTextFill(Color.BLACK);
         creator.setTextFill(Color.DARKORANGE);
 
         getChildren().addAll(
@@ -86,9 +86,9 @@ public class MenuFrame extends VBox implements IInteractableFrame {
         double fontSize = height / 25;
         double spacing = height / 30;
 
-        logo.setFont(Font.font("Arial", fontSize * 1.5));
-        profileName.setFont(Font.font("Arial", fontSize * 0.8));
-        creator.setFont(Font.font("Arial", fontSize * 0.5));
+        logo.setStyle("-fx-font-size: " + (fontSize * 1.7) + "px; -fx-font-weight: bold;");
+        profileName.setStyle("-fx-font-size: " + (fontSize * 0.8) + "px; -fx-font-weight: bold;");
+        creator.setStyle("-fx-font-size: " + (fontSize * 0.5) + "px; -fx-font-weight: bold;");
 
         playButton.setStyle("-fx-font-size: " + fontSize + "px;");
         continueButton.setStyle("-fx-font-size: " + fontSize + "px;");
@@ -102,7 +102,7 @@ public class MenuFrame extends VBox implements IInteractableFrame {
 
     @Override
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        AppViewManager.playBackgroundVideo();
+        AppViewManager.get().resizeBackgroundVideo();
     }
 }

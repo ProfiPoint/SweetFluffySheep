@@ -56,6 +56,8 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
     private final boolean isEditor;
 
     public LevelFrame(Level level, boolean isEditor) {
+        AppViewManager.stopBackgroundVideo();
+
         this.isEditor = isEditor;
         this.canvas = new Canvas();
         this.gameLoop = new GameLoop(this, level);

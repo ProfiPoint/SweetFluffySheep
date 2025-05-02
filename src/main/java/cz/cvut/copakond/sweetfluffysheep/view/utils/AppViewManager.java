@@ -19,6 +19,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import java.io.File;
+import java.util.Random;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -31,11 +37,17 @@ public class AppViewManager {
     private IClickListener clickListener;
     private final Canvas canvas = new Canvas();
     private final StackPane overlay = new StackPane(); // for frames/views
+    private final Media backgroundMedia;
+    private final MediaPlayer preloadedMediaPlayer;
+    private MediaPlayer backgroundMediaPlayer;
+    private MediaView backgroundVideoView;
+    private static boolean isBackgroundVideoPlaying;
     private final Scene scene;
     private final Stage stage;
     private Pane currentFrame; // currently visible frame
 
     private static String profilesPath;
+    private static String texturesPath;
 
     public static void init(Stage stage) {
         if (instance == null) {
@@ -67,8 +79,21 @@ public class AppViewManager {
         profilesPath = path;
     }
 
+    public static void setTexturesPath(String path) {
+        texturesPath = path;
+    }
+
     private AppViewManager(Stage stage) {
         this.stage = stage;
+
+        File videoFile = new File(texturesPath+"/level/backgrounds/background.mp4");
+        if (!videoFile.exists()) {
+            throw new RuntimeException("Background video file not found at " + videoFile.getAbsolutePath());
+        }
+        logger.info("Background video loaded from " + videoFile.getAbsolutePath());
+        this.backgroundMedia = new Media(videoFile.toURI().toString());
+        this.preloadedMediaPlayer = new MediaPlayer(backgroundMedia);
+        this.preloadedMediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 
         StackPane canvasHolder = new StackPane(canvas);
         canvasHolder.setAlignment(Pos.CENTER);
@@ -224,7 +249,6 @@ public class AppViewManager {
         return slider;
     }
 
-
     private ChangeListener<Number> onResize() {
         return (obs, oldVal, newVal) -> updateCanvasSize();
     }
@@ -270,8 +294,44 @@ public class AppViewManager {
         }
     }
 
+    public static void playBackgroundVideo() {
+        if (isBackgroundVideoPlaying) {
+            return;
+        }
+        stopBackgroundVideo();
+        isBackgroundVideoPlaying = true;
+
+        instance.backgroundMediaPlayer = instance.preloadedMediaPlayer;
+        double duration = instance.backgroundMedia.getDuration().toSeconds();
+        double randomStart = new Random().nextDouble() * duration;
+        instance.backgroundMediaPlayer.seek(javafx.util.Duration.seconds(randomStart));
+
+        instance.backgroundVideoView = new MediaView(instance.backgroundMediaPlayer);
+        instance.backgroundVideoView.setPreserveRatio(true);
+        instance.overlay.getChildren().addFirst(instance.backgroundVideoView);
+
+        instance.backgroundMediaPlayer.play();
+    }
+
+    public static void stopBackgroundVideo() {
+        if (instance.backgroundMediaPlayer != null) {
+            instance.backgroundMediaPlayer.pause();
+            instance.overlay.getChildren().remove(instance.backgroundVideoView);
+            instance.backgroundVideoView = null;
+            isBackgroundVideoPlaying = false;
+        }
+    }
+
+    public void resizeBackgroundVideo() {
+        if (backgroundVideoView != null) {
+            backgroundVideoView.setFitWidth(canvas.getWidth());
+            backgroundVideoView.setFitHeight(canvas.getHeight());
+        }
+    }
+
+
     public void switchTo(Pane newFrame) {
-        overlay.getChildren().clear();
+        overlay.getChildren().removeIf(node -> node != backgroundVideoView); // keep the video playing
         currentFrame = newFrame;
         overlay.getChildren().add(newFrame);
         updateCanvasSize();

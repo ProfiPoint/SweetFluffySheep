@@ -13,11 +13,12 @@ public class InitClasses {
         LevelEditorFrame.setTexturePath(texturesPath);
         TextureListEnum.setLevelsPath(texturesPath);
         TextureManager.setTexturesPath(texturesPath);
+        AppViewManager.setTexturesPath(texturesPath);
         SoundListEnum.setSoundPath(soundsPath);
         FolderUtils.setLevelsPath(levelsPath);
-        ProfileManager.setProfileFolderPath(profilesPath);
         LevelStatusUtils.setLevelPath(levelsPath);
         Level.setLevelPath(levelsPath);
+        ProfileManager.setProfileFolderPath(profilesPath);
         AppViewManager.setProfilesPath(profilesPath);
         FolderUtils.setProfilesPath(profilesPath);
         LevelStatusUtils.setProfilesPath(profilesPath);

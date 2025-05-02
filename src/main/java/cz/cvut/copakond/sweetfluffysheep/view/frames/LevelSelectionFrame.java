@@ -197,7 +197,7 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
 
     @Override
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        AppViewManager.playBackgroundVideo();
+        AppViewManager.get().resizeBackgroundVideo();
     }
 }
