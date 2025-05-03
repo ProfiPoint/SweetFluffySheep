@@ -3,7 +3,7 @@ package cz.cvut.copakond.sweetfluffysheep.model.entities;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
-import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.PhisicsEventsEnum;
+import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.PhysicsEventsEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.RenderPriorityEnums;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Goal;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
@@ -21,8 +21,8 @@ public class Character extends GameObject implements ICharacter {
     private int textureRotation;
 
     private DirectionEnum direction;
-    private PhisicsEventsEnum previousEvent = PhisicsEventsEnum.NO_COLLISION;
-    private PhisicsEventsEnum previousSpeedEvent = PhisicsEventsEnum.NO_COLLISION;
+    private PhysicsEventsEnum previousEvent = PhysicsEventsEnum.NO_COLLISION;
+    private PhysicsEventsEnum previousSpeedEvent = PhysicsEventsEnum.NO_COLLISION;
 
     public Character(String textureName, double[] position, DirectionEnum direction) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
@@ -30,7 +30,7 @@ public class Character extends GameObject implements ICharacter {
         this.textureRotation = direction.getValue();
     }
 
-    public Character(String textureName, double[] position, DirectionEnum direction, PhisicsEventsEnum previousEvent) {
+    public Character(String textureName, double[] position, DirectionEnum direction, PhysicsEventsEnum previousEvent) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
         this.direction = direction;
         this.textureRotation = direction.getValue();
@@ -41,7 +41,7 @@ public class Character extends GameObject implements ICharacter {
         return this.direction;
     }
 
-    public PhisicsEventsEnum getPreviousEvent() {
+    public PhysicsEventsEnum getPreviousEvent() {
         return this.previousEvent;
     }
 
@@ -74,7 +74,7 @@ public class Character extends GameObject implements ICharacter {
             return;
         }
 
-        PhisicsEventsEnum event = GamePhysics.checkCollision(this);
+        PhysicsEventsEnum event = GamePhysics.checkCollision(this);
 
         // continue rotating if it started rotating, thus is not in stable rotation rn.
         if (textureRotation != direction.getValue() && doesTimeFlow) {
@@ -92,11 +92,11 @@ public class Character extends GameObject implements ICharacter {
                 break;
             case SHEEP_KILLED:
                 this.kill();
-                previousEvent = PhisicsEventsEnum.SHEEP_KILLED;
+                previousEvent = PhysicsEventsEnum.SHEEP_KILLED;
                 return;
             case IN_GOAL:
                 // do not rotate or get affected by arrows, after goal
-                if (previousEvent != PhisicsEventsEnum.IN_GOAL) {
+                if (previousEvent != PhysicsEventsEnum.IN_GOAL) {
                     Sheep.sheepEnteredGoal(true);
                     this.direction = Goal.getGlobalDirection();
                 }
@@ -106,22 +106,22 @@ public class Character extends GameObject implements ICharacter {
                 break;
             default:
                 // arrow or wall collision will rotate the character
-                this.direction = PhisicsEventsEnum.convertPhysicsEvent(event);
+                this.direction = PhysicsEventsEnum.convertPhysicsEvent(event);
                 break;
         }
 
         // if there is a character too closely before the character, it will slow down
-        if (event.isNotRotation() && previousSpeedEvent != PhisicsEventsEnum.SLOWDOWN) {
-            PhisicsEventsEnum speedEvent = GamePhysics.checkCharactersStruggle(this);
-            if (speedEvent == PhisicsEventsEnum.SLOWDOWN) {
+        if (event.isNotRotation() && previousSpeedEvent != PhysicsEventsEnum.SLOWDOWN) {
+            PhysicsEventsEnum speedEvent = GamePhysics.checkCharactersStruggle(this);
+            if (speedEvent == PhysicsEventsEnum.SLOWDOWN) {
                 tilesSpeed = tilesSpeed / 2;
-                previousSpeedEvent = PhisicsEventsEnum.SLOWDOWN;
+                previousSpeedEvent = PhysicsEventsEnum.SLOWDOWN;
             }
-        } else if (event.isNotRotation() && event != PhisicsEventsEnum.SLOWDOWN) {
+        } else if (event.isNotRotation() && event != PhysicsEventsEnum.SLOWDOWN) {
             // the character must always end up in the same tileSpeed offset, so if the speed is halved, it will be
             // halved also in the next frame, to get to the same tileSpeed offset to prevent unique collisions behavior
             tilesSpeed = tilesSpeed / 2;
-            previousSpeedEvent = PhisicsEventsEnum.NO_COLLISION;
+            previousSpeedEvent = PhysicsEventsEnum.NO_COLLISION;
         }
 
         // do not move if rotating in that frame

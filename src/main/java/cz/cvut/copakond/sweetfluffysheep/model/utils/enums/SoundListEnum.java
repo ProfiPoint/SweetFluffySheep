@@ -1,5 +1,11 @@
 package cz.cvut.copakond.sweetfluffysheep.model.utils.enums;
 
+/**
+ * Enum representing a list of sound effects and music tracks used in the game.
+ * <p>
+ * Each enum constant contains information about the sound file name, whether it is a sound effect (SFX),
+ * whether it should play on repeat, the number of variants available, and the volume level.
+ */
 public enum SoundListEnum {
     MENU_THEME("music/menu.wav", false,true, 1, 75),
     GAME_THEME("music/game.wav", false,true, 1, 75),
@@ -46,12 +52,22 @@ public enum SoundListEnum {
         this.volume = volume;
     }
 
+    /**
+     * Returns the file name of the sound effect or music track.
+     *
+     * @return The file name of the sound.
+     */
     public String getRandomSound() {
         String[] names = getSounds();
         int randomIndex = (int) (Math.random() * names.length);
         return names[randomIndex];
     }
 
+    /**
+     * Returns the file names of the sound effect or music track.
+     *
+     * @return The file names of the sound.
+     */
     public String[] getSounds() {
         String[] names = new String[count];
         for (int i = 0; i < count; i++) {

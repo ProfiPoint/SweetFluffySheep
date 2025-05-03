@@ -126,7 +126,7 @@ public class GamePhysics {
     }
 
     // prevents characters from getting stuck in each other, if there is any character in front of the character, slow down
-    public static PhisicsEventsEnum checkCharactersStruggle(Character character) {
+    public static PhysicsEventsEnum checkCharactersStruggle(Character character) {
         DirectionEnum direction = character.getDirection();
         boolean isEnemy = character.isEnemy();
         double[] position = character.getPosition();
@@ -157,23 +157,23 @@ public class GamePhysics {
             }
         }
 
-        return firstCharacter == character ? PhisicsEventsEnum.NO_COLLISION : PhisicsEventsEnum.SLOWDOWN;
+        return firstCharacter == character ? PhysicsEventsEnum.NO_COLLISION : PhysicsEventsEnum.SLOWDOWN;
     }
 
-    public static PhisicsEventsEnum checkCollision(Character character) {
+    public static PhysicsEventsEnum checkCollision(Character character) {
         if (!character.isEnemy()){
-            if (character.getPreviousEvent() == PhisicsEventsEnum.BEFORE_START && !isColliding(character, start, 2)) {
-                return PhisicsEventsEnum.BEFORE_START;
+            if (character.getPreviousEvent() == PhysicsEventsEnum.BEFORE_START && !isColliding(character, start, 2)) {
+                return PhysicsEventsEnum.BEFORE_START;
             }
 
-            if (character.getPreviousEvent() == PhisicsEventsEnum.IN_GOAL || (isColliding(character, goal, 2) && !goal.isLocked())) {
-                return PhisicsEventsEnum.IN_GOAL;
+            if (character.getPreviousEvent() == PhysicsEventsEnum.IN_GOAL || (isColliding(character, goal, 2) && !goal.isLocked())) {
+                return PhysicsEventsEnum.IN_GOAL;
             }
 
             if (!FreezeItem.isActive() && !RageItem.isActive()) {
                 for (Wolf enemy : enemies) {
                     if (enemy.isVisible() && isColliding(character, enemy, GameObject.getFPS()*2)) {
-                        return PhisicsEventsEnum.SHEEP_KILLED;
+                        return PhysicsEventsEnum.SHEEP_KILLED;
                     }
                 }
             }
@@ -215,10 +215,10 @@ public class GamePhysics {
             if (arrowDirectionChange != character.getDirection() && isNotWall(arrowDirectionChange, currentTilePos, character, targetTilePos)) {
                 // ARROW POINTING TO EMPTY SPACE, ALLOW ROTATION
                 return switch (arrowDirectionChange) {
-                    case LEFT -> PhisicsEventsEnum.ROTATION_LEFT;
-                    case RIGHT -> PhisicsEventsEnum.ROTATION_RIGHT;
-                    case UP -> PhisicsEventsEnum.ROTATION_UP;
-                    case DOWN -> PhisicsEventsEnum.ROTATION_DOWN;
+                    case LEFT -> PhysicsEventsEnum.ROTATION_LEFT;
+                    case RIGHT -> PhysicsEventsEnum.ROTATION_RIGHT;
+                    case UP -> PhysicsEventsEnum.ROTATION_UP;
+                    case DOWN -> PhysicsEventsEnum.ROTATION_DOWN;
                 };
             }
 
@@ -230,7 +230,7 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection(), character);
         if (isNotWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // in front of the character is a tile, not a wall
-            return PhisicsEventsEnum.NO_COLLISION;
+            return PhysicsEventsEnum.NO_COLLISION;
         }
 
         // now there is a wall in front of the character
@@ -238,14 +238,14 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection().next(), character);
         if (isNotWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // on the right side from the character perspective is a tile, not a wall -> rotate right
-            return PhisicsEventsEnum.convertDirectionToPhysicsEvent(character.getDirection().next());
+            return PhysicsEventsEnum.convertDirectionToPhysicsEvent(character.getDirection().next());
         }
 
         // check if there is a wall on the left side
         targetTilePos = getTargetTilePosition(character.getDirection().next().getOppositeDirection(), character);
         if (isNotWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // on the left side from the character perspective is a tile, not a wall -> rotate left
-            return PhisicsEventsEnum.convertDirectionToPhysicsEvent(character.getDirection().next().getOppositeDirection());
+            return PhysicsEventsEnum.convertDirectionToPhysicsEvent(character.getDirection().next().getOppositeDirection());
         }
 
         // now, this is getting tricky
@@ -253,7 +253,7 @@ public class GamePhysics {
         targetTilePos = getTargetTilePosition(character.getDirection().getOppositeDirection(), character);
         if (isNotWall(character.getDirection(), currentTilePos, character, targetTilePos)) {
             // behind the character is a tile, not a wall -> rotate opposite
-            return PhisicsEventsEnum.convertDirectionToPhysicsEvent(character.getDirection().getOppositeDirection());
+            return PhysicsEventsEnum.convertDirectionToPhysicsEvent(character.getDirection().getOppositeDirection());
         }
 
         /* ok, well... now it is certain that the character is stuck in a wall...
@@ -263,7 +263,7 @@ public class GamePhysics {
          * "thank you for your understanding" - the creator of the game
          * just rotate to the right...
          */
-        return PhisicsEventsEnum.ROTATION_STUCK_4WALLS;
+        return PhysicsEventsEnum.ROTATION_STUCK_4WALLS;
     }
 
     // decide which direction to rotate

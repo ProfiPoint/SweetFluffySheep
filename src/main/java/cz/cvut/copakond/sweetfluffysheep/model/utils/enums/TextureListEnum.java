@@ -1,9 +1,12 @@
 package cz.cvut.copakond.sweetfluffysheep.model.utils.enums;
 
-import javafx.scene.layout.Background;
-
 import java.util.logging.Logger;
 
+/**
+ * Enum representing different texture lists used in the game.
+ * Each enum constant contains information about the texture name, file name pattern, count of textures,
+ * and whether it should return a list of textures or a single texture.
+ */
 public enum TextureListEnum {
     WOLF("wolf", "characters/wolves/wolf_{i}.png",(16+9)*4*2),
     SHEEP("sheep", "characters/sheep/sheep_{i}.png", (16+9)*4*2),
@@ -47,31 +50,6 @@ public enum TextureListEnum {
         this.returnList = returnList;
     }
 
-    public String[] getTextures() {
-        if (!returnAuto && !returnList) {
-            return getSingleTexture();
-        }
-        return getTexturesList();
-    }
-
-    private String[] getSingleTexture() {
-        String[] names = new String[1];
-        names[0] = generateTexturePath(1);
-        return names;
-    }
-
-    private String[] getTexturesList() {
-        String[] names = new String[count];
-        for (int i = 0; i < count; i++) {
-            names[i] = generateTexturePath(i + 1);
-        }
-        return names;
-    }
-
-    private String generateTexturePath(int index) {
-        return levelsPath + "/level/" + fileName.replace("{i}", String.format("%03d", index));
-    }
-
     public String getValue() {
         return name;
     }
@@ -80,6 +58,57 @@ public enum TextureListEnum {
         return count;
     }
 
+    /**
+     * Returns the list of textures for the given enum constant.
+     *
+     * @return an array of texture paths
+     */
+    public String[] getTextures() {
+        if (!returnAuto && !returnList) {
+            return getSingleTexture();
+        }
+        return getTexturesList();
+    }
+
+    /**
+     * Returns the list of a single texture for the given enum constant.
+     *
+     * @return an array of texture paths
+     */
+    private String[] getSingleTexture() {
+        String[] names = new String[1];
+        names[0] = generateTexturePath(1);
+        return names;
+    }
+
+    /**
+     * Returns the list of textures for the given enum constant.
+     *
+     * @return an array of texture paths
+     */
+    private String[] getTexturesList() {
+        String[] names = new String[count];
+        for (int i = 0; i < count; i++) {
+            names[i] = generateTexturePath(i + 1);
+        }
+        return names;
+    }
+
+    /**
+     * Generates the texture path for the given index based of the level path and file name.
+     *
+     * @param index the index of the texture
+     * @return the generated texture path
+     */
+    private String generateTexturePath(int index) {
+        return levelsPath + "/level/" + fileName.replace("{i}", String.format("%03d", index));
+    }
+
+    /**
+     * Returns the texture path for the given enum constant.
+     *
+     * @return the texture path
+     */
     public static TextureListEnum fromValue(String value) {
         for (TextureListEnum texture : TextureListEnum.values()) {
             if (texture.getValue().equals(value)) {

@@ -1,5 +1,11 @@
 package cz.cvut.copakond.sweetfluffysheep.model.utils.enums;
 
+/**
+ * Enum representing the render priorities for different game elements.
+ * <p>
+ * This enum is used to determine the order in which game elements are rendered
+ * on the screen. The lower the value, the higher the priority.
+ */
 public enum RenderPriorityEnums {
     TILE(0),
     ARROW(1),

@@ -3,7 +3,7 @@ package cz.cvut.copakond.sweetfluffysheep.model.entities;
 import cz.cvut.copakond.sweetfluffysheep.model.items.RageItem;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.GameStatusEnum;
-import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.PhisicsEventsEnum;
+import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.PhysicsEventsEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 import javafx.scene.image.Image;
@@ -18,7 +18,7 @@ public class Sheep extends Character {
     private static int sheepInGoal = 0;
 
     public Sheep(double[] position, DirectionEnum direction) {
-        super("sheep", position, direction, PhisicsEventsEnum.BEFORE_START);
+        super("sheep", position, direction, PhysicsEventsEnum.BEFORE_START);
         this.setEnemy(false);
         counter++;
     }

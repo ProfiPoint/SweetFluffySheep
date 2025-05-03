@@ -1,5 +1,10 @@
 package cz.cvut.copakond.sweetfluffysheep.model.utils.enums;
 
+/**
+ * Enum representing all error messages used in the game.
+ * This enum is used to define all error messages that can be displayed to the user.
+ * It is used in the game to provide feedback to the user when an error occurs.
+ */
 public enum ErrorMsgsEnum {
     CUSTOM_ERROR(""),
 
@@ -46,14 +51,32 @@ public enum ErrorMsgsEnum {
         this.message = message;
     }
 
+    /**
+     * Returns the error message.
+     *
+     * @return The formated error message.
+     */
     public String getValue() {
         return message + "\n\n";
     }
 
+    /**
+     * Returns the error message with additional information.
+     *
+     * @param info Additional information to be included in the error message.
+     * @return The formatted error message.
+     */
     public String getValue(String info) {
         return message + " (" + info + ")\n\n";
     }
 
+    /**
+     * Returns the error message with additional information and an exception.
+     *
+     * @param info Additional information to be included in the error message.
+     * @param error The exception to be included in the error message.
+     * @return The formatted error message.
+     */
     public String getValue(String info, Exception error) {
         return message + " (" + info + ")\n" + error + "\n\n";
     }
