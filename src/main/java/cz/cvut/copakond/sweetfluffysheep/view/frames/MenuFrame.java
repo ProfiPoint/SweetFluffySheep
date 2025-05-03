@@ -16,6 +16,10 @@ import javafx.scene.layout.VBox;
 
 import java.util.logging.Logger;
 
+/**
+ * MenuFrame class represents the main menu of the game.
+ * It provides options to play, continue, edit levels, switch profiles, access settings, and exit the game.
+ */
 public class MenuFrame extends VBox implements IInteractableFrame {
     private static final Logger logger = Logger.getLogger(MenuFrame.class.getName());
 
@@ -30,6 +34,10 @@ public class MenuFrame extends VBox implements IInteractableFrame {
     private final Button settingsButton = new Button("SETTINGS");
     private final Button exitButton = new Button("EXIT");
 
+    /**
+     * Constructor for MenuFrame.
+     * Initializes the menu layout, buttons, and their actions.
+     */
     public MenuFrame() {
         setAlignment(Pos.CENTER);
         setSpacing(20);
@@ -37,6 +45,7 @@ public class MenuFrame extends VBox implements IInteractableFrame {
         int[] continueLevel = LevelStatusUtils.getNextUncompletedLevel();
         logger.info("Continue level: " + continueLevel[0] + " " + continueLevel[1]);
 
+        // Set up the titles and profile name
         if (continueLevel[0] == 1 && continueLevel[1] == 0) {
             continueButton.setDisable(true);
         } else {

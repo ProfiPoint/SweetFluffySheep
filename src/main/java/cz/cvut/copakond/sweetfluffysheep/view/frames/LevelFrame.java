@@ -4,7 +4,6 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.GameStatusEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
-import cz.cvut.copakond.sweetfluffysheep.model.utils.files.TextureManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.levels.GamePhysics;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
 import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
@@ -20,7 +19,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -29,11 +27,13 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * The LevelFrame class represents the main game screen where the level is displayed.
+ * It handles user interactions, game loop, and rendering of game objects.
+ */
 public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame, IClickListener {
     private static final Logger logger = Logger.getLogger(LevelFrame.class.getName());
 
@@ -55,6 +55,12 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
     private boolean popupShown = false;
     private final boolean isEditor;
 
+    /**
+     * Constructor for the LevelFrame class.
+     *
+     * @param level    The level to be displayed.
+     * @param isEditor Indicates if the frame is in editor mode.
+     */
     public LevelFrame(Level level, boolean isEditor) {
         AppViewManager.stopBackgroundVideo();
 
@@ -69,7 +75,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         hudBar = createHudBar();
         getChildren().add(hudBar);
 
-        AppViewManager.get().setClickListener(this);
+        AppViewManager.get().setClickListener(this); // register the click listener
         gameLoop.setObjects(level.getListOfObjects());
         gameLoop.getObjects().sort(Comparator.comparingInt(GameObject::getRenderPriority));
         gameLoop.resume();
@@ -87,6 +93,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         if (!gameLoop.isRunning() || gameLoop.elapsedSeconds() < 1) {
             return;
         }
+
         int button = event.getButton().name().equals("PRIMARY") ? 1 :
                 event.getButton().name().equals("SECONDARY") ? 2 : 0;
 
@@ -98,6 +105,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
 
         int[] tileClick = LevelFrameUtils.getTileClicked((int)event.getX(), (int)event.getY(), appCanvasSize,
                 canvasSize, gameLoop.getLevel());
+
         if (tileClick[0] == -1) {
             return;
         }
@@ -137,6 +145,9 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
+    /**
+     * This method is called every frame to update the game state and render the game objects.
+     */
     public void checkGameStatus(){
         GameStatusEnum gameStatus = GameObject.getGameStatus();
         if (gameStatus == GameStatusEnum.WIN) {
@@ -147,6 +158,9 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         }
     }
 
+    /**
+     * This method is called to draw the level objects on the canvas.
+     */
     public void drawLevelObjects() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(GameObject.getTextureManager().getTexture("background").getFirst(), 0, 0, canvas.getWidth(), canvas.getHeight());
@@ -168,6 +182,12 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         arrowsLabel.setText(arrowsInfo[0] + "/" + arrowsInfo[1] + "⬆");
     }
 
+    /**
+     * This method is called to draw a specific game object on the canvas.
+     *
+     * @param gc     The GraphicsContext to draw on.
+     * @param object The GameObject to be drawn.
+     */
     private void drawObject(GraphicsContext gc, GameObject object) {
         double[] position = object.getScaledPositionSizePercentage(gameLoop.getLevel());
         position[0] *= canvas.getWidth();
@@ -180,6 +200,11 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         gc.drawImage(object.getTexture(), position[0], position[1], width, height);
     }
 
+    /**
+     * This method is called to adjust the font size of the HUD elements based on the canvas width.
+     *
+     * @param width The width of the canvas.
+     */
     private void adjustFontSize(double width) {
         double fontSize = width / 60;
 
@@ -195,6 +220,11 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         }
     }
 
+    /**
+     * This method is called to create the HUD bar at the bottom of the screen.
+     *
+     * @return The HBox containing the HUD elements.
+     */
     private Pane createHudBar() {
         HBox bar = new HBox(20);
         bar.setPadding(new Insets(5, 15, 5, 15));
@@ -213,6 +243,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
 
         menuButton.setOnAction(e -> {
             if (isEditor) {
+                // go back to the editor
                 String[] levelData = gameLoop.getLevel().getLevelData();
                 Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
                 gameLoop.unload();
@@ -259,6 +290,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
                 timeLabel, pauseButton, retryButton, settingsButton, menuButton
         };
 
+        // set max width for all nodes in the bar
         for (javafx.scene.Node node : nodes) {
             if (node instanceof Region) {
                 ((Region) node).setMaxWidth(Double.MAX_VALUE);
@@ -274,6 +306,9 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         return bar;
     }
 
+    /**
+     * This method is called to reset the level and start a new game.
+     */
     private void resetLevel() {
         popupShown = false;
         speedButton.setText("1x");
@@ -282,6 +317,12 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         SoundManager.playSound(SoundListEnum.GAME_THEME);
     }
 
+    /**
+     * This method is called to show a popup message when the game is over.
+     *
+     * @param message The message to be displayed.
+     * @param isWin   Indicates if the game was won or lost.
+     */
     private void showPopup(String message, boolean isWin) {
         if (popupShown) return;
 
@@ -313,11 +354,13 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         if (isWin) {
             Button nextLevelButton = new Button(isEditor ? "Edit" : "Next Level");
 
+            // if the level is not accepted, show the retry button
             if (isEditor) {
                 messageLabel.setText("Level Accepted!");
                 descriptionLabel.setText("Level has been saved,\nyou can edit it any time later");
                 nextLevelButton.setOnAction(e -> switchToEditor(popupStage));
             } else {
+                // show all the stats
                 int coinsCollected = gameLoop.getLevel().getCoinsLeftAndCoins()[1];
                 int sheepInGoal = gameLoop.getLevel().getSheepInGoal();
                 int sheepKilled = gameLoop.getLevel().getLevelInfo().get("sheep") - sheepInGoal;
@@ -356,6 +399,8 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
             buttonBox.getChildren().addAll(backToMenuButton, nextLevelButton);
 
         } else {
+            // lose
+
             Button retryLevelButton = new Button(isEditor ? "Edit" : "Retry");
 
             if (isEditor) {
@@ -363,6 +408,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
                 descriptionLabel.setText("To save it properly,\nyou need to fix to complete the level to prove it is playable");
                 retryLevelButton.setOnAction(e -> switchToEditor(popupStage));
             } else {
+                // get the reason for losing
                 if (gameLoop.getLevel().getTimeLeft() <= 0) {
                     descriptionLabel.setText("You have run out of time,\nbe faster next time");
                 } else if (gameLoop.getLevel().getLives() <= 0) {
@@ -399,6 +445,11 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         popupStage.showAndWait();
     }
 
+    /**
+     * This method is called to switch to the level editor.
+     *
+     * @param popupStage The stage of the popup window.
+     */
     private void switchToEditor(Stage popupStage) {
         String[] levelData = gameLoop.getLevel().getLevelData();
         Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));

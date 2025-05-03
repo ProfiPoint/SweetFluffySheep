@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.concurrent.locks.LockSupport;
 import java.util.logging.Logger;
 
+/**
+ * GameLoop class is responsible for managing the game loop, including updating the game state and rendering.
+ * It handles the speed of the game, pausing and resuming the game, and resetting the level.
+ */
 public class GameLoop {
     private static final Logger logger = Logger.getLogger(GameLoop.class.getName());
 
@@ -28,6 +32,12 @@ public class GameLoop {
 
     private Thread gameLoopThread;
 
+    /**
+     * Constructor for GameLoop.
+     *
+     * @param levelFrame the level frame to be used for rendering
+     * @param level      the level to be managed by the game loop
+     */
     public GameLoop(ILevelFrame levelFrame, Level level) {
         this.levelFrame = levelFrame;
         this.level = level;
@@ -35,12 +45,20 @@ public class GameLoop {
 
     public Level getLevel() {return level;}
 
+    /**
+     * Changes the speed of the game.
+     *
+     * @return the new speed of the game
+     */
     public int getAndChangeSpeed() {
         currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
         logger.info("Game speed changed to " + speedOptions[currentSpeedIndex]/2 + "x (" + speedOptions[currentSpeedIndex] + "x)");
         return speedOptions[currentSpeedIndex];
     }
 
+    /**
+     * Sets the new level for the next level called from the level frame.
+     */
     public void setNewLevel() {
         level = LevelStatusUtils.getNextLevel(level);
         resetLevel();
@@ -48,6 +66,11 @@ public class GameLoop {
 
     public List<GameObject> getObjects() {return objects;}
 
+    /**
+     * Sets the list of game objects to be managed by the game loop.
+     *
+     * @param objects the list of game objects
+     */
     public void setObjects(List<GameObject> objects) {
         this.objects = objects;
         objects.sort(Comparator.comparingInt(GameObject::getRenderPriority));
@@ -57,10 +80,21 @@ public class GameLoop {
         return isRunning;
     }
 
+    /**
+     * Returns the current frame of the game loop.
+     *
+     * @return the current frame
+     */
     public long elapsedSeconds() {
         return currentFrame / GameObject.getFPS();
     }
 
+    /**
+     * Creates a new thread for the game loop and starts it.
+     * The thread is responsible for updating the game state and rendering the game objects.
+     * It runs at a fixed frame rate based on the FPS defined in GameObject.
+     * The game loop will continue running until the isRunning flag is set to false.
+     */
     void run() {
         gameLoopThread = new Thread(() -> {
             final int fps = GameObject.getFPS();
@@ -94,10 +128,15 @@ public class GameLoop {
             }
         });
 
+        // set the thread as a daemon thread, so it doesn't block the JVM from exiting
         gameLoopThread.setDaemon(true);
         gameLoopThread.start();
     }
 
+    /**
+     * Pauses the game loop. The game loop will stop updating the game state and rendering.
+     * The pause method can be called multiple times without any effect.
+     */
     public void pause() {
         if (!isRunning) {
             return;
@@ -106,6 +145,10 @@ public class GameLoop {
         isRunning = false;
     }
 
+    /**
+     * Resumes the game loop. The game loop will start updating the game state and rendering again.
+     * The resume method can be called multiple times without any effect.
+     */
     public void resume() {
         if (isRunning) {
             return;
@@ -117,12 +160,20 @@ public class GameLoop {
         run();
     }
 
+    /**
+     * Unloads the game loop. The game loop will stop updating the game state and rendering.
+     * The unload method can be called multiple times without any effect.
+     */
     public void unload() {
         pause();
         AppViewManager.get().setClickListener(null);
         level.Unload();
     }
 
+    /**
+     * Renders the game scene. This method is called from the JavaFX thread.
+     * It unlocks the goal for level editor and draws the level objects.
+     */
     public void renderScene() {
         if (level.getGoal() != null) {
             level.getGoal().unlockForLevelEditor(); // unlock goal for level editor
@@ -130,6 +181,11 @@ public class GameLoop {
         Platform.runLater(levelFrame::drawLevelObjects);
     }
 
+    /**
+     * Resets the level. This method is called when the level is changed or when the game is restarted.
+     * It unloads the current level and loads a new one based on the level data.
+     * The resetLevel method can be called multiple times without any effect.
+     */
     public void resetLevel() {
         String[] levelData = level.getLevelData();
         boolean isEditor = levelData[1].equals("true");

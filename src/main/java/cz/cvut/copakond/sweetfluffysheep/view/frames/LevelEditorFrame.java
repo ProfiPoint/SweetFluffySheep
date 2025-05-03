@@ -31,6 +31,11 @@ import java.io.File;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * The LevelEditorFrame class represents the level editor interface in the game.
+ * It allows users to create and edit levels by placing objects on a grid.
+ * The class handles user interactions, rendering of objects, and saving levels.
+ */
 public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractableFrame, IClickListener {
     private static final Logger logger = Logger.getLogger(LevelEditorFrame.class.getName());
 
@@ -51,6 +56,13 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         texturePath = path;
     }
 
+    /**
+     * Constructor for the LevelEditorFrame class.
+     * Initializes the game loop, canvas, and HUD bar.
+     * Sets up the click listener and loads the level.
+     *
+     * @param level The level to be edited.
+     */
     public LevelEditorFrame(Level level) {
         AppViewManager.stopBackgroundVideo();
 
@@ -108,6 +120,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         );
         if (tileClick[0] == -1) return;
 
+        // Sends a signal to add the object to the level
         LevelEditorUtils.addObjectToLevel(
                 new double[]{tileClick[0], tileClick[1]},
                 selectedObject
@@ -124,6 +137,11 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
+    /**
+     * Draws the level objects on the canvas.
+     * Clears the canvas and draws the background image.
+     * Iterates through all game objects and draws them if they are visible.
+     */
     public void drawLevelObjects() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(GameObject.getTextureManager().getTexture("background").getFirst(), 0, 0, canvas.getWidth(), canvas.getHeight());
@@ -135,6 +153,14 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         }
     }
 
+    /**
+     * Saves the current level.
+     * Checks if the level can be completed before saving.
+     * Displays an error message if the level is invalid.
+     *
+     * @param headerText The header text for the error message.
+     * @return true if the level is saved successfully, false otherwise.
+     */
     private boolean saveLevel(String headerText) {
         Level level = gameLoop.getLevel();
         PathFinder pathFinder = new PathFinder(level);
@@ -151,7 +177,12 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         }
     }
 
-
+    /**
+     * Creates the bottom HUD bar for the level editor.
+     * Contains buttons for different actions and object selection.
+     *
+     * @return The created HUD bar as a GridPane.
+     */
     private GridPane createEditorHudBar() {
         GridPane bar = new GridPane();
         bar.setStyle("-fx-background-color: #222;");
@@ -198,6 +229,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         bar.add(settingsButton, col++, 0);
         bar.add(menuButton, col++, 0);
 
+        // Make sure the buttons are evenly spaced
         for (int i = 0; i < col; i++) {
             ColumnConstraints cc = new ColumnConstraints();
             cc.setPercentWidth(100.0 / col);
@@ -209,6 +241,10 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         return bar;
     }
 
+    /**
+     * Sets up the actions for the buttons in the HUD bar.
+     * Defines what happens when each button is clicked.
+     */
     private void setupHudBarButtonActions() {
         playButton.setOnAction(event -> {
             if (!saveLevel("Level cannot be completed")) return;
@@ -235,6 +271,10 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         });
     }
 
+    /**
+     * Opens a dialog for level settings.
+     * Allows the user to modify various parameters of the level.
+     */
     private void openLevelSettingsDialog() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Level Settings");
@@ -248,6 +288,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         Map<String, Integer> levelInfo = gameLoop.getLevel().getLevelInfo();
         int[] mapSize = gameLoop.getLevel().getMapSize();
 
+        // Create spinners for each parameter
         Spinner<Integer> timeLimitSpinner = new Spinner<>(10, Integer.MAX_VALUE, levelInfo.get("timeLimit"));
         Spinner<Integer> sheepSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("sheep"));
         Spinner<Integer> goalSheepSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("goalSheep"));
@@ -256,6 +297,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         Spinner<Integer> mapSizeYSpinner = new Spinner<>(1, Integer.MAX_VALUE, mapSize[1]);
         Spinner<Integer> itemDurationSpinner = new Spinner<>(1, Integer.MAX_VALUE, levelInfo.get("defaultItemDuration"));
 
+        // Make spinners editable to allow manual input
         timeLimitSpinner.setEditable(true);
         sheepSpinner.setEditable(true);
         goalSheepSpinner.setEditable(true);
@@ -286,6 +328,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
 
         dialog.getDialogPane().setContent(grid);
 
+        // Set the default button to confirm
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == confirmButtonType) {
             if (goalSheepSpinner.getValue() > sheepSpinner.getValue()) {
@@ -305,8 +348,10 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
                 mapSize[1] = mapSizeYSpinner.getValue();
                 logger.info("Map size updated: " + Arrays.toString(mapSize));
 
+                // try to save the level before reloading
                 if (!saveLevel("Level can not be resized")) return;
 
+                // Reload the level with the new map size
                 String[] levelData = gameLoop.getLevel().getLevelData();
                 Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
                 gameLoop.unload();
@@ -319,6 +364,11 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         }
     }
 
+    /**
+     * Adjusts the font size of the buttons and labels in the HUD bar based on the canvas width.
+     *
+     * @param width The width of the canvas.
+     */
     private void adjustFontSize(double width) {
         double fontSize = width / 90;
 
@@ -331,6 +381,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
                 label.setStyle(currentStyle + "-fx-font-size: " + fontSize + "px;");
             }
 
+            // Adjust the size of the image in the button
             if (node instanceof Button button && button.getGraphic() instanceof ImageView imageView) {
                 double size = fontSize * 2.5;
                 imageView.setFitWidth(size);
@@ -339,11 +390,19 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
         }
     }
 
+    /**
+     * Draws a game object on the canvas.
+     * Calculates the position and size based on the level and canvas dimensions.
+     *
+     * @param gc     The GraphicsContext to draw on.
+     * @param object The GameObject to be drawn.
+     */
     private void drawObject(GraphicsContext gc, GameObject object) {
         double[] position = object.getScaledPositionSizePercentage(gameLoop.getLevel());
         position[0] *= canvas.getWidth();
         position[1] *= canvas.getHeight();
 
+        // Calculate the size of the object based on the canvas size and texture size ratio
         double[] textureSizeRatio = object.getScaledTextureSizePercentage(gameLoop.getLevel());
         int[] textureSize = {
                 (int) Math.ceil(canvas.getWidth() * textureSizeRatio[0]),

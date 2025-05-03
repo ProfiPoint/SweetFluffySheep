@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * The LevelSelectionFrame class represents the level selection screen in the game.
+ * It allows players to choose between story mode and user-created levels.
+ */
 public class LevelSelectionFrame extends VBox implements IInteractableFrame {
     private static final Logger logger = Logger.getLogger(LevelSelectionFrame.class.getName());
     private static String profileName;
@@ -40,11 +44,22 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
 
     private boolean editorMode = false;
 
+    /**
+     * Constructor for the LevelSelectionFrame class.
+     * Initializes the frame with the specified editor mode.
+     *
+     * @param editorMode true if the frame is in editor mode, false otherwise
+     */
     public LevelSelectionFrame(boolean editorMode) {
         init(editorMode);
         SoundManager.playSound(SoundListEnum.MENU_THEME);
     }
 
+    /**
+     * Constructor for the LevelSelectionFrame class.
+     * Initializes the frame in normal mode.
+     * @param editorMode if true, it will allow levels to be edited
+     */
     private void init(boolean editorMode) {
         this.editorMode = editorMode;
 
@@ -52,6 +67,7 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
         int storyLevelsCount = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getLevelsPath());
         int customLevelsCount = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getProfilesPath() + "/" + profileName);
 
+        // Set up the grid based on the editor mode
         if (editorMode) {
             customLevelsCount++;
             userLabel.setText("User Created Levels (Editor Mode: Click to edit)");
@@ -81,6 +97,15 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
         show();
     }
 
+    /**
+     * Sets up the grid for the level selection screen.
+     * Creates buttons for each level and adds them to the grid.
+     *
+     * @param grid       The GridPane to set up
+     * @param levelCount The number of levels to display
+     * @param prefix     The prefix for the level type (e.g., "Story" or "User")
+     * @param list       The list to store the buttons
+     */
     private void setupGrid(GridPane grid, int levelCount, String prefix, List<Button> list) {
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -92,6 +117,7 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
             int row = i / cols;
             int col = i % cols;
 
+            // Create a button for each level, if in editor mode, add a "+" button for the last level
             Button levelButton = new Button(String.valueOf(levelNumber));
             if (!editorMode) {
                 levelButton.setStyle("-fx-background-color: #444; -fx-text-fill: white;");
@@ -112,11 +138,12 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
                     return;
                 }
 
+                // Sets to red, to detect the level cannot be loaded, if is loaded, the user won't see it
                 levelButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
                 if (editorMode) {
-                    AppViewManager.get().switchTo(new LevelEditorFrame(level));
+                    AppViewManager.get().switchTo(new LevelEditorFrame(level)); // Switch to the level editor
                 } else {
-                    AppViewManager.get().switchTo(new LevelFrame(level, false));
+                    AppViewManager.get().switchTo(new LevelFrame(level, false)); // Switch to the level frame
                 }
             });
 
@@ -126,6 +153,14 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
         }
     }
 
+    /**
+     * Updates the button styles based on the completed levels.
+     * For each completed level, it sets the button style to indicate completion.
+     *
+     * @param levelData The list of completed levels
+     * @param buttons   The list of buttons to update
+     * @param prefix    The prefix for the level type (e.g., "Story" or "User")
+     */
     private void updateButtonStyles(List<Integer> levelData, List<Button> buttons, String prefix) {
         for (Integer levelDatum : levelData) {
             int levelNumber = levelDatum - 1;
@@ -144,6 +179,10 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
         }
     }
 
+    /**
+     * Sets the button styles to indicate completed levels.
+     * Loads the completed levels from a JSON file and updates the button styles accordingly.
+     */
     public void setButtonsCompleted() {
         List<List<Integer>> completedLevels = JsonFileManager.getProfileLFromJsonFile(
                 FolderUtils.getProfilesPath() + "/" + profileName + "/_DATA.json"
@@ -158,6 +197,9 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
         updateButtonStyles(completedLevels.get(1), userButtons, "User");
     }
 
+    /**
+     * Show the initial state of the ProfileFrame.
+     */
     public void show() {
         if (!editorMode) {
             setButtonsCompleted();
@@ -173,6 +215,7 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
         storyLabel.setFont(Font.font("Arial", fontSize * 1.5));
         userLabel.setFont(Font.font("Arial", fontSize * 1.5));
 
+        // Adapt the button size and font size for each button in the grids
         storyGrid.getChildren().forEach(node -> {
             if (node instanceof Button b) {
                 b.setMinSize(buttonSize, buttonSize);
@@ -181,6 +224,7 @@ public class LevelSelectionFrame extends VBox implements IInteractableFrame {
             }
         });
 
+        // Adapt the button size and font size for each button in the grids
         userGrid.getChildren().forEach(node -> {
             if (node instanceof Button b) {
                 b.setMinSize(buttonSize, buttonSize);

@@ -18,6 +18,11 @@ import javafx.scene.text.Font;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * ProfileFrame is a JavaFX component that allows users to select and manage profiles.
+ * It provides a user interface for creating new profiles, selecting existing ones,
+ * and displaying profile information.
+ */
 public class ProfileFrame extends VBox implements IInteractableFrame {
     private static final Logger logger = Logger.getLogger(ProfileFrame.class.getName());
 
@@ -30,6 +35,10 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
 
     private List<String> profiles;
 
+    /**
+     * Constructor for ProfileFrame.
+     * Initializes the UI components and sets up event handlers.
+     */
     public ProfileFrame() {
         setAlignment(Pos.TOP_CENTER);
         setSpacing(20);
@@ -49,6 +58,7 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
 
         confirmButton.setOnAction(e -> {
             String newName = nameField.getText();
+            // Check if the name is not empty, if so, do not add
             if (!newName.isBlank()) {
                 logger.info("Confirmed new profile: " + newName);
                 if (!ProfileManager.addNewProfile(newName)) {
@@ -62,10 +72,10 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
         getChildren().add(confirmButton);
 
         backButton.setOnAction(e -> {
+            // a profile must be selected to go back to a menu
             if (!ProfileManager.getCurrentProfile().isBlank()) {
                 logger.info("Back to Menu");
                 AppViewManager.get().switchTo(new MenuFrame());
-                return;
             } else {
                 logger.info("No profile selected, no back to menu");
             }
@@ -78,6 +88,11 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
         show();
     }
 
+    /**
+     * Adds a new profile to the list of profiles.
+     *
+     * @param name The name of the new profile.
+     */
     private void addNewProfile(String name) {
         if (!profiles.contains(name)) {
             profiles.add(name);
@@ -89,6 +104,9 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
         }
     }
 
+    /**
+     * Draws the profile buttons based on the available profiles.
+     */
     private void drawProfileButtons() {
         profileListBox.getChildren().clear();
         profileListBox.setSpacing(10);
@@ -99,12 +117,14 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
             backButton.setText("Select Profile First");
         }
 
+        // Add a button to create a new profile
         for (String profile : profiles) {
             String text = "[" + profile + "]";
             List<List<Integer>> completedLevels = JsonFileManager.getProfileLFromJsonFile(FolderUtils.getProfilesPath() + "/" + profile + "/_DATA.json");
             int totalStoryLevels = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getLevelsPath());
             int totalCustomLevels = FileUtils.getNumberOfFilesInDirectory(FolderUtils.getProfilesPath() + "/" + profile);
 
+            // Check if the profile has completed levels
             if (completedLevels != null && !completedLevels.isEmpty() && totalCustomLevels >= 0 && totalStoryLevels >= 0) {
                 if (totalCustomLevels > 0) {
                     text += " | (Story: " + completedLevels.getFirst().size() + "/" + totalStoryLevels + " Custom: " + totalCustomLevels + ")";
@@ -118,6 +138,13 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
         }
     }
 
+    /**
+     * Creates a button for the specified profile.
+     *
+     * @param profile The name of the profile.
+     * @param text    The text to display on the button.
+     * @return A Button object for the specified profile.
+     */
     private Button getButton(String profile, String text) {
         Button profileBtn = new Button(text);
         if (ProfileManager.getCurrentProfile().equals(profile)) {
@@ -136,6 +163,9 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
         return profileBtn;
     }
 
+    /**
+     * Show the initial state of the ProfileFrame.
+     */
     public void show() {
         profiles = FolderUtils.getAllFolders(ProfileManager.getProfileFolderPath());
         drawProfileButtons();
@@ -172,6 +202,7 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
         double buttonWidth = fieldWidth * 0.95;
         double buttonHeight = fieldHeight * 0.9;
 
+        // Set the button size and font size for each profile button
         for (javafx.scene.Node node : profileListBox.getChildren()) {
             if (node instanceof Button btn) {
                 btn.setPrefWidth(buttonWidth);

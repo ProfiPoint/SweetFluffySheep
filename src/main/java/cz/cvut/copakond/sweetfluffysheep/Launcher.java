@@ -12,9 +12,20 @@ import javafx.stage.Stage;
 
 import java.util.logging.Logger;
 
+/**
+ * The main entry point of the Sweet Fluffy Sheep game.
+ * <p>
+ * Initializes resources, sets up the application environment,
+ * reads the current user profile, and switches to the appropriate GUI frame.
+ */
 public class Launcher extends Application {
     private static final Logger logger = Logger.getLogger(Launcher.class.getName());
 
+    /**
+     * Starts the JavaFX application and initializes necessary game components.
+     *
+     * @param primaryStage the main stage (window) for the JavaFX application
+     */
     @Override
     public void start(Stage primaryStage) {
         // init all directories to all file managers
@@ -44,6 +55,12 @@ public class Launcher extends Application {
         }
     }
 
+    /**
+     * The main method that launches the JavaFX application.
+     * It optionally enables logging based on command-line arguments.
+     *
+     * @param args command-line arguments; use -logger or --logger to enable logging
+     */
     public static void main(String[] args) {
         boolean loggerEnabled = false;
 
