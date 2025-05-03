@@ -1,5 +1,6 @@
 package cz.cvut.copakond.sweetfluffysheep.view.utils;
 
+import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
@@ -13,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -127,6 +129,17 @@ public class AppViewManager {
      */
     private AppViewManager(Stage stage) {
         this.stage = stage;
+
+        stage.setTitle("Sweet Fluffy Sheep");
+
+
+        List<Image> iconImages = GameObject.getTextureManager().getTexture("icon");
+        if (iconImages != null) {
+            stage.getIcons().add(iconImages.getFirst());
+        } else {
+            logger.severe(ErrorMsgsEnum.TEXTURE_MISSING.getValue("The file icon is missing"));
+        }
+
 
         // Load the background video, this is not a part of TextureEnum, to avoid supporting video files
         File videoFile = new File(texturesPath+"/level/backgrounds/background.mp4");

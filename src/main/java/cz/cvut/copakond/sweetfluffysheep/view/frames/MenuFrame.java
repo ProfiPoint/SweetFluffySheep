@@ -3,6 +3,7 @@ package cz.cvut.copakond.sweetfluffysheep.view.frames;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.ErrorMsgsEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.SoundListEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
+import cz.cvut.copakond.sweetfluffysheep.model.utils.game.GameObject;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.game.ProfileManager;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.levels.LevelStatusUtils;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
@@ -11,9 +12,13 @@ import cz.cvut.copakond.sweetfluffysheep.view.interfaces.IInteractableFrame;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -23,7 +28,9 @@ import java.util.logging.Logger;
 public class MenuFrame extends VBox implements IInteractableFrame {
     private static final Logger logger = Logger.getLogger(MenuFrame.class.getName());
 
-    private final Label logo = new Label("SWEET FLUFFY SHEEP");
+    private final Label logoLabel = new Label("SWEET FLUFFY SHEEP");
+    private final ImageView logoImage = new ImageView();
+
     private final Label profileName = new Label("Welcome back, " + ProfileManager.getCurrentProfile());
     private final Label creator = new Label("Created by: Ondřej Čopák, ProfiPoint 2025, Based of 'Ovečky' Špidla Data Processing 2009");
 
@@ -76,12 +83,30 @@ public class MenuFrame extends VBox implements IInteractableFrame {
             System.exit(0);
         });
 
-        logo.setTextFill(Color.WHITE);
+        logoLabel.setTextFill(Color.WHITE);
         profileName.setTextFill(Color.BLACK);
         creator.setTextFill(Color.DARKORANGE);
 
+        // Set up the logo image
+        List<Image> iconImages = GameObject.getTextureManager().getTexture("icon");
+        if (iconImages != null) {
+            logoImage.setImage(iconImages.getFirst());
+        } else {
+            logger.severe(ErrorMsgsEnum.TEXTURE_MISSING.getValue("Icon texture is missing"));
+        }
+
+        // Set up the logo image and label
+        logoImage.setFitHeight(60);
+        logoImage.setPreserveRatio(true);
+
+        // Add them both to a horizontal box
+        HBox logoBox = new HBox();
+        logoBox.setAlignment(Pos.CENTER);
+        logoBox.setSpacing(10);
+        logoBox.getChildren().addAll(logoImage, logoLabel);
+
         getChildren().addAll(
-                logo, profileName, playButton, continueButton,
+                logoBox, profileName, playButton, continueButton,
                 editorButton, profileButton, settingsButton,
                 exitButton, creator
         );
@@ -94,7 +119,9 @@ public class MenuFrame extends VBox implements IInteractableFrame {
         double fontSize = height / 25;
         double spacing = height / 30;
 
-        logo.setStyle("-fx-font-size: " + (fontSize * 1.7) + "px; -fx-font-weight: bold;");
+        logoLabel.setStyle("-fx-font-size: " + (fontSize * 1.7) + "px; -fx-font-weight: bold;");
+        logoImage.setFitHeight(fontSize * 2);
+
         profileName.setStyle("-fx-font-size: " + (fontSize * 0.8) + "px; -fx-font-weight: bold;");
         creator.setStyle("-fx-font-size: " + (fontSize * 0.5) + "px; -fx-font-weight: bold;");
 

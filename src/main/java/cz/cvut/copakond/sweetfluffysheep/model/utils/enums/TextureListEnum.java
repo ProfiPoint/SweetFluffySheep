@@ -18,7 +18,8 @@ public enum TextureListEnum {
     FREEZE("freeze", "items/freeze/freeze_{i}.png", 32),
     RAGE("rage", "items/rage/rage_{i}.png", 32),
     ARROW("arrow", "arrows/arrow_{i}.png", 9*4),
-    BACKGROUND("background", "backgrounds/background_{i}.png", 1);
+    BACKGROUND("background", "backgrounds/background_{i}.png", 1),
+    ICON("icon", "backgrounds/sfs_icon.png", 1);
 
     private static final Logger logger = Logger.getLogger(TextureListEnum.class.getName());
 
