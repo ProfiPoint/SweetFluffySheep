@@ -54,9 +54,10 @@ public class ProfileManager {
     }
 
     /**
-     * Loads the current profile from the specified folder.
-     * @param profileName The name of the profile to load.
-     * @return true if the profile was loaded successfully, false otherwise.
+     * Switches the current profile to the specified profile name.
+     * This method updates the current profile and saves the change to a file.
+     *
+     * @param profileName The name of the profile to switch to.
      */
     public static void switchProfile(String profileName) {
         currentProfile = profileName;
