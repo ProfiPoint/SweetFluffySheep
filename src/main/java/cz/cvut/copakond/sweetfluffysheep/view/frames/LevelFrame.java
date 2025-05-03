@@ -19,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -28,6 +29,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -326,6 +328,8 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
     private void showPopup(String message, boolean isWin) {
         if (popupShown) return;
 
+
+
         SoundManager.stopMusic();
         SoundManager.playSound(isWin ? SoundListEnum.FINISH : SoundListEnum.GAME_OVER);
         popupShown = true;
@@ -350,6 +354,15 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
         Button backToMenuButton = new Button(isEditor ? "Retry" : "Back to Menu");
         VBox buttonBox = new VBox(10);
         buttonBox.setAlignment(Pos.CENTER);
+
+        // set the icon for the popup window
+        List<Image> iconImages = GameObject.getTextureManager().getTexture("icon");
+        if (iconImages != null) {
+            popupStage.getIcons().addAll(iconImages);
+        } else {
+            logger.severe(ErrorMsgsEnum.TEXTURE_MISSING.getValue("The file icon is missing"));
+        }
+
 
         if (isWin) {
             Button nextLevelButton = new Button(isEditor ? "Edit" : "Next Level");
