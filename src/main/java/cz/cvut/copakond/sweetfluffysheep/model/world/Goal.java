@@ -40,6 +40,8 @@ public class Goal extends GameObject {
 
     /**
      * Returns the correct direction of the goal, because visually it is rotated 90 degrees.
+     *
+     * @return The global direction of the goal.
      */
     public static DirectionEnum getGlobalDirection() {
         // because the texture is rotated 90 degrees

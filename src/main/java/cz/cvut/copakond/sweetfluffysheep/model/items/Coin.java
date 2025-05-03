@@ -11,7 +11,7 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
  */
 public class Coin extends Item {
     private static int totalCoins = 0;
-    protected static int coinsLeft = 0;
+    protected static int coinsLeft = 0; // number of coins left in the level
 
     /**
      * Constructor for the Coin class.

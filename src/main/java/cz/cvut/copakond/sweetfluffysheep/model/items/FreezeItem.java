@@ -25,6 +25,11 @@ public class FreezeItem extends Item {
         super("freeze", position, duration, ItemEnum.FREEZE);
     }
 
+    /**
+     * Checks if a freeze item is currently active.
+     *
+     * @return true if a freeze item is active, false otherwise
+     */
     public static boolean isActive() {
         return active != null;
     }

@@ -78,6 +78,12 @@ public class Level {
         initLevel(level, isLevelEditor, storyLevel, newLevel);
     }
 
+    /**
+     * Constructor for the Level class.
+     * @param level the name of the level
+     * @param isLevelEditor true if the level is being edited, false otherwise
+     * @param storyLevel true if the level is a story level, false otherwise
+     */
     public Level(String level, boolean isLevelEditor, boolean storyLevel) {
         this.levelName = level;
         initLevel(level, isLevelEditor, storyLevel, false);
@@ -109,10 +115,18 @@ public class Level {
         return levelInfo.get("timeLimit");
     }
 
+    /**
+     * Returns the time left in seconds.
+     * @return the time left in seconds
+     */
     public int getTimeLeft() {
         return (int) timeLeft / GameObject.getFPS();
     }
 
+    /**
+     * Returns the number of coins left and the total number of coins.
+     * @return the array of number of coins left and total number of coins
+     */
     public int[] getCoinsLeftAndCoins() {
         return new int[]{Coin.getCoinsLeft(), Coin.getTotalCoins()};
     }
@@ -181,6 +195,7 @@ public class Level {
     }
 
     /**
+     * Returns the number of arrows in the level and the max arrows in the level.
      * @return the array of number of arrows and max arrows in the level
      */
     public int[] getArrowsInfo() {
@@ -188,6 +203,7 @@ public class Level {
     }
 
     /**
+     * Returns the number of sheep in the level and the max sheep in the level.
      * @return the array of level name, isLevelEditor, and isStoryLevel
      */
     public String[] getLevelData() {
@@ -197,6 +213,7 @@ public class Level {
     }
 
     /**
+     * Returns the current game time elapsed in seconds.
      * @return the current game time elapsed in seconds, not the real time, but the number of frames elapsed * FPS
      */
     public float getTimeElapsed() {

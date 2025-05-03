@@ -14,6 +14,15 @@ import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
  * Basically, it does connect Model and View classes by giving Model classes the paths to the resources
  */
 public class InitClasses {
+
+    /**
+     * Initializes the paths for textures, levels, profiles, and sounds.
+     *
+     * @param texturesPath The path to the textures folder.
+     * @param levelsPath   The path to the levels folder.
+     * @param profilesPath The path to the profiles folder.
+     * @param soundsPath   The path to the sounds folder.
+     */
     public InitClasses(String texturesPath, String levelsPath, String profilesPath, String soundsPath) {
         LevelEditorFrame.setTexturePath(texturesPath);
         TextureListEnum.setLevelsPath(texturesPath);

@@ -19,6 +19,9 @@ public interface IInteractableFrame {
     /**
      * Handles the updating the UI aspect of the frame when the canvas is resized.
      * Redraws all the elements on the canvas.
+     *
+     * @param width  The new width of the canvas.
+     * @param height The new height of the canvas.
      */
     void onResizeCanvas(double width, double height);
 }
