@@ -1,0 +1,14 @@
+module:cz.cvut.copakond.sweetfluffysheep
+cz.cvut.copakond.sweetfluffysheep
+cz.cvut.copakond.sweetfluffysheep.model.entities
+cz.cvut.copakond.sweetfluffysheep.model.items
+cz.cvut.copakond.sweetfluffysheep.model.utils.enums
+cz.cvut.copakond.sweetfluffysheep.model.utils.files
+cz.cvut.copakond.sweetfluffysheep.model.utils.game
+cz.cvut.copakond.sweetfluffysheep.model.utils.json
+cz.cvut.copakond.sweetfluffysheep.model.utils.levels
+cz.cvut.copakond.sweetfluffysheep.model.utils.logging
+cz.cvut.copakond.sweetfluffysheep.model.world
+cz.cvut.copakond.sweetfluffysheep.view.frames
+cz.cvut.copakond.sweetfluffysheep.view.interfaces
+cz.cvut.copakond.sweetfluffysheep.view.utils
