@@ -26,7 +26,7 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
     private final VBox profileListBox = new VBox();
     private final TextField nameField = new TextField();
     private final Button confirmButton = new Button("Add New Profile");
-    private final Button backButton = new Button("Back");
+    private final Button backButton = new Button("Back to Menu");
 
     private List<String> profiles;
 
@@ -61,14 +61,19 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
         });
         getChildren().add(confirmButton);
 
-
         backButton.setOnAction(e -> {
-            logger.info("Back to menu");
-            AppViewManager.get().switchTo(new MenuFrame());
+            if (!ProfileManager.getCurrentProfile().isBlank()) {
+                logger.info("Back to Menu");
+                AppViewManager.get().switchTo(new MenuFrame());
+                return;
+            } else {
+                logger.info("No profile selected, no back to menu");
+            }
         });
         getChildren().add(backButton);
 
         profiles = FolderUtils.getAllFolders(ProfileManager.getProfileFolderPath());
+        SoundManager.playSound(SoundListEnum.MENU_THEME);
         drawProfileButtons();
         show();
     }
@@ -80,6 +85,7 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
             profileBtn.setMaxWidth(Double.MAX_VALUE);
             profileListBox.getChildren().add(profileBtn);
             SoundManager.playSound(SoundListEnum.PROFILE_CREATED);
+            backButton.setText("Back to Menu");
         }
     }
 
@@ -87,6 +93,11 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
         profileListBox.getChildren().clear();
         profileListBox.setSpacing(10);
         profileListBox.setAlignment(Pos.TOP_CENTER);
+
+
+        if (ProfileManager.getCurrentProfile().isBlank()) {
+            backButton.setText("Select Profile First");
+        }
 
         for (String profile : profiles) {
             String text = "[" + profile + "]";
@@ -117,6 +128,7 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
             logger.info("Selected profile: " + profile);
             ProfileManager.switchProfile(profile);
             drawProfileButtons();
+            backButton.setText("Back to Menu");
             AppViewManager.get().update();
         });
 
