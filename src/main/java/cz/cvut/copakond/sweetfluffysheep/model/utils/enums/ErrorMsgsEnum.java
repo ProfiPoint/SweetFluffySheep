@@ -47,6 +47,11 @@ public enum ErrorMsgsEnum {
 
     private final String message;
 
+    /**
+     * Constructor for ErrorMsgsEnum.
+     *
+     * @param message The error message associated with the enum constant.
+     */
     ErrorMsgsEnum(String message) {
         this.message = message;
     }

@@ -7,6 +7,10 @@ import javafx.scene.image.Image;
 
 import java.util.logging.Logger;
 
+/**
+ * Arrow class representing an arrow object in the game.
+ * The arrow can be rotated and has a limited number of instances.
+ */
 public class Arrow extends GameObject {
     private static final Logger logger = Logger.getLogger(Arrow.class.getName());
 
@@ -16,6 +20,12 @@ public class Arrow extends GameObject {
     private int textureRotation = 0;
     private DirectionEnum direction;
 
+    /**
+     * Constructor for the Arrow class.
+     *
+     * @param position   The position of the arrow in the game world.
+     * @param maxArrows  The maximum number of arrows allowed in the game.
+     */
     public Arrow(double[] position, int maxArrows) {
         super("arrow", position, RenderPriorityEnums.ARROW.getValue());
         arrowCount++;
@@ -33,12 +43,17 @@ public class Arrow extends GameObject {
         return direction;
     }
 
-    // on click rotate arrow
+    /**
+     * On click the direction of the arrow.
+     */
     public void rotate() {
         this.textureRotation = (textureRotation + textureRotationSpeed) % 360;
         direction = direction.next();
     }
 
+    /**
+     * Get the current number of arrows.
+     */
     public void destroy() {
         arrowCount--;
         super.visible = false;

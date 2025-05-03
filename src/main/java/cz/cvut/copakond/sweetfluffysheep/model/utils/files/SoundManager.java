@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * SoundManager is responsible for managing sound effects and music in the application.
+ * It handles playing, stopping, and adjusting the volume of sounds.
+ */
 public class SoundManager {
     private static final Map<String, Media> mediaCache = new HashMap<>();
     private static final Map<String, List<MediaPlayer>> loopedSfxPlayers = new HashMap<>();
@@ -29,16 +33,31 @@ public class SoundManager {
         return sfxVolume;
     }
 
+    /**
+     * Sets the volume for music and sound effects.
+     * And updates the volume of currently playing music.
+     * @param newMusicVolume The new volume for music (0-100).
+     */
     public static void setMusicVolume(int newMusicVolume) {
         musicVolume = newMusicVolume;
         updateMusicVolume();
     }
 
+    /**
+     * Sets the volume for sound effects.
+     * And updates the volume of all currently playing sound effects.
+     * @param newSfxVolume The new volume for sound effects (0-100).
+     */
     public static void setSfxVolume(int newSfxVolume) {
         sfxVolume = newSfxVolume;
         updateAllSfxVolumes();
     }
 
+    /**
+     * Plays a sound effect or music track.
+     * If the sound is a music track, it stops any currently playing music.
+     * @param sound The sound to play.
+     */
     public static void playSound(SoundListEnum sound) {
         if (sound == SoundListEnum.NONE) return;
 
@@ -53,6 +72,9 @@ public class SoundManager {
         }
     }
 
+    /**
+     * Stops all sound effects and music.
+     */
     public static void stopSfx(SoundListEnum sound) {
         List<MediaPlayer> players = loopedSfxPlayers.remove(sound.name());
         if (players != null) {
@@ -68,6 +90,9 @@ public class SoundManager {
         }
     }
 
+    /**
+     * Stops all sound effects and music.
+     */
     public static void stopMusic() {
         if (musicPlayer != null) {
             musicPlayer.stop();
@@ -78,6 +103,11 @@ public class SoundManager {
         }
     }
 
+    /**
+     * Plays a sound effect.
+     * @param uri The URI of the sound file.
+     * @param sound The sound enum representing the sound to play.
+     */
     private static void playSfx(String uri, SoundListEnum sound) {
         Media media = getCachedMedia(uri);
         MediaPlayer player = new MediaPlayer(media);
@@ -102,6 +132,12 @@ public class SoundManager {
         player.play();
     }
 
+    /**
+     * Plays a music track.
+     * @param uri The URI of the music file.
+     * @param sound The sound enum representing the music to play.
+     * @param loop Whether to loop the music track.
+     */
     private static void playMusic(String uri, SoundListEnum sound, boolean loop) {
         if (uri.equals(currentMusicUri)) {
             if (musicPlayer != null &&
@@ -125,12 +161,18 @@ public class SoundManager {
         currentMusicSound = sound;
     }
 
+    /**
+     * Updates the volume of the currently playing music.
+     */
     private static void updateMusicVolume() {
         if (musicPlayer != null && currentMusicSound != null) {
             setEffectiveVolume(musicPlayer, currentMusicSound.getVolume(), musicVolume);
         }
     }
 
+    /**
+     * Updates the volume of all currently playing sound effects.
+     */
     private static void updateAllSfxVolumes() {
         for (Map.Entry<MediaPlayer, SoundListEnum> entry : sfxToSoundMap.entrySet()) {
             MediaPlayer player = entry.getKey();
@@ -139,6 +181,12 @@ public class SoundManager {
         }
     }
 
+    /**
+     * Sets the effective volume of a MediaPlayer.
+     * @param player The MediaPlayer to set the volume for.
+     * @param soundVolume The sound volume (0-100).
+     * @param generalVolume The general volume (0-100).
+     */
     private static void setEffectiveVolume(MediaPlayer player, int soundVolume, int generalVolume) {
         double effectiveVolume = (soundVolume * generalVolume) / 10000.0;
         player.setVolume(effectiveVolume);

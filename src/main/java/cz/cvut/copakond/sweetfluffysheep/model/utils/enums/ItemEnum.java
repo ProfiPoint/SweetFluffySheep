@@ -10,6 +10,11 @@ public enum ItemEnum {
     FREEZE(),
     RAGE();
 
+    /**
+     * Returns the name of the item.
+     *
+     * @return the name of the item
+     */
     public static int getNumberOfItems() {
         return ItemEnum.values().length;
     }

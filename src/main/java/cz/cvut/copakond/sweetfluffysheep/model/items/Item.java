@@ -8,6 +8,13 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.RenderPriorityEnums;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
 import javafx.scene.image.Image;
 
+/**
+ * Item class represents an item in the game.
+ * It extends the GameObject class and implements the IItem interface.
+ * The item has a texture, position, duration, and effect.
+ * The item can be picked up and used by the player.
+ * Each item must inherit from this class.
+ */
 public class Item extends GameObject implements IItem {
     // 10x per second it will update the anim texture
     private static final int textureChangeFrameCoefficient = (int) Math.ceil((double) GameObject.getFPS() / 10);
@@ -16,6 +23,14 @@ public class Item extends GameObject implements IItem {
     private final ItemEnum itemEffect;
     private boolean pickable;
 
+    /**
+     * Constructor for the Item class.
+     *
+     * @param textureName  The name of the texture for the item.
+     * @param position     The position of the item in the game world.
+     * @param duration     The duration of the item effect in seconds.
+     * @param itemEffect   The effect of the item (e.g., COIN, FREEZE).
+     */
     public Item(String textureName, double[] position, int duration, ItemEnum itemEffect) {
         super(textureName, position, RenderPriorityEnums.ITEM.getValue());
         this.durationTicks = duration * getFPS();

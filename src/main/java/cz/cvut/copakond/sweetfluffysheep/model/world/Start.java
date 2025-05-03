@@ -5,10 +5,21 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.DirectionEnum;
 import cz.cvut.copakond.sweetfluffysheep.model.utils.enums.RenderPriorityEnums;
 import javafx.scene.image.Image;
 
+/**
+ * Represents the starting point of the game.
+ * The starting point is represented by an arrow that indicates the direction of the character.
+ * The arrow can be rotated to change the direction of the character.
+ */
 public class Start extends GameObject {
     private DirectionEnum direction;
     private boolean visible = true;
 
+    /**
+     * Constructor for the Start class.
+     *
+     * @param position   The position of the starting point in the game world.
+     * @param orientation The initial direction of the arrow.
+     */
     public Start(double[] position, DirectionEnum orientation) {
         super("start", position, RenderPriorityEnums.ARROW.getValue());
         this.direction = orientation;

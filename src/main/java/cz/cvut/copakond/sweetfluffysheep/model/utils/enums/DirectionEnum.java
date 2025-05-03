@@ -15,6 +15,11 @@ public enum DirectionEnum {
 
     private final int value;
 
+    /**
+     * Constructor for DirectionEnum.
+     *
+     * @param value the integer value representing the direction
+     */
     DirectionEnum(int value) {
         this.value = value;
     }

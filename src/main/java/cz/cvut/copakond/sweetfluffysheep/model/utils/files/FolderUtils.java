@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Utility class for managing folders in the application.
+ * Provides methods to create folders and retrieve folder names.
+ */
 public class FolderUtils {
     private static final Logger logger = Logger.getLogger(FolderUtils.class.getName());
     
@@ -29,6 +33,12 @@ public class FolderUtils {
         return profilesPath;
     }
 
+    /**
+     * Retrieves all folder names in the specified path.
+     *
+     * @param path the path to search for folders
+     * @return a list of folder names
+     */
     public static List<String> getAllFolders(String path) {
         List<String> folders = new ArrayList<>();
         File directory = new File(path);
@@ -50,6 +60,12 @@ public class FolderUtils {
         return folders;
     }
 
+    /**
+     * Creates a folder at the specified path.
+     *
+     * @param path the path where the folder should be created
+     * @return true if the folder was created successfully, false otherwise
+     */
     public static boolean createFolder(String path) {
         File folder = new File(path);
 

@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Utility class for managing level status (completed, next level, etc.)
+ */
 public class LevelStatusUtils {
     private static final Logger logger = Logger.getLogger(LevelStatusUtils.class.getName());
     
@@ -25,6 +28,12 @@ public class LevelStatusUtils {
         profilesPath = p;
     }
 
+    /**
+     * Marks the level as completed in the profile data.
+     *
+     * @param level The level to mark as completed.
+     * @return true if the level was marked as completed, false otherwise.
+     */
     public static boolean markLevelAsCompleted(Level level){
         if (level.isLevelEditor()) return true;
 
@@ -39,6 +48,7 @@ public class LevelStatusUtils {
         levelData.add(new ArrayList<>(original.get(0))); // normal levels
         levelData.add(new ArrayList<>(original.get(1))); // editor levels
 
+        // preventing duplicates
         try {
             int levelNumber = Integer.parseInt(level.getLevelData()[0]);
             if (level.isStoryLevel()) {
@@ -61,8 +71,13 @@ public class LevelStatusUtils {
         );
     }
 
-    // [levelId, customLevel] customLevel = 0-story mode, 1-custom level
-    // [1,0] if all levels are completed
+    /**
+     * Returns the next uncompleted level.
+     * [levelId, customLevel] customLevel = 0-story mode, 1-custom level
+     * [1,0] if all levels are completed
+     *
+     * @return An array containing the level ID and custom level flag (0 for a story, 1 for custom).
+     */
     public static int[] getNextUncompletedLevel(){
         currentProfileName = ProfileManager.getCurrentProfile();
         List<List<Integer>> levelData = JsonFileManager.getProfileLFromJsonFile(profilesPath + "/" + currentProfileName + "/_DATA.json");
@@ -73,12 +88,14 @@ public class LevelStatusUtils {
         int numberOfStoryLevels = FileUtils.getNumberOfFilesInDirectory(levelPath);
         int numberOfCustomLevels = FileUtils.getNumberOfFilesInDirectory(profilesPath + "/" + currentProfileName);
 
+        // Check if all story levels are completed, if not, return the first uncompleted level
         for (int i = 0; i < numberOfStoryLevels; i++) {
             if (!levelData.getFirst().contains(i+1)) {
                 return new int[]{i + 1, 0};
             }
         }
 
+        // Check if all custom levels are completed, if not, return the first uncompleted level
         for (int i = 0; i < numberOfCustomLevels; i++) {
             if (!levelData.get(1).contains(i+1)) {
                 return new int[]{i + 1, 1};
@@ -88,14 +105,20 @@ public class LevelStatusUtils {
         return new int[]{1, 0}; // all levels are completed, return first level
     }
 
-    // [levelId, customLevel] customLevel = 0-story mode, 1-custom level
-    // [0,0] if this was the last level of story/custom level
+    /**
+     * Returns the next level based on the current level.
+     * If the current level is the last one, repeats the last level.
+     *
+     * @param level The current level.
+     * @return The next level.
+     */
     public static Level getNextLevel(Level level){
         currentProfileName = ProfileManager.getCurrentProfile();
 
         int numberOfStoryLevels = FileUtils.getNumberOfFilesInDirectory(levelPath);
         int numberOfCustomLevels = FileUtils.getNumberOfFilesInDirectory(profilesPath + "/" + currentProfileName);
 
+        // Check if the level is a custom level
         try {
             int levelNumber = Integer.parseInt(level.getLevelData()[0]);
             if (level.isStoryLevel()) {

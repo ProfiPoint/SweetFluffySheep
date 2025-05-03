@@ -6,11 +6,21 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 
 import java.util.logging.Logger;
 
+/**
+ * Represents a freeze item that can be used to freeze enemies.
+ * Only one freeze item can be active at a time.
+ */
 public class RageItem extends Item {
     private static final Logger logger = Logger.getLogger(RageItem.class.getName());
     
     private static RageItem active = null; // only one freeze item can be active at a time
 
+    /**
+     * Constructor for the RageItem class.
+     *
+     * @param position The position of the item in the game world.
+     * @param duration The duration of the item effect.
+     */
     public RageItem(double[] position, int duration) {
         super("rage", position, duration, ItemEnum.RAGE);
     }

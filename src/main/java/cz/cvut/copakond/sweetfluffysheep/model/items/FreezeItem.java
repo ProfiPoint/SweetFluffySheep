@@ -6,11 +6,21 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.files.SoundManager;
 
 import java.util.logging.Logger;
 
+/**
+ * Represents a freeze item that can be used to freeze enemies.
+ * Only one freeze item can be active at a time.
+ */
 public class FreezeItem extends Item {
     private static final Logger logger = Logger.getLogger(FreezeItem.class.getName());
 
     private static FreezeItem active = null; // only one freeze item can be active at a time
 
+    /**
+     * Constructor for FreezeItem.
+     *
+     * @param position the position of the item
+     * @param duration the duration of the freeze effect in ticks
+     */
     public FreezeItem(double[] position, int duration) {
         super("freeze", position, duration, ItemEnum.FREEZE);
     }

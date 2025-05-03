@@ -14,6 +14,12 @@ import java.util.List;
 import java.util.Queue;
 import java.util.logging.Logger;
 
+/**
+ * PathFinder is a utility class that checks if a level can be completed.
+ * It uses a breadth-first search algorithm to find a path from the start to the goal,
+ * while collecting all coins along the way.
+ * This class is used in the LevelEditor to validate the level before saving it.
+ */
 public class PathFinder {
     private static final Logger logger = Logger.getLogger(PathFinder.class.getName());
 
@@ -36,13 +42,22 @@ public class PathFinder {
         return reasonForFailure;
     }
 
+    /**
+     * Initializes the tile map based on the level data.
+     * It checks if the start and goal points are valid and if there are any coins in the level.
+     * If any of these checks fail, it sets the reason for failure and returns false.
+     *
+     * @return true if the tile map is initialized successfully, false otherwise
+     */
     private boolean initTileMap() {
+        // check if start exists
         Start start = level.getStart();
         if (start == null || start.getPosition() == null) {
             reasonForFailure = "No start point found";
             return false;
         }
 
+        // check if goal exists
         Goal goal = level.getGoal();
         if (goal == null || goal.getPosition() == null) {
             reasonForFailure = "No goal point found";
@@ -71,6 +86,7 @@ public class PathFinder {
             Arrays.fill(tileMap[i], PathFinderEnum.VOID);
         }
 
+        // fill the tile map with tiles
         List<Tile> tiles = level.getTiles();
         for (Tile tile : tiles) {
             if (!tile.isWalkable()) {
@@ -92,11 +108,13 @@ public class PathFinder {
         startX = (int) Math.round(start.getPosition()[0]);
         startY = (int) Math.round(start.getPosition()[1]);
 
+        // check if start is out of bounds
         if (startX < 0 || startX >= mapSize[0] || startY < 0 || startY >= mapSize[1]) {
             reasonForFailure = "Start out of bounds";
             return false;
         }
 
+        // check if start is on a tile
         if (tileMap[startX][startY] != PathFinderEnum.TILE) {
             reasonForFailure = "Start is not on a tile";
             return false;
@@ -105,16 +123,19 @@ public class PathFinder {
         goalX = (int) Math.round(goal.getPosition()[0]);
         goalY = (int) Math.round(goal.getPosition()[1]);
 
+        // check if goal is out of bounds
         if (goalX < 0 || goalX >= mapSize[0] || goalY < 0 || goalY >= mapSize[1]) {
             reasonForFailure = "Goal out of bounds";
             return false;
         }
 
+        // check if goal is on a tile
         if (tileMap[goalX][goalY] != PathFinderEnum.TILE) {
             reasonForFailure = "Goal is not on a tile";
             return false;
         }
 
+        // check if the coins are on tiles
         for (Item coin : level.getItems()) {
             if (coin.getItemEffect() != ItemEnum.COIN) continue;
 
@@ -167,6 +188,7 @@ public class PathFinder {
         int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         boolean goalFound = false;
 
+        // BFS to find the path if it ever exists
         while (!queue.isEmpty()) {
             int[] pos = queue.poll();
             int x = pos[0];
@@ -181,6 +203,7 @@ public class PathFinder {
                 }
             }
 
+            // check all 4 directions
             for (int[] dir : directions) {
                 int newX = x + dir[0];
                 int newY = y + dir[1];
@@ -191,10 +214,12 @@ public class PathFinder {
                 if (visited[newX][newY])
                     continue;
 
+                // check if the tile is walkable
                 if (tileMap[newX][newY] == PathFinderEnum.TILE || tileMap[newX][newY] == PathFinderEnum.COIN) {
                     visited[newX][newY] = true;
                     queue.add(new int[]{newX, newY});
 
+                    // if the tile is a coin, decrement the coin count
                     if (tileMap[newX][newY] == PathFinderEnum.COIN) {
                         coinCount--;
                         if (coinCount == 0 && goalFound) {
@@ -205,6 +230,7 @@ public class PathFinder {
             }
         }
 
+        // if the goal was not found, or there are still coins left
         if (!goalFound) {
             reasonForFailure = "Goal is unreachable";
         } else if (coinCount > 0) {
@@ -216,6 +242,12 @@ public class PathFinder {
         return false;
     }
 
+    /**
+     * Checks if the level can be completed.
+     * It initializes the tile map and checks if the level is valid.
+     *
+     * @return true if the level can be completed, false otherwise
+     */
     public boolean canLevelBeCompleted() {
         if (!initTileMap()) {
             logger.warning(reasonForFailure);

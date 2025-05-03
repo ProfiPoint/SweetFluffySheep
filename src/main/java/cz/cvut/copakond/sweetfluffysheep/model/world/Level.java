@@ -21,6 +21,11 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
+/**
+ * Class representing a level in the game.
+ * It contains all the information about the level, including the map size, start and goal positions,
+ * and all the game objects in the level.
+ */
 public class Level {
     private static final Logger logger = Logger.getLogger(Level.class.getName());
     
@@ -61,6 +66,13 @@ public class Level {
 
     private double timeLeft;
 
+    /**
+     * Constructor for the Level class.
+     * @param level the name of the level
+     * @param isLevelEditor true if the level is being edited, false otherwise
+     * @param storyLevel true if the level is a story level, false otherwise
+     * @param newLevel true if the level is a new level, false otherwise
+     */
     public Level(String level, boolean isLevelEditor, boolean storyLevel, boolean newLevel) {
         this.levelName = level;
         initLevel(level, isLevelEditor, storyLevel, newLevel);
@@ -151,19 +163,6 @@ public class Level {
         return killed;
     }
 
-    public int[] getArrowsInfo() {
-        return new int[]{arrows.size(), levelInfo.get("maxArrows")};
-    }
-
-    public String[] getLevelData() {
-        String isLevelEditor = this.isLevelEditor ? "true" : "false";
-        String isStoryLevel = this.isStoryLevel ? "true" : "false";
-        return new String[]{levelName, isLevelEditor, isStoryLevel};
-    }
-
-    public float getTimeElapsed() {
-        return (float) (levelInfo.get("timeLimit") * GameObject.getFPS() - timeLeft) / GameObject.getFPS();
-    }
 
     public static void setLevelPath(String p) {
         levelPath = p;
@@ -181,11 +180,42 @@ public class Level {
         this.goal = goal;
     }
 
+    /**
+     * @return the array of number of arrows and max arrows in the level
+     */
+    public int[] getArrowsInfo() {
+        return new int[]{arrows.size(), levelInfo.get("maxArrows")};
+    }
+
+    /**
+     * @return the array of level name, isLevelEditor, and isStoryLevel
+     */
+    public String[] getLevelData() {
+        String isLevelEditor = this.isLevelEditor ? "true" : "false";
+        String isStoryLevel = this.isStoryLevel ? "true" : "false";
+        return new String[]{levelName, isLevelEditor, isStoryLevel};
+    }
+
+    /**
+     * @return the current game time elapsed in seconds, not the real time, but the number of frames elapsed * FPS
+     */
+    public float getTimeElapsed() {
+        return (float) (levelInfo.get("timeLimit") * GameObject.getFPS() - timeLeft) / GameObject.getFPS();
+    }
+
+    /**
+     * Initializes the level by loading the level data from the JSON file.
+     * @param level the name of the level
+     * @param isLevelEditor true if the level is being edited, false otherwise
+     * @param storyLevel true if the level is a story level, false otherwise
+     * @param newLevel true if the level is a new level, false otherwise
+     */
     private void initLevel(String level, boolean isLevelEditor, boolean storyLevel, boolean newLevel) {
         path = storyLevel ? levelPath + "/" : profilesPath + "/" + ProfileManager.getCurrentProfile() + "/";
         this.isLevelEditor = isLevelEditor;
         this.isStoryLevel = storyLevel;
 
+        // load the level data from the JSON file
         if (newLevel) {
             levelData = JsonFileManager.readJsonFromFile(levelPath + "/_TEMPLATE.json");
             if (levelData == null) {
@@ -197,6 +227,7 @@ public class Level {
             levelData = JsonFileManager.readJsonFromFile(path + level + ".json");
         }
 
+        // if loading the level data fails
         if (levelData == null) {
             logger.severe(ErrorMsgsEnum.CUSTOM_ERROR.getValue("Error loading level data"));
         } else {
@@ -204,12 +235,17 @@ public class Level {
         }
     }
 
-    // main function to load the level
+    /**
+     * the main function to load the level
+     * this loads the complete JSON file and parses it into the level
+     * @return true if the level is loaded successfully, false otherwise
+     */
     public boolean loadLevel() {
         if (levelData == null) return false;
 
         LoadManager lm = new LoadManager(levelData);
 
+        // basic level data
         mapSize = lm.getList2NoLimit("mapSize");
         defaultLevel = lm.getBoolean("defaultLevel");
         if (mapSize == null) return false;
@@ -218,9 +254,11 @@ public class Level {
         int[] endCoords = lm.getList3("goal", mapSize);
         if (startCoords == null || endCoords == null) return false;
 
+        // start, goal
         start = new Start(new double[]{startCoords[0], startCoords[1]}, DirectionEnum.fromValue(startCoords[2]));
         goal = new Goal(new double[]{endCoords[0], endCoords[1]}, DirectionEnum.fromValue(endCoords[2]));
 
+        // level info
         playerInfo.put("creator", lm.getString("creator"));
         playerInfo.put("creatorUpdated", lm.getString("creatorUpdated"));
         if (playerInfo.get("creator") == null || playerInfo.get("creatorUpdated") == null) return false;
@@ -238,18 +276,21 @@ public class Level {
 
         Sheep.setGoalSheep(levelData.getInt("goalSheep"));
 
+        // tiles
         List<int[]> tileCoords = lm.getListOfListsWithLimitFromDict("tiles", mapSize, TextureListEnum.TILE.getCount());
         if (tileCoords == null) return false;
         for (int[] coord : tileCoords) {
             tiles.add(new Tile(new double[]{coord[0], coord[1]}, coord[2] * 16, true));
         }
 
+        // enemies
         List<int[]> enemyCoords = lm.getListOfListsWithDirFromDict("enemies", mapSize, true);
         if (enemyCoords == null) return false;
         for (int[] coord : enemyCoords) {
             enemies.add(new Wolf(new double[]{coord[0], coord[1]}, DirectionEnum.fromValue(coord[2])));
         }
 
+        // items
         List<int[]> itemCoords = lm.getListOfListsWithLimit("items", mapSize, ItemEnum.getNumberOfItems());
         if (itemCoords == null) return false;
         for (int[] coord : itemCoords) {
@@ -258,11 +299,16 @@ public class Level {
             items.add((Item) iitem);
         }
 
+        // build the level
         buildObjectsList();
         logger.info("Level " + levelName + " loaded");
         return true; // level is loaded successfully, without any errors :D
     }
 
+    /**
+     * Saves the level to a JSON file.
+     * @return true if the level is saved successfully, false otherwise
+     */
     public boolean saveLevel() {
         JSONObject levelData = new JSONObject();
         SaveManager sm = new SaveManager(levelData);
@@ -286,12 +332,16 @@ public class Level {
         return JsonFileManager.writeJsonToFile(path + levelName + ".json", levelData);
     }
 
-    // used to update the level by the game loop
+    /**
+     * Used to update the level by the game loop
+     * @param doesTimeFlow true if is rendering, false if only physics without rendering
+     */
     public void tick(boolean doesTimeFlow) {
         if (doesTimeFlow){
             if (timeLeft > 0 && GameObject.getGameStatus() == GameStatusEnum.RUNNING) {
                 timeLeft--;
 
+                // check if the time is up
                 if (timeLeft <= 0) {
                     timeLeft = 0;
                     if (Sheep.getSheepInGoal() >= levelInfo.get("goalSheep")) {
@@ -321,6 +371,11 @@ public class Level {
         }
     }
 
+    /**
+     * Used to rotate or remove the arrow
+     * @param tileClick the tile clicked
+     * @param button the button clicked
+     */
     public void placeRotateRemoveArrow(int[] tileClick, int button) {
         if (button == 1) {
             for (Arrow arrow : arrows) {
@@ -353,6 +408,9 @@ public class Level {
         }
     }
 
+    /**
+     * Builds the list of game objects to be rendered that the game loop uses.
+     */
     public void buildObjectsList() {
         objects = new CopyOnWriteArrayList<>();
         buildDecorationTiles();
@@ -367,6 +425,10 @@ public class Level {
         }
     }
 
+    /**
+     * Prepares the level for playing.
+     * Spawns the sheep, sets the limit, and clears the game physics.
+     */
     public void Play() {
         timeLeft = (double) levelInfo.get("timeLimit") * GameObject.getFPS();
         start.setVisibility(isLevelEditor);
@@ -396,6 +458,10 @@ public class Level {
         logger.info("Level Played");
     }
 
+    /**
+     * Unloads the level by resting all static variables in other classes
+     * Expected is to load another level after this or go back to a menu
+     */
     public void Unload() {
         for (GameObject object : objects) {
             object.resetLevel();
@@ -406,6 +472,9 @@ public class Level {
         levelIsCompleted = false;
     }
 
+    /**
+     * Sets the level as completed.
+     */
     public void Completed() {
         if (levelIsCompleted) { return; }
         if (!LevelStatusUtils.markLevelAsCompleted(this)) {
@@ -414,6 +483,9 @@ public class Level {
         levelIsCompleted = true;
     }
 
+    /**
+     * Builds the decoration tiles for the level (fences) around the walkable tiles.
+     */
     private void buildDecorationTiles() {
         Map<String, Tile> allTiles = new HashMap<>();
         List<Tile> newTiles = new ArrayList<>();
@@ -467,6 +539,12 @@ public class Level {
         tiles.addAll(toBeChecked);
     }
 
+    /**
+     * Gets the number of walkable tiles around the given position.
+     * @param position the position to check
+     * @param allTiles the map of all tiles
+     * @return an array of booleans indicating if the tile in the given direction is walkable
+     */
     private boolean[] getNumberOfWalkableTilesAround(int[] position, Map<String, Tile> allTiles) {
         boolean[] walkableTiles = new boolean[4];
         int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};

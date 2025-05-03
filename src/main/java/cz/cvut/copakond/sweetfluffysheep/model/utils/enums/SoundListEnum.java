@@ -39,17 +39,28 @@ public enum SoundListEnum {
 
     private static String soundPath;
 
-    public static void setSoundPath(String path) {
-        soundPath = path == null ? "" : path.endsWith("/") ? path : path + "/";
-    }
-
-
+    /**
+     * Constructor for SoundListEnum.
+     *
+     * @param fileName      The file name of the sound effect or music track.
+     * @param isSFX         Indicates if the sound is a sound effect (true) or music (false).
+     * @param playOnRepeat   Indicates if the sound should play on repeat (true) or not (false).
+     * @param variants       The number of variants available for the sound.
+     * @param volume         The volume level of the sound.
+     */
     SoundListEnum(String fileName, boolean isSFX, boolean playOnRepeat, int variants, int volume) {
         this.fileName = fileName;
         this.isSFX = isSFX;
         this.playOnRepeat = playOnRepeat;
         this.count = variants;
         this.volume = volume;
+    }
+
+    /**
+     * Returns the file name of the sound effect or music track.
+     */
+    public static void setSoundPath(String path) {
+        soundPath = path == null ? "" : path.endsWith("/") ? path : path + "/";
     }
 
     /**

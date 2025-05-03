@@ -8,6 +8,11 @@ import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
 import cz.cvut.copakond.sweetfluffysheep.view.frames.LevelEditorFrame;
 import cz.cvut.copakond.sweetfluffysheep.view.utils.AppViewManager;
 
+/**
+ * This class initializes the paths for various resources used in the application.
+ * It sets the paths for textures, levels, profiles, and sounds.
+ * Basically, it does connect Model and View classes by giving Model classes the paths to the resources
+ */
 public class InitClasses {
     public InitClasses(String texturesPath, String levelsPath, String profilesPath, String soundsPath) {
         LevelEditorFrame.setTexturePath(texturesPath);

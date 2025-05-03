@@ -10,6 +10,10 @@ import javafx.scene.image.Image;
 
 import java.util.logging.Logger;
 
+/**
+ * Sheep class representing the sheep character in the game.
+ * It extends the Character class and implements specific behavior for the sheep.
+ */
 public class Sheep extends Character {
     private static final Logger logger = Logger.getLogger(Sheep.class.getName());
 
@@ -17,6 +21,12 @@ public class Sheep extends Character {
     private static int goalSheep = 1;
     private static int sheepInGoal = 0;
 
+    /**
+     * Constructor for the Sheep class.
+     *
+     * @param position The initial position of the sheep.
+     * @param direction The initial direction of the sheep.
+     */
     public Sheep(double[] position, DirectionEnum direction) {
         super("sheep", position, direction, PhysicsEventsEnum.BEFORE_START);
         this.setEnemy(false);
@@ -33,6 +43,12 @@ public class Sheep extends Character {
         return sheepInGoal;
     }
 
+    /**
+     * Method to set the number of sheep in the goal.
+     * It is also used to check if there are enough sheep in the goal to win the game.
+     *
+     * @param entered The number of sheep in the goal.
+     */
     public static void sheepEnteredGoal(boolean entered) {
         if (entered) {
             sheepInGoal++;
@@ -46,6 +62,7 @@ public class Sheep extends Character {
         }
     }
 
+    @Override
     public void kill() {
         super.kill();
         counter--;

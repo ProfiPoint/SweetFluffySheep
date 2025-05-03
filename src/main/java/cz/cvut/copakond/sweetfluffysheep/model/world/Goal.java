@@ -10,6 +10,12 @@ import javafx.scene.image.Image;
 
 import java.util.logging.Logger;
 
+/**
+ * Represents a goal object in the game.
+ * The goal is initially locked and can be unlocked by collecting coins.
+ * The goal has a direction and can be rotated.
+ * The texture of the goal changes based on its state (locked/unlocked).
+ */
 public class Goal extends GameObject {
     private static final Logger logger = Logger.getLogger(Goal.class.getName());
     
@@ -20,12 +26,21 @@ public class Goal extends GameObject {
     private DirectionEnum direction;
     private static DirectionEnum globalDirection;
 
+    /**
+     * Constructor for the Goal class.
+     *
+     * @param position   The position of the goal in the game world.
+     * @param orientation The initial direction of the goal.
+     */
     public Goal(double[] position, DirectionEnum orientation) {
         super("goal", position, RenderPriorityEnums.ARROW.getValue());
         this.direction = orientation;
         globalDirection = orientation;
     }
 
+    /**
+     * Returns the correct direction of the goal, because visually it is rotated 90 degrees.
+     */
     public static DirectionEnum getGlobalDirection() {
         // because the texture is rotated 90 degrees
         switch (globalDirection) {
@@ -52,12 +67,17 @@ public class Goal extends GameObject {
         return locked;
     }
 
+    /**
+     * Rotates the goal character in the level editor.
+     */
     public void rotateCharacterLE(){
         this.direction = this.direction.next();
         globalDirection = this.direction;
     }
 
-    // to show the unlocked goal texture in level editor
+    /**
+     * Makes the goal visible and unlocked in the level editor.
+     */
     public void unlockForLevelEditor() {
         this.lockedTexture = false;
     }

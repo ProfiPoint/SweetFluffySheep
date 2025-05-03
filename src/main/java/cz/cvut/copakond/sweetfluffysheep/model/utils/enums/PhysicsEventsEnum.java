@@ -20,6 +20,11 @@ public enum PhysicsEventsEnum {
 
     private final boolean rotation;
 
+    /**
+     * Constructor for PhysicsEventsEnum.
+     *
+     * @param rotation Indicates whether the character should rotate or not.
+     */
     PhysicsEventsEnum(boolean rotation) {
         this.rotation = rotation;
     }

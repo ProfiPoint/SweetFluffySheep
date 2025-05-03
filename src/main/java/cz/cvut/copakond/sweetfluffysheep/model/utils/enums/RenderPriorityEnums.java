@@ -14,6 +14,11 @@ public enum RenderPriorityEnums {
 
     private final int value;
 
+    /**
+     * Constructor for RenderPriorityEnums.
+     *
+     * @param value the integer value representing the render priority
+     */
     RenderPriorityEnums(int value) {
         this.value = value;
     }

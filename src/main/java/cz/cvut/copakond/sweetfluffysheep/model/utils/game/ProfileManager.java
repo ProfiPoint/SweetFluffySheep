@@ -6,6 +6,10 @@ import cz.cvut.copakond.sweetfluffysheep.model.utils.files.FolderUtils;
 
 import java.util.logging.Logger;
 
+/**
+ * ProfileManager is a utility class that manages user profiles for the game.
+ * It allows creating new profiles, switching between them, and managing profile data.
+ */
 public class ProfileManager {
     private static final Logger logger = Logger.getLogger(ProfileManager.class.getName());
 
@@ -24,6 +28,11 @@ public class ProfileManager {
         return currentProfile;
     }
 
+    /**
+     * Initializes the profile manager by loading the current profile from the specified folder.
+     * @param profileName The name of the profile to load.
+     * @return true if the profile was loaded successfully, false otherwise.
+     */
     public static boolean addNewProfile(String profileName) {
         boolean result = FolderUtils.createFolder(profileFolderPath + "/" + profileName);
         if (!result) {
@@ -44,7 +53,11 @@ public class ProfileManager {
         return true;
     }
 
-
+    /**
+     * Loads the current profile from the specified folder.
+     * @param profileName The name of the profile to load.
+     * @return true if the profile was loaded successfully, false otherwise.
+     */
     public static void switchProfile(String profileName) {
         currentProfile = profileName;
         if (!FileUtils.writeFile(profileFolderPath + "/_CURRENT.txt", profileName)) {

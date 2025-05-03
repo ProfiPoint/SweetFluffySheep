@@ -2,12 +2,21 @@ package cz.cvut.copakond.sweetfluffysheep.model.utils.logging;
 
 import java.util.logging.*;
 
-// https://www.logicbig.com/tutorials/core-java-tutorial/logging/custom-handler.html
+/**
+ * LoggerConfig is a utility class that configures the logging settings for the application.
+ * It allows enabling or disabling logging based on the provided boolean parameter.
+ * <a href="https://www.logicbig.com/tutorials/core-java-tutorial/logging/custom-handler.html">Documentation</a>
+ */
 public class LoggerStdOutErrHandler extends Handler {
     private final StreamHandler stdoutHandler;
     private final StreamHandler stderrHandler;
 
+    /**
+     * Constructor for LoggerStdOutErrHandler.
+     * Initializes the stdout and stderr handlers with simple formatting.
+     */
     public LoggerStdOutErrHandler() {
+        // Create a new StreamHandler for stdout
         stdoutHandler = new StreamHandler(System.out, new SimpleFormatter()) {
             @Override
             public synchronized void publish(LogRecord record) {
@@ -16,6 +25,7 @@ public class LoggerStdOutErrHandler extends Handler {
             }
         };
 
+        // Create a new StreamHandler for stderr
         stderrHandler = new StreamHandler(System.err, new SimpleFormatter()) {
             @Override
             public synchronized void publish(LogRecord record) {
@@ -25,6 +35,12 @@ public class LoggerStdOutErrHandler extends Handler {
         };
     }
 
+    /**
+     * Decides where to publish the log record based on its level.
+     * (stderr for WARNING and above, stdout for lower levels)
+     * @param record  description of the log event. A null record is
+     *                 silently ignored and is not published
+     */
     @Override
     public synchronized void publish(LogRecord record) {
         if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
@@ -34,12 +50,22 @@ public class LoggerStdOutErrHandler extends Handler {
         }
     }
 
+    /**
+     * Flushes the output streams for both stdout and stderr handlers.
+     * Ensures that any buffered log records are written to their respective streams.
+     */
     @Override
     public synchronized void flush() {
         stdoutHandler.flush();
         stderrHandler.flush();
     }
 
+    /**
+     * Closes the stdout and stderr handlers.
+     * Releases any resources associated with the handlers.
+     *
+     * @throws SecurityException if a security manager exists and denies the close operation.
+     */
     @Override
     public synchronized void close() throws SecurityException {
         stdoutHandler.close();

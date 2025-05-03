@@ -30,10 +30,13 @@ public enum TextureListEnum {
 
     private static String levelsPath;
 
-    public static void setLevelsPath(String path) {
-        levelsPath = path;
-    }
-
+    /**
+     * Constructor for TextureListEnum.
+     *
+     * @param name      the name of the texture list
+     * @param fileName  the file name pattern for the textures
+     * @param count     the number of textures in the list
+     */
     TextureListEnum(String name, String fileName, int count) {
         this.name = name;
         this.fileName = fileName;
@@ -42,12 +45,25 @@ public enum TextureListEnum {
         this.returnList = true;
     }
 
+    /**
+     * Constructor for TextureListEnum with a flag to return a list of textures.
+     *
+     * @param name      the name of the texture list
+     * @param fileName  the file name pattern for the textures
+     * @param count     the number of textures in the list
+     * @param returnList whether to return a list of textures or a single texture
+     */
     TextureListEnum(String name, String fileName, int count, boolean returnList) {
         this.name = name;
         this.fileName = fileName;
         this.count = count;
         this.returnAuto = false;
         this.returnList = returnList;
+    }
+
+
+    public static void setLevelsPath(String path) {
+        levelsPath = path;
     }
 
     public String getValue() {
@@ -95,7 +111,7 @@ public enum TextureListEnum {
     }
 
     /**
-     * Generates the texture path for the given index based of the level path and file name.
+     * Generates the texture path for the given index based on the level path and file name.
      *
      * @param index the index of the texture
      * @return the generated texture path

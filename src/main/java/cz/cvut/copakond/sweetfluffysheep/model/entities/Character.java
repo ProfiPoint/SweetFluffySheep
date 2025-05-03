@@ -9,6 +9,13 @@ import cz.cvut.copakond.sweetfluffysheep.model.world.Goal;
 import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
 import javafx.scene.image.Image;
 
+/**
+ * Character class represents a character in the game.
+ * It handles the movement, rotation, and collision detection of the character.
+ * The character can be either a sheep or an enemy (wolf).
+ * <p>
+ * All the characters must inherit from this class.
+ */
 public class Character extends GameObject implements ICharacter {
     private static final int TEXTURE_ROTATION_SPEED = 10;
     private static final int TEXTURE_CHANGE_FRAME_COEFFICIENT = (int) Math.ceil((double) GameObject.getFPS() / 15);
@@ -24,12 +31,27 @@ public class Character extends GameObject implements ICharacter {
     private PhysicsEventsEnum previousEvent = PhysicsEventsEnum.NO_COLLISION;
     private PhysicsEventsEnum previousSpeedEvent = PhysicsEventsEnum.NO_COLLISION;
 
+    /**
+     * Constructor for the Character class.
+     *
+     * @param textureName the name of the texture
+     * @param position    the position of the character
+     * @param direction   the direction of the character
+     */
     public Character(String textureName, double[] position, DirectionEnum direction) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
         this.direction = direction;
         this.textureRotation = direction.getValue();
     }
 
+    /**
+     * Constructor for the Character class with the previous event.
+     *
+     * @param textureName   the name of the texture
+     * @param position      the position of the character
+     * @param direction     the direction of the character
+     * @param previousEvent the previous event of the character
+     */
     public Character(String textureName, double[] position, DirectionEnum direction, PhysicsEventsEnum previousEvent) {
         super(textureName, position, RenderPriorityEnums.CHARACTER.getValue());
         this.direction = direction;
@@ -69,6 +91,14 @@ public class Character extends GameObject implements ICharacter {
         return this.textures.get(this.textureIdNow);
     }
 
+    /**
+     * Moves the character in the direction it is facing.
+     * The character can be rotated by walls or arrows.
+     * The character can also be slowed down by other characters in front of it.
+     *
+     * @param tilesSpeed the speed of the character in tiles per second
+     * @param doesTimeFlow if true, the character will visually rotate
+     */
     public void move(double tilesSpeed, boolean doesTimeFlow) {
         if (!this.alive || !this.visible) {
             return;
@@ -137,19 +167,29 @@ public class Character extends GameObject implements ICharacter {
         previousEvent = event;
     }
 
-    // for level editor visualization purposes
+    /**
+     * Rotates the character to the right.
+     * The character will rotate clockwise.
+     */
     public void rotateCharacterLE(){
         DirectionEnum direction = this.direction.next();
         this.direction = direction;
         this.textureRotation = direction.getValue();
     }
 
+    /**
+     * Kills the character, making it invisible and not alive.
+     */
     void kill() {
         this.visible = false;
         this.alive = false;
     }
 
-    // get the correct texture for the character, based on the current rotation state
+    /**
+     * Returns the correct texture for the character, based on the current rotation state.
+     *
+     * @return the texture number of the character
+     */
     protected int getTextureNumber() {
         int orientation = (this.textureRotation / 90);
         if (this.textureRotation % 90 != 0) {
