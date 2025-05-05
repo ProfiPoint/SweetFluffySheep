@@ -14,26 +14,26 @@ Here you'll find key resources, documentation, and insights into the game's deve
 ## 📚 Documentation
 
 * 📖 [**Javadoc API Reference**](https://copakond-58f685.pages.fel.cvut.cz/overview-tree.html)
-  Browse the generated documentation for all classes and interfaces.
+Browse the generated documentation for all classes and interfaces.
 
-  * 🛠️ [**Technical Documentation**](Manuals-&-Documentation/Technical-Documentation-PFU)
-    Deep dive into architecture, design patterns, and implementation.
+* 🛠️ [**Technical Documentation**](Manuals-&-Documentation/Technical-Documentation-PFU)
+Deep dive into architecture, design patterns, and implementation.
 
-    * 👤 [**User Manual**](Manuals-&-Documentation/Technical-Documentation-PFU)
-      Learn how to install, play, and explore the game’s features.
+* 👤 [**User Manual**](Manuals-&-Documentation/Technical-Documentation-PFU)
+Learn how to install, play, and explore the game’s features.
 
-      ---
+---
 
-      ## 🔮 Project Vision
+## 🔮 Project Vision
 
-      * 🌟 [**Original Project Vision**](Project-Vision/Original-Project-Vision)
-        The initial dream and scope of the game.
+* 🌟 [**Original Project Vision**](Project-Vision/Original-Project-Vision)
+The initial dream and scope of the game.
 
-        * 🔍 [**Reality of Project Vision**](Project-Vision/Reality-of-Project-Vision)
-          A reflection on what was achieved versus what was planned.
+* 🔍 [**Reality of Project Vision**](Project-Vision/Reality-of-Project-Vision)
+A reflection on what was achieved versus what was planned.
 
-          ---
+---
 
-          ## 👨‍💻 Credits
+## 👨‍💻 Credits
 
-          * **Ondřej Čopák** — *everything* ❤️
+* **Ondřej Čopák** — *everything* ❤️
