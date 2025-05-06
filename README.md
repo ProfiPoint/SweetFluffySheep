@@ -1,4 +1,4 @@
-# 🐑 Sweet Fluffy Sheep Wiki
+# 🐑 Sweet Fluffy Sheep Wiki Navigation
 
 Welcome to the official wiki of **Sweet Fluffy Sheep** — your hub for everything related to the project!
 Here you'll find key resources, documentation, and insights into the game's development.
@@ -7,7 +7,7 @@ Here you'll find key resources, documentation, and insights into the game's deve
 
 ## 🎬 Game Showcase
 
-* 📽️ [**Game Trailer**](https://youtu.be/bXgU3NPHRz0)
+* 📽️ [**Game Trailer**](https://youtu.be/YkSZrof1f4M)
 
 ---
 
