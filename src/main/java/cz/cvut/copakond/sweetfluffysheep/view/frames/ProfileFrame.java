@@ -100,6 +100,7 @@ public class ProfileFrame extends VBox implements IInteractableFrame {
             profileBtn.setMaxWidth(Double.MAX_VALUE);
             profileListBox.getChildren().add(profileBtn);
             SoundManager.playSound(SoundListEnum.PROFILE_CREATED);
+            ProfileManager.switchProfile(name);
             backButton.setText("Back to Menu");
         }
     }
