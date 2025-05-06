@@ -22,7 +22,7 @@ public class Launcher extends Application {
     private static final Logger logger = Logger.getLogger(Launcher.class.getName());
 
     /**
-     * Starts the JavaFX application and initializes necessary game components.
+     * Starts the JavaFX application and initializes necessary game parts.
      *
      * @param primaryStage the main stage (window) for the JavaFX application
      */
@@ -34,7 +34,6 @@ public class Launcher extends Application {
         String profilesPath = "resources/datasaves/profiles";
         String soundsPath = "resources/sounds";
         new InitClasses(texturesPath, levelsPath, profilesPath, soundsPath);
-
         AppViewManager.init(primaryStage);
 
         String currentProfile = FileUtils.readFile(profilesPath + "/_CURRENT.txt");

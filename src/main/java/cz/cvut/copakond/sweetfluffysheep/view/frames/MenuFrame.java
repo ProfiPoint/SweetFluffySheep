@@ -32,7 +32,8 @@ public class MenuFrame extends VBox implements IInteractableFrame {
     private final ImageView logoImage = new ImageView();
 
     private final Label profileName = new Label("Welcome back, " + ProfileManager.getCurrentProfile());
-    private final Label creator = new Label("Created by: Ondřej Čopák, ProfiPoint 2025, Based of 'Ovečky' Špidla Data Processing 2009");
+    private final Label creator = new Label("Created by: Ondřej Čopák, ProfiPoint 2025, Based of 'Ovečky' Špidla Data" +
+            " Processing 2009. Version 1.0.0");
 
     private final Button playButton = new Button("PLAY");
     private final Button continueButton = new Button("CONTINUE");
