@@ -36,4 +36,5 @@ A reflection on what was achieved versus what was planned.
 
 ## 👨‍💻 Credits
 
-* **Ondřej Čopák** — *everything* ❤️
+* **Špidla Data Processing** — textures, sound, inspiration 🐑
+* **Ondřej Čopák** — *everything else* ❤️
