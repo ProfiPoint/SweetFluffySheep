@@ -248,15 +248,7 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
     private void setupHudBarButtonActions() {
         playButton.setOnAction(event -> {
             if (!saveLevel("Level cannot be completed")) return;
-
-            String[] levelData = gameLoop.getLevel().getLevelData();
-            Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
-            gameLoop.unload();
-            if (!newLevel.loadLevel()) {
-                logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
-                return;
-            }
-            AppViewManager.get().switchTo(new LevelFrame(newLevel, true));
+            loadLevel(false);
         });
 
         variablesButton.setOnAction(event -> {
@@ -352,16 +344,30 @@ public class LevelEditorFrame extends VBox implements ILevelFrame, IInteractable
                 if (!saveLevel("Level can not be resized")) return;
 
                 // Reload the level with the new map size
-                String[] levelData = gameLoop.getLevel().getLevelData();
-                Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
-                gameLoop.unload();
-                if (!newLevel.loadLevel()) {
-                    logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
-                    return;
-                }
-                AppViewManager.get().switchTo(new LevelEditorFrame(newLevel));
+                loadLevel(true);
             }
         }
+    }
+
+    /**
+     * Loads the level from the game loop.
+     * Unloads the current level and loads a new one.
+     * Switches to the LevelEditorFrame or LevelFrame with the new level, if successful.
+     */
+    private void loadLevel(boolean switchToEditor) {
+        String[] levelData = gameLoop.getLevel().getLevelData();
+        Level newLevel = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
+        gameLoop.unload();
+        if (!newLevel.loadLevel()) {
+            logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
+            return;
+        }
+        if (switchToEditor){
+            AppViewManager.get().switchTo(new LevelEditorFrame(newLevel));
+        } else {
+            AppViewManager.get().switchTo(new LevelFrame(newLevel, true));
+        }
+
     }
 
     /**

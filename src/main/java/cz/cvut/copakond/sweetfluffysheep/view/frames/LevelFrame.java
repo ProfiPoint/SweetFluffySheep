@@ -245,15 +245,7 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
 
         menuButton.setOnAction(e -> {
             if (isEditor) {
-                // go back to the editor
-                String[] levelData = gameLoop.getLevel().getLevelData();
-                Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
-                gameLoop.unload();
-                if (!level.loadLevel()) {
-                    logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
-                    return;
-                }
-                AppViewManager.get().switchTo(new LevelEditorFrame(level));
+                loadEditor();
             } else {
                 gameLoop.unload();
                 AppViewManager.get().switchTo(new LevelSelectionFrame(false));
@@ -327,8 +319,6 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
      */
     private void showPopup(String message, boolean isWin) {
         if (popupShown) return;
-
-
 
         SoundManager.stopMusic();
         SoundManager.playSound(isWin ? SoundListEnum.FINISH : SoundListEnum.GAME_OVER);
@@ -413,7 +403,6 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
 
         } else {
             // lose
-
             Button retryLevelButton = new Button(isEditor ? "Edit" : "Retry");
 
             if (isEditor) {
@@ -464,6 +453,16 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
      * @param popupStage The stage of the popup window.
      */
     private void switchToEditor(Stage popupStage) {
+        popupStage.close();
+        loadEditor();
+    }
+
+    /**
+     * Loads the level from the game loop.
+     * Unloads the current level and loads a new one.
+     * Switches to the LevelEditorFrame with the new level, if successful.
+     */
+    private void loadEditor() {
         String[] levelData = gameLoop.getLevel().getLevelData();
         Level level = new Level(levelData[0], levelData[1].equals("true"), levelData[2].equals("true"));
         gameLoop.unload();
@@ -471,7 +470,6 @@ public class LevelFrame extends VBox implements ILevelFrame, IInteractableFrame,
             logger.severe(ErrorMsgsEnum.LOAD_PARSING_ERROR.getValue());
             return;
         }
-        popupStage.close();
         AppViewManager.get().switchTo(new LevelEditorFrame(level));
     }
 }
