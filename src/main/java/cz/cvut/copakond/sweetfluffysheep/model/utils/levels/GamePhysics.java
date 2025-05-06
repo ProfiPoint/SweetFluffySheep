@@ -22,7 +22,6 @@ import java.util.logging.Logger;
  * and manages the interactions between characters and items.
  */
 public class GamePhysics {
-
     private static final Logger logger = Logger.getLogger(GamePhysics.class.getName());
 
     /* dynamically calculated limit for collision detection, so even in max speed the collision will be detected

@@ -7,7 +7,7 @@ import cz.cvut.copakond.sweetfluffysheep.model.world.Level;
  * This class provides methods to calculate the tile clicked based on the mouse coordinates.
  */
 public class LevelFrameUtils {
-    private static final double LEVEL_BOX_HEIGHT_COEFF = 1 - 11.111 / 100;
+    private static final double LEVEL_BOX_HEIGHT_COEFF = 1 - 11.111 / 100; // 11.111 is the height of the UI box in percent
 
     /**
      * Calculates the tile clicked based on the mouse coordinates and the level size.

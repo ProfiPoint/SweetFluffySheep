@@ -18,10 +18,12 @@ import javafx.scene.image.Image;
  */
 public class Character extends GameObject implements ICharacter {
     private static final int TEXTURE_ROTATION_SPEED = 10;
-    private static final int TEXTURE_CHANGE_FRAME_COEFFICIENT = (int) Math.ceil((double) GameObject.getFPS() / 15);
     private static final int NUMBER_OF_TEXTURE_ROTATION = 9;
     private static final int NUMBER_OF_TEXTURE_ANIMATION = 16;
     private static final int NUMBER_OF_TEXTURES = NUMBER_OF_TEXTURE_ROTATION + NUMBER_OF_TEXTURE_ANIMATION;
+
+    // the texture will update once every "this number" of frames
+    private static final int TEXTURE_CHANGE_FRAME_COEFFICIENT = (int) Math.ceil((double) GameObject.getFPS() / 15);
 
     private boolean alive = true;
     private boolean isEnemy;

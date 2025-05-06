@@ -20,7 +20,7 @@ public class Goal extends GameObject {
     private static final Logger logger = Logger.getLogger(Goal.class.getName());
     
     // 10x per second it will update the anim texture
-    private static final int textureChangeFrameCoefficient = (int) Math.ceil((double) GameObject.getFPS() / 10);
+    private static final int TEXTURE_CHANGE_FRAME_COEFFICIENT = (int) Math.ceil((double) GameObject.getFPS() / 10);
     private boolean locked = true;
     private boolean lockedTexture = true;
     private DirectionEnum direction;
@@ -98,7 +98,7 @@ public class Goal extends GameObject {
     @Override
     public Image getTexture() {
         int orientation = (this.direction.getValue() / 90);
-        this.textureIdNow = (32 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/textureChangeFrameCoefficient) % 32);
+        this.textureIdNow = (32 * ((orientation+2) % 4)) + (int)((Level.getCurrentCalculatedFrame()/TEXTURE_CHANGE_FRAME_COEFFICIENT) % 32);
         if (this.locked && this.lockedTexture) {
             this.textureIdNow += 32*4;
 

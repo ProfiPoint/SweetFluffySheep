@@ -8,7 +8,7 @@ package cz.cvut.copakond.sweetfluffysheep.model.utils.enums;
  * and to create a DirectionEnum from an integer value.
  */
 public enum DirectionEnum {
-    RIGHT(0), //
+    RIGHT(0),
     DOWN(90),
     LEFT(180),
     UP(270);

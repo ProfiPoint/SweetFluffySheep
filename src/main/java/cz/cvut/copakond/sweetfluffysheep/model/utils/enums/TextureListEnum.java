@@ -26,8 +26,8 @@ public enum TextureListEnum {
     private final String name;
     private final String fileName;
     private final int count;
-    private final boolean returnList;
-    private final boolean returnAuto; // automatically return
+    private final boolean return_list; // return a list of textures?
+    private final boolean return_auto; // automatically return?
 
     private static String levelsPath;
 
@@ -42,8 +42,8 @@ public enum TextureListEnum {
         this.name = name;
         this.fileName = fileName;
         this.count = count;
-        this.returnAuto = true;
-        this.returnList = true;
+        this.return_auto = true;
+        this.return_list = true;
     }
 
     /**
@@ -58,8 +58,8 @@ public enum TextureListEnum {
         this.name = name;
         this.fileName = fileName;
         this.count = count;
-        this.returnAuto = false;
-        this.returnList = returnList;
+        this.return_auto = false;
+        this.return_list = returnList;
     }
 
 
@@ -81,7 +81,7 @@ public enum TextureListEnum {
      * @return an array of texture paths
      */
     public String[] getTextures() {
-        if (!returnAuto && !returnList) {
+        if (!return_auto && !return_list) {
             return getSingleTexture();
         }
         return getTexturesList();

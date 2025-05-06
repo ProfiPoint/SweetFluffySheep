@@ -15,7 +15,8 @@ public class Arrow extends GameObject {
     private static final Logger logger = Logger.getLogger(Arrow.class.getName());
 
     private static final int NUMBER_OF_TEXTURE_ROTATION = 9;
-    private static final int textureRotationSpeed = 10;
+    private static final int TEXTURE_ROTATION_SPEED = 10;
+
     private static int arrowCount = 0;
     private int textureRotation = 0;
     private DirectionEnum direction;
@@ -47,7 +48,7 @@ public class Arrow extends GameObject {
      * On click the direction of the arrow.
      */
     public void rotate() {
-        this.textureRotation = (textureRotation + textureRotationSpeed) % 360;
+        this.textureRotation = (textureRotation + TEXTURE_ROTATION_SPEED) % 360;
         direction = direction.next();
     }
 
@@ -63,7 +64,7 @@ public class Arrow extends GameObject {
     public void tick(boolean doesTimeFlow) {
         super.tick(doesTimeFlow);
         if (textureRotation != direction.getValue()) {
-            textureRotation = (textureRotation + textureRotationSpeed) % 360;
+            textureRotation = (textureRotation + TEXTURE_ROTATION_SPEED) % 360;
         }
     }
 
@@ -76,7 +77,7 @@ public class Arrow extends GameObject {
     // get the current texture based on the rotation and direction
     @Override
     public Image getTexture() {
-        this.textureIdNow = ((this.textureRotation)/textureRotationSpeed + NUMBER_OF_TEXTURE_ROTATION) % this.textures.size();
+        this.textureIdNow = ((this.textureRotation)/ TEXTURE_ROTATION_SPEED + NUMBER_OF_TEXTURE_ROTATION) % this.textures.size();
         return this.textures.get(this.textureIdNow);
     }
 }
