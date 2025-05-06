@@ -132,14 +132,12 @@ public class AppViewManager {
 
         stage.setTitle("Sweet Fluffy Sheep");
 
-
         List<Image> iconImages = GameObject.getTextureManager().getTexture("icon");
         if (iconImages != null) {
             stage.getIcons().add(iconImages.getFirst());
         } else {
             logger.severe(ErrorMsgsEnum.TEXTURE_MISSING.getValue("The file icon is missing"));
         }
-
 
         // Load the background video, this is not a part of TextureEnum, to avoid supporting video files
         File videoFile = new File(texturesPath+"/level/backgrounds/background.mp4");
