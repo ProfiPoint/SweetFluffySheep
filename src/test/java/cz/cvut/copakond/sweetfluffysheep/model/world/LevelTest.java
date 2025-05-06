@@ -26,6 +26,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * runGame tests are to check if the game is running correctly
  */
 
+/**
+ * Test class for the Level class.
+ * This class contains unit tests to verify the functionality of the Level class.
+ * It includes tests for loading levels (including parsing JSON of the level data),
+ * checking start and goal positions, tiles, enemies, items,
+ * and various game scenarios such as winning, losing with item interactions.
+ */
 class LevelTest {
     private static final int FPS = 60;
     private static final int TIME_LIMIT_SECONDS = 180;

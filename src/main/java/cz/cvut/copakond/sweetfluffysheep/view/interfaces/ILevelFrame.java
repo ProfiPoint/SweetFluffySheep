@@ -8,7 +8,7 @@ public interface ILevelFrame {
 
     /**
      * Renders the level objects on the screen.
-     * This method is responsible for drawing all the objects in the current level.
+     * This method is responsible for drawing all the objects at the current level.
      */
     void drawLevelObjects();
 
