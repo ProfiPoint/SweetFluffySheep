@@ -1,7 +1,4 @@
-# 🐑 Sweet Fluffy Sheep Wiki
-
-Welcome to the official wiki of **Sweet Fluffy Sheep** — your hub for everything related to the project!
-Here you'll find key resources, documentation, and insights into the game's development.
+# 🐑 Sweet Fluffy Sheep
 
 ## 📦 Requirements
 
@@ -35,9 +32,11 @@ Here you'll find key resources, documentation, and insights into the game's deve
 
    This prints log messages to `stdout` / `stderr`.
 
-   Mored details on How to Play in: [**User Manual**](https://gitlab.fel.cvut.cz/B242_B0B36PJV/copakond/-/wikis/Manuals-&-Documentation/User-Manual)
-
+   Mored details on How to Play in: [**User Manual**](https://github.com/ProfiPoint/SweetFluffySheep/wiki/User-Manual)
+   
 ---
+# Wiki
+[**Wiki**](https://github.com/ProfiPoint/SweetFluffySheep/wiki)
 
 ## 🎬 Game Showcase
 
@@ -47,23 +46,23 @@ Here you'll find key resources, documentation, and insights into the game's deve
 
 ## 📚 Documentation
 
-* 📖 [**Javadoc API Reference**](https://copakond-58f685.pages.fel.cvut.cz/overview-tree.html)
+* 📖 [**Javadoc API Reference**](https://profipoint.pro/SweetFluffySheep/overview-tree.html)
   Browse the generated documentation for all classes and interfaces.
 
-* 🛠️ [**Technical Documentation**](https://gitlab.fel.cvut.cz/B242_B0B36PJV/copakond/-/wikis/Manuals-&-Documentation/Technical-Documentation)
+* 🛠️ [**Technical Documentation**](https://github.com/ProfiPoint/SweetFluffySheep/wiki/Technical%E2%80%90Documentation)
   Deep dive into architecture, design patterns, and implementation.
 
-* 👤 [**User Manual**](https://gitlab.fel.cvut.cz/B242_B0B36PJV/copakond/-/wikis/Manuals-&-Documentation/User-Manual)
+* 👤 [**User Manual**](https://github.com/ProfiPoint/SweetFluffySheep/wiki/User-Manual)
   Learn how to install, play, and explore the game’s features.
 
 ---
 
 ## 🔮 Project Vision
 
-* 🌟 [**Original Project Vision**](https://gitlab.fel.cvut.cz/B242_B0B36PJV/copakond/-/wikis/Project-Vision/Original-Project-Vision)
+* 🌟 [**Original Project Vision**](https://github.com/ProfiPoint/SweetFluffySheep/wiki/Utils:-Original-Project-Vision)
   The initial vision of the game.
 
-* 🔍 [**Reality of Project Vision**](https://gitlab.fel.cvut.cz/B242_B0B36PJV/copakond/-/wikis/Project-Vision/Reality-of-Project-Vision)
+* 🔍 [**Reality of Project Vision**](https://github.com/ProfiPoint/SweetFluffySheep/wiki/Utils:-Reality-of-Project-Vision)
   A reflection on what was achieved versus what was planned.
 
 ---
