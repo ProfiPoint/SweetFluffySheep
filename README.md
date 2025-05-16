@@ -67,6 +67,12 @@
 
 ---
 
+## ℹ️ About Project
+
+* This project game was a part of **PJV semestral work of FEE CVUT in 2025**
+
+---
+
 ## 👨‍💻 Credits
 
 * **Špidla Data Processing** — textures, sound, inspiration 🐑
